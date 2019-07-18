@@ -96,29 +96,10 @@ $(objdir)/%.o: $(srcdir)/%.s $(srcdir)/nes.inc $(srcdir)/global.inc
 $(objdir)/%.o: $(objdir)/%.s
 	$(AS65) $(CFLAGS65) $< -o $@
 
-# Files that depend on .incbin'd files
-$(objdir)/main.o: $(objdir)/bggfx.chr $(objdir)/spritegfx.chr
-
+##### I'll get around to this when I add sounds / music
 # This is an example of how to call a lookup table generator at
 # build time.  mktables.py itself is not included because the demo
 # has no music engine, but it's available online at
 # http://wiki.nesdev.com/w/index.php/APU_period_table
 $(objdir)/ntscPeriods.s: tools/mktables.py
 	$< period $@
-
-# Rules for CHR ROM
-
-$(title).chr: $(objdir)/bggfx.chr $(objdir)/spritegfx.chr
-	cat $^ > $@
-
-$(objdir)/%.chr: $(imgdir)/%.png
-	echo "$@"
-	echo "$<"
-	# $(PY) tools/pilbmp2nes.py $< $@
-
-$(objdir)/%16.chr: $(imgdir)/%.png
-	echo "$@"
-	echo "$<"
-	# $(PY) tools/pilbmp2nes.py -H 16 $< $@
-
-
