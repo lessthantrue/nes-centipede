@@ -1,0 +1,39 @@
+\ : Complete
+* : Not Yet
+x : will not do
+
+REFACTORING:
+ \ make a preserve/restore all registers macro
+ \ move common macros (add_multiple, preserve/restore_registers, etc) to common file
+ x move common procedures (are there any?) to common file (there were none)
+ * compress centipede::dir and centipede::lastDir to one byte
+ x move everything to individual modules (.inc files as interfaces instead)
+ \ split move_centipede and collide_centipede?
+ \ transpose centipede data structure (list of struct -> struct of list)
+ \ for centipede map, temp store segment in a ZP variable, then write back after function
+
+DEVELOPMENT:
+ \ move and properly draw multiple centipede segments
+ * create proper centipede sprites
+   * head drawn differently from body
+   * directions drawn differently
+     * Left/Right
+     * Down
+ * add centipede <-> arrow collision
+   * kill centipede segment that was hit, set previous segment to head
+ * create mushrooms on centipede death
+ * add mushroom <-> arrow collision
+ * reduce(?) mushrooms on hit
+ * add centipede <-> player collision
+ * create proper sprite for arrow
+ * compress player to 1 sprite
+ * create proper sprite for player
+ * Fix all the color palettes
+ * animate centipede
+
+PROJECT MANAGEMENT:
+ \ Update README
+   \ Document change in graphics tools
+ \ Remove old python tools for graphics
+ * Put on Github
+ \ Double check and delete bg.s
