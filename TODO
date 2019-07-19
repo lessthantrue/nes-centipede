@@ -35,5 +35,7 @@ PROJECT MANAGEMENT:
  \ Update README
    \ Document change in graphics tools
  \ Remove old python tools for graphics
- * Put on Github
+ \ Put on Github
  \ Double check and delete bg.s
+ * set up releases with built .NES file
+ * online demo with JSNES

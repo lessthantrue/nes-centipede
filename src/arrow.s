@@ -1,4 +1,3 @@
-.include "nes.inc"
 .include "macros.inc"
 .include "constants.inc"
 .include "arrow.inc"

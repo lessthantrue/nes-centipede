@@ -1,5 +1,3 @@
-.include "nes.inc"
-.include "global.inc"
 .include "macros.inc"
 .include "constants.inc"
 .include "board.inc"
@@ -166,13 +164,11 @@ SPEED = 1
         ldx map_elem+centipede::xcord
         cmp #DIR_RIGHT
         beq right_collision
-            ; lda #(256-8)
             ; check for left collision
             cpx #8
             bne mushroom_collision ; no wall collision here
             jmp lr_collision
         right_collision:
-            ; lda #8
             ; check for right collision
             cpx #240
             bne mushroom_collision ; no wall collision here
