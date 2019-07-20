@@ -2,6 +2,7 @@
 .include "constants.inc"
 .include "arrow.inc"
 .include "player.inc"
+.include "board.inc"
 
 .segment "BSS"
 ; Game variables
@@ -37,6 +38,12 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     rts
 .endproc
 
+.proc arrow_step
+    jsr arrow_move
+    jsr arrow_collide
+    rts
+.endproc
+
 .proc arrow_move
     lda #MASK_ACTIVE
     bit arrow_f
@@ -48,10 +55,44 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
         sta arrow_y
         bcs :+
             lda #MASK_ACTIVE
-            eor #%11111111 ; not
+            not
             and arrow_f
             sta arrow_f
     :
+    rts
+.endproc
+
+.proc arrow_collide
+    lda #MASK_ACTIVE
+    bit arrow_f
+    beq done_collision
+    lda arrow_y
+    and #$07
+    ; bne done_collision
+        lda arrow_x
+        lsr a
+        lsr a
+        lsr a ; divide x by 8
+        tax
+        lda arrow_y
+        lsr a
+        lsr a
+        lsr a ; divide y by 8
+        tay
+        jsr board_xy_to_addr
+        jsr board_xy_to_nametable
+        jsr board_get_value
+        cmp #0
+        beq done_collision ; no mushroom -> no collision
+        ; collision -> "destroy" arrow, "reduce" mushroom
+        sub #1
+        jsr board_set_value
+        jsr board_update_background
+        lda #MASK_ACTIVE
+        not
+        and arrow_f
+        sta arrow_f
+    done_collision:
     rts
 .endproc
 
@@ -60,7 +101,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     bit arrow_f
     bne :+
         ; arrow inactive
-        lda #0
+        lda #$F0
         sta $0208
         sta $0209
         sta $020A

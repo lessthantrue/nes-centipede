@@ -11,6 +11,7 @@ REFACTORING:
  \ split move_centipede and collide_centipede?
  \ transpose centipede data structure (list of struct -> struct of list)
  \ for centipede map, temp store segment in a ZP variable, then write back after function
+ * start using oam_used for sprite memory management
 
 DEVELOPMENT:
  \ move and properly draw multiple centipede segments
@@ -22,8 +23,8 @@ DEVELOPMENT:
  * add centipede <-> arrow collision
    * kill centipede segment that was hit, set previous segment to head
  * create mushrooms on centipede death
- * add mushroom <-> arrow collision
- * reduce(?) mushrooms on hit
+ \ add mushroom <-> arrow collision
+ \ reduce(?) mushrooms on hit
  * add centipede <-> player collision
  * create proper sprite for arrow
  * compress player to 1 sprite
@@ -39,3 +40,6 @@ PROJECT MANAGEMENT:
  \ Double check and delete bg.s
  * set up releases with built .NES file
  * online demo with JSNES
+
+BUGS:
+  * weird things sometimes happen when hitting mushrooms

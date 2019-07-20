@@ -85,7 +85,7 @@ forever:
   ; Game logic
   jsr read_pads
   jsr player_move
-  jsr arrow_move
+  jsr arrow_step
   jsr centipede_step
 
   ; The first entry in OAM (indices 0-3) is "sprite 0".  In games
@@ -95,9 +95,6 @@ forever:
   ldx #4
   stx oam_used
   ; adds to oam_used
-  ;jsr draw_player_sprite
-  ;ldx oam_used
-  ;jsr ppu_clear_oam
 
 
   ; Good; we have the full screen ready.  Wait for a vertical blank

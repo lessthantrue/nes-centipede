@@ -4,7 +4,8 @@
 .include "board.inc"
 
 .segment "ZEROPAGE"
-boardaddr:      .res 2 ; little-endian
+boardaddr:      .res 2
+ntaddr:         .res 2
 
 .segment "BSS"
 seed:       .res 2 ; doesn't matter what's here, so long as it's not zero
@@ -22,6 +23,43 @@ board:      .res (WIDTH * HEIGHT)
     rts
 .endproc
 
+.proc reset_ntaddr
+    pha
+    lda #((30 - HEIGHT - 1) * WIDTH)
+    sta ntaddr
+    lda #$20
+    sta ntaddr + 1
+    pla
+    rts
+.endproc
+
+; expects x, y registers to hold x, y location
+; returns address of nametable index in ntaddr
+.proc board_xy_to_nametable
+    push_registers
+
+    jsr reset_ntaddr ; low byte of ntaddr is always 0
+    txa ; a = x + (y + 30 - HEIGHT) * width
+    add ntaddr
+    bcc :+
+        inc ntaddr + 1
+    :
+    cpy #0
+    beq no_mult_y
+    mult_y:
+        add #WIDTH
+        bcc :+
+            inc ntaddr + 1
+        :
+        dey
+        bne mult_y
+    no_mult_y:
+    sta ntaddr
+
+    pull_registers
+    rts
+.endproc
+
 ; expects x, y registers to hold x, y location
 ; returns address of index in boardaddr
 .proc board_xy_to_addr
@@ -29,16 +67,14 @@ board:      .res (WIDTH * HEIGHT)
 
     jsr reset_boardaddr
     txa ; a = boardaddr + x + y * width
-    clc
-    adc boardaddr
+    add boardaddr
     bcc :+
         inc boardaddr + 1
     :
     cpy #0
     beq no_mult_y
     mult_y:
-        clc
-        adc #WIDTH
+        add #WIDTH
         bcc :+
             inc boardaddr + 1
         :
@@ -59,11 +95,24 @@ board:      .res (WIDTH * HEIGHT)
     rts
 .endproc
 
-; expects x, y registers to hold x, y locations of new mushroom
+; sets board state at boardaddr to a
 ; fucks over X register
 .proc board_set_value
     ldx #0 ; needed for pre-indexed indirect mode
     sta (boardaddr, x)
+    rts
+.endproc
+
+; updates the background at ntaddr with the value in boardaddr
+.proc board_update_background
+    lda ntaddr+1
+    sta PPUADDR
+    lda ntaddr
+    sta PPUADDR ; PPU is opposite endian of the CPU
+    jsr board_get_value ; byte at boardaddr in a
+    and #$07 ; get mushroom growth level
+    add #$60 ; convert to sprite index
+    sta PPUDATA ; set background at ntaddr to that
     rts
 .endproc
 
@@ -147,34 +196,17 @@ board:      .res (WIDTH * HEIGHT)
 .proc board_draw
     ; Start by clearing the first nametable
     ldx #$20
-    lda #$00
+    lda #00
     ldy #$AA
     jsr ppu_clear_nt
 
     lda #$20
     sta PPUADDR
-    lda #$00
+    lda #((30 - HEIGHT - 1) * WIDTH)
     sta PPUADDR
     lda #%10000000
     sta PPUCTRL
 
-    ; above board (score, lives, level, etc)
-    ldy #(30 - HEIGHT) - 1
-    lda #$00
-    header_loop:
-        ldx #WIDTH
-        :
-            sta PPUDATA
-            dex
-            bne :-
-        dey
-        bne header_loop
-
-    ; board
-    ; lda #$20
-    ; sta PPUADDR
-    ; lda #((30 - HEIGHT) * 16) ; seek to start of board, in case something fucked up
-    ; sta PPUADDR
     jsr reset_boardaddr
     ldy #HEIGHT
     y_loop_2:

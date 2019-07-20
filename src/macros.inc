@@ -51,3 +51,14 @@
     clc
     adc oper
 .endmacro
+
+; subtract WITHOUT carry
+.macro sub oper
+    sec
+    sbc oper
+.endmacro
+
+; inverts register a
+.macro not
+    eor #%11111111
+.endmacro
