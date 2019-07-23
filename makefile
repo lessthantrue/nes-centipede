@@ -10,15 +10,13 @@
 #
 
 # These are used in the title of the NES program and the zip file.
-title = nrom-template
-version = 0.05
+title = centipede
+version = 0.1
 
 # Space-separated list of assembly language files that make up the
 # PRG ROM.  If it gets too long for one line, you can add a backslash
 # (the \ character) at the end of the line and continue on the next.
-objlist = nrom init main board player arrow centipede board \
-pads ppuclear
-
+objlist = nrom collision init main board player arrow centipede board pads ppuclear
 
 AS65 = ca65
 LD65 = ld65

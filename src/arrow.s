@@ -120,3 +120,9 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     sta $020B
     rts
 .endproc
+
+.proc arrow_load_collision
+    ldx arrow_x
+    ldy arrow_y
+    rts
+.endproc

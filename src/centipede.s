@@ -2,6 +2,8 @@
 .include "constants.inc"
 .include "board.inc"
 .include "centipede.inc"
+.include "collision.inc"
+.include "arrow.inc"
 
 .struct centipede
     xcord       .byte
@@ -10,6 +12,10 @@
     lastDir     .byte
     flags       .byte ; head, has_initialized_prev, alive, 
 .endstruct
+
+SEGMENT_FLAG_HEAD  = %10000000
+SEGMENT_FLAG_INIT  = %01000000
+SEGMENT_FLAG_ALIVE = %00100000
 
 .macro map_segment fname
     pha
@@ -75,6 +81,8 @@ segment_ys          :   .res CENTIPEDE_LEN
 segment_dirs        :   .res CENTIPEDE_LEN
 segment_lastDirs    :   .res CENTIPEDE_LEN
 segment_flags       :   .res CENTIPEDE_LEN
+
+SEGMENT_WIDTH = 8
 
 DIR_RIGHT =     %00000001
 DIR_LEFT =      %00000010
@@ -155,7 +163,7 @@ SPEED = 1
             bne done_collision ; only check on pixel multiples of 8
             ; set direction to inverted last direction
             lda map_elem+centipede::lastDir
-            eor #%11111111 ; xor(x, 1) = not(x)
+            not
             and #%00000011
             sta map_elem+centipede::dir
             ; lastDir is only used in the down collision case, so we don't need to update it here
@@ -232,28 +240,62 @@ SPEED = 1
     rts
 .endproc
 
+.proc collide_arrow_segment
+    lda map_elem+centipede::xcord
+    sta collision_box1_l
+    add #SEGMENT_WIDTH
+    sta collision_box1_r
+    lda map_elem+centipede::ycord
+    sta collision_box1_t
+    add #SEGMENT_WIDTH
+    sta collision_box1_b
+    jsr arrow_load_collision
+    jsr collision_box1_contains
+    lda collision_ret
+    beq no_collision
+        lda #SEGMENT_FLAG_ALIVE
+        not
+        and map_elem+centipede::flags
+        sta map_elem+centipede::flags
+    no_collision:
+    rts
+.endproc
+
 .proc centipede_step
     map_segment collide_segment
     map_segment move_segment
+    map_segment collide_arrow_segment
     rts
 .endproc
 
 .proc draw_segment_sprite
-    lda map_elem+centipede::ycord
-    add #SPRITE_VERT_OFFSET ; re-align such that centipede zero equals top of board
-    sta $020C, x ; y placement
-    lda #$40
-    sta $020D, x
-    lda map_elem+centipede::dir
-    and #%00000110
-    asl a
-    asl a
-    asl a
-    asl a
-    asl a ; shift dir bits left 6 times, lines up perfectly with sprite mirroring
-    sta $020E, x
-    lda map_elem+centipede::xcord
-    sta $020F, x ; x placement
+    lda #SEGMENT_FLAG_ALIVE
+    bit map_elem+centipede::flags
+    bne :+
+        ; no draw
+        lda #$F0
+        sta $020C, x
+        sta $020D, x
+        sta $020E, x
+        sta $020F, x
+        jmp done_draw
+    :
+        lda map_elem+centipede::ycord
+        add #SPRITE_VERT_OFFSET ; re-align such that centipede zero equals top of board
+        sta $020C, x ; y placement
+        lda #$40
+        sta $020D, x
+        lda map_elem+centipede::dir
+        and #%00000110
+        asl a
+        asl a
+        asl a
+        asl a
+        asl a ; shift dir bits left 6 times, lines up perfectly with sprite mirroring
+        sta $020E, x
+        lda map_elem+centipede::xcord
+        sta $020F, x ; x placement
+    done_draw:
     inx
     inx
     inx

@@ -20,8 +20,9 @@ DEVELOPMENT:
    * directions drawn differently
      * Left/Right
      * Down
- * add centipede <-> arrow collision
-   * kill centipede segment that was hit, set previous segment to head
+ \ add centipede <-> arrow collision
+   \ kill centipede segment that was hit
+   * set previous segment to head
  * create mushrooms on centipede death
  \ add mushroom <-> arrow collision
  \ reduce(?) mushrooms on hit
