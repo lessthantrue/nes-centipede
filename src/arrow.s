@@ -44,6 +44,14 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     rts
 .endproc
 
+.proc arrow_del
+    lda #MASK_ACTIVE
+    not
+    and arrow_f
+    sta arrow_f
+    rts
+.endproc
+
 .proc arrow_move
     lda #MASK_ACTIVE
     bit arrow_f
@@ -54,10 +62,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
         sbc #SPEED
         sta arrow_y
         bcs :+
-            lda #MASK_ACTIVE
-            not
-            and arrow_f
-            sta arrow_f
+            jsr arrow_del
     :
     rts
 .endproc
@@ -88,10 +93,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
         sub #1
         jsr board_set_value
         jsr board_update_background
-        lda #MASK_ACTIVE
-        not
-        and arrow_f
-        sta arrow_f
+        jsr arrow_del
     done_collision:
     rts
 .endproc

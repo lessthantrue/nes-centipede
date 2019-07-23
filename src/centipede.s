@@ -257,6 +257,7 @@ SPEED = 1
         not
         and map_elem+centipede::flags
         sta map_elem+centipede::flags
+        jsr arrow_del
     no_collision:
     rts
 .endproc
