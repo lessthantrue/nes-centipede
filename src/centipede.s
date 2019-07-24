@@ -244,7 +244,7 @@ SPEED = 1
 .proc collide_arrow_segment
     lda #ARROW_FLAG_ACTIVE
     bit arrow_f
-    beq no_collision
+    beq no_collision ; no arrow -> no collision
     lda #SEGMENT_FLAG_ALIVE
     bit map_elem+centipede::flags
     bne :+
@@ -262,19 +262,29 @@ SPEED = 1
     jsr collision_box1_contains
     lda collision_ret
     beq no_collision
+        ; kill segment
         lda #SEGMENT_FLAG_ALIVE
         not
         and map_elem+centipede::flags
         sta map_elem+centipede::flags
         jsr arrow_del
+        ; place mushroom where segment was
+        ldx map_elem+centipede::xcord
+        ldy map_elem+centipede::ycord
+        jsr board_convert_sprite_xy
+        jsr board_xy_to_addr
+        jsr board_xy_to_nametable
+        lda #$04
+        jsr board_set_value
+        jsr board_update_background
     no_collision:
     rts
 .endproc
 
 .proc centipede_step
+    map_segment collide_arrow_segment
     map_segment collide_segment
     map_segment move_segment
-    map_segment collide_arrow_segment
     rts
 .endproc
 
