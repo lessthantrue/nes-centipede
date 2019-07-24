@@ -10,20 +10,18 @@ arrow_x:    .res 1
 arrow_y:    .res 1
 arrow_f:    .res 1 ; flags: active, ???
 
-MASK_ACTIVE = %10000000
-
 SPEED = 5 ; velocity in px/frame (everything will work as long as this is less than 8)
 
 .segment "CODE"
 
 .proc arrow_init
-    lda #MASK_ACTIVE
+    lda #ARROW_FLAG_ACTIVE
     sta arrow_f
     rts
 .endproc
 
 .proc arrow_launch
-    lda #MASK_ACTIVE
+    lda #ARROW_FLAG_ACTIVE
     bit arrow_f
     bne :+
         ; arrow not active
@@ -32,7 +30,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
         lda player_xhi
         sta arrow_x
         lda arrow_f
-        ora #MASK_ACTIVE
+        ora #ARROW_FLAG_ACTIVE
         sta arrow_f
     :
     rts
@@ -45,7 +43,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
 .endproc
 
 .proc arrow_del
-    lda #MASK_ACTIVE
+    lda #ARROW_FLAG_ACTIVE
     not
     and arrow_f
     sta arrow_f
@@ -53,7 +51,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
 .endproc
 
 .proc arrow_move
-    lda #MASK_ACTIVE
+    lda #ARROW_FLAG_ACTIVE
     bit arrow_f
     beq :+
         ; arrow active
@@ -68,22 +66,15 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
 .endproc
 
 .proc arrow_collide
-    lda #MASK_ACTIVE
+    lda #ARROW_FLAG_ACTIVE
     bit arrow_f
     beq done_collision
     lda arrow_y
     and #$07
     ; bne done_collision
-        lda arrow_x
-        lsr a
-        lsr a
-        lsr a ; divide x by 8
-        tax
-        lda arrow_y
-        lsr a
-        lsr a
-        lsr a ; divide y by 8
-        tay
+        ldx arrow_x
+        ldy arrow_y
+        jsr board_convert_sprite_xy
         jsr board_xy_to_addr
         jsr board_xy_to_nametable
         jsr board_get_value
@@ -99,7 +90,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
 .endproc
 
 .proc arrow_draw
-    lda #MASK_ACTIVE
+    lda #ARROW_FLAG_ACTIVE
     bit arrow_f
     bne :+
         ; arrow inactive

@@ -60,6 +60,24 @@ board:      .res (WIDTH * HEIGHT)
     rts
 .endproc
 
+; converts sprite coordinates (used by arrow, centipede, player) to background coordinates
+; expects x, y registers to hold sprite x, y location
+.proc board_convert_sprite_xy
+    pha
+    txa
+    lsr a
+    lsr a
+    lsr a
+    tax
+    tya
+    lsr a
+    lsr a
+    lsr a
+    tay
+    pla
+    rts
+.endproc
+
 ; expects x, y registers to hold x, y location
 ; returns address of index in boardaddr
 .proc board_xy_to_addr

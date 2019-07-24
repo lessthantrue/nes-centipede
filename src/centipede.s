@@ -64,6 +64,14 @@ SEGMENT_FLAG_ALIVE = %00100000
     :
 .endmacro
 
+.macro segment_exit_not_alive
+    lda #SEGMENT_FLAG_ALIVE
+    bit map_elem+centipede::flags
+    beq :+
+        rts
+    :
+.endmacro
+
 .segment "ZEROPAGE"
 
 map_iter :      .res 1
@@ -182,23 +190,16 @@ SPEED = 1
             bne mushroom_collision ; no wall collision here
             jmp lr_collision
         mushroom_collision:
-            lda map_elem+centipede::xcord
-            lsr a
-            lsr a
-            lsr a ; divide x by 8
-            ldy map_elem+centipede::dir
-            tax ; because we can't decrement A... asshats...
-            cpy #DIR_RIGHT
+            ldx map_elem+centipede::xcord
+            ldy map_elem+centipede::ycord
+            jsr board_convert_sprite_xy
+            lda map_elem+centipede::dir
+            cmp #DIR_RIGHT
             beq :+
                 dex
                 dex ; check one space to the left
             :
             inx ; check one space to the right
-            lda map_elem+centipede::ycord
-            lsr a
-            lsr a
-            lsr a ; divide y by 8
-            tay
             jsr board_xy_to_addr
             jsr board_get_value
             cmp #0
@@ -241,6 +242,14 @@ SPEED = 1
 .endproc
 
 .proc collide_arrow_segment
+    lda #ARROW_FLAG_ACTIVE
+    bit arrow_f
+    beq no_collision
+    lda #SEGMENT_FLAG_ALIVE
+    bit map_elem+centipede::flags
+    bne :+
+        jmp no_collision
+    :
     lda map_elem+centipede::xcord
     sta collision_box1_l
     add #SEGMENT_WIDTH
