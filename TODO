@@ -27,9 +27,9 @@ DEVELOPMENT:
  \ add mushroom <-> arrow collision
  \ reduce(?) mushrooms on hit
  * add centipede <-> player collision
- * create proper sprite for arrow
- * compress player to 1 sprite
- * create proper sprite for player
+ \ create proper sprite for arrow
+ \ compress player to 1 sprite
+ \ create proper sprite for player
  * Fix all the color palettes
  * animate centipede
 
