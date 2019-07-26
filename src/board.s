@@ -38,7 +38,7 @@ board:      .res (WIDTH * HEIGHT)
 .proc board_xy_to_nametable
     push_registers
 
-    jsr reset_ntaddr ; low byte of ntaddr is always 0
+    jsr reset_ntaddr 
     txa ; a = x + (y + 30 - HEIGHT) * width
     add ntaddr
     bcc :+

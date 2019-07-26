@@ -28,6 +28,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
         lda player_yhi
         sta arrow_y
         lda player_xhi
+        adc #2
         sta arrow_x
         lda arrow_f
         ora #ARROW_FLAG_ACTIVE
@@ -71,7 +72,6 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     beq done_collision
     lda arrow_y
     and #$07
-    ; bne done_collision
         ldx arrow_x
         ldy arrow_y
         jsr board_convert_sprite_xy
@@ -105,7 +105,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     lda arrow_y
     add #SPRITE_VERT_OFFSET
     sta $0208
-    lda #$04
+    lda #$30
     sta $0209
     lda #0
     sta $020A

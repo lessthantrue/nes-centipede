@@ -17,7 +17,48 @@ SEGMENT_FLAG_HEAD  = %10000000
 SEGMENT_FLAG_INIT  = %01000000
 SEGMENT_FLAG_ALIVE = %00100000
 
-.macro map_segment fname
+.macro segment_exit_not_alive
+    lda #SEGMENT_FLAG_ALIVE
+    bit map_elem+centipede::flags
+    beq :+
+        rts
+    :
+.endmacro
+
+.segment "ZEROPAGE"
+
+map_iter :      .res 1
+map_elem :      .tag centipede
+map_fn:         .res 2
+
+STRUCTSIZE = centipede::flags+1
+
+CENTIPEDE_LEN = 8
+CENTIPEDE_INIT_X = $00
+CENTIPEDE_INIT_Y = $00
+
+centipede_segments  :   .res 1
+segment_xs          :   .res CENTIPEDE_LEN
+segment_ys          :   .res CENTIPEDE_LEN
+segment_dirs        :   .res CENTIPEDE_LEN
+segment_lastDirs    :   .res CENTIPEDE_LEN
+segment_flags       :   .res CENTIPEDE_LEN
+
+SEGMENT_WIDTH = 8
+
+DIR_RIGHT =     %00000001
+DIR_LEFT =      %00000010
+DIR_DOWN =      %00000100
+
+SPEED = 1
+
+.segment "CODE"
+
+.proc call_indirect
+    jmp (map_fn) ; wierd hack
+.endproc
+
+.proc map_segment
     pha
     lda centipede_segments
     sta map_iter ; reset counter
@@ -42,7 +83,7 @@ SEGMENT_FLAG_ALIVE = %00100000
         ; call function
         tya
         pha ; preserve y register
-        jsr fname
+        jsr call_indirect
         pla
         tay ; restore register
 
@@ -62,43 +103,8 @@ SEGMENT_FLAG_ALIVE = %00100000
         iny
         jmp :-
     :
-.endmacro
-
-.macro segment_exit_not_alive
-    lda #SEGMENT_FLAG_ALIVE
-    bit map_elem+centipede::flags
-    beq :+
-        rts
-    :
-.endmacro
-
-.segment "ZEROPAGE"
-
-map_iter :      .res 1
-map_elem :      .tag centipede
-
-STRUCTSIZE = centipede::flags+1
-
-CENTIPEDE_LEN = 8
-CENTIPEDE_INIT_X = $00
-CENTIPEDE_INIT_Y = $00
-
-centipede_segments  :   .res 1
-segment_xs          :   .res CENTIPEDE_LEN
-segment_ys          :   .res CENTIPEDE_LEN
-segment_dirs        :   .res CENTIPEDE_LEN
-segment_lastDirs    :   .res CENTIPEDE_LEN
-segment_flags       :   .res CENTIPEDE_LEN
-
-SEGMENT_WIDTH = 8
-
-DIR_RIGHT =     %00000001
-DIR_LEFT =      %00000010
-DIR_DOWN =      %00000100
-
-SPEED = 1
-
-.segment "CODE"
+    rts
+.endproc
 
 .proc centipede_init
     lda #0
@@ -125,14 +131,14 @@ SPEED = 1
     sta segment_lastDirs, x
 
     ; setting flags is a bit more involved
-    lda #%00100000
+    lda #SEGMENT_FLAG_ALIVE
     ldy centipede_segments
     bne :+ ; not head
-        ora #%10000000
+        ora #SEGMENT_FLAG_HEAD
     :
     cpy #CENTIPEDE_LEN
     bne :+ ; not tail
-        ora #%01000000
+        ora #SEGMENT_FLAG_INIT
     :
     sta segment_flags, x
     inc centipede_segments
@@ -175,7 +181,6 @@ SPEED = 1
             and #%00000011
             sta map_elem+centipede::dir
             ; lastDir is only used in the down collision case, so we don't need to update it here
-            ; jmp done_collision
         not_down:
         ldx map_elem+centipede::xcord
         cmp #DIR_RIGHT
@@ -282,13 +287,18 @@ SPEED = 1
 .endproc
 
 .proc centipede_step
-    map_segment collide_arrow_segment
-    map_segment collide_segment
-    map_segment move_segment
+    st_addr collide_arrow_segment, map_fn
+    jsr map_segment
+    st_addr collide_segment, map_fn
+    jsr map_segment
+    st_addr move_segment, map_fn
+    jsr map_segment
     rts
 .endproc
 
 .proc draw_segment_sprite
+    tya
+    pha
     lda #SEGMENT_FLAG_ALIVE
     bit map_elem+centipede::flags
     bne :+
@@ -303,10 +313,28 @@ SPEED = 1
         lda map_elem+centipede::ycord
         add #SPRITE_VERT_OFFSET ; re-align such that centipede zero equals top of board
         sta $020C, x ; y placement
-        lda #$40
+        ; anchor sprite is $10 
+        ; add 16 for downwards
+        lda map_elem+centipede::dir
+        cmp #DIR_DOWN
+        beq :+
+            lda #$10
+            jmp :++
+        :
+            lda #$20
+        :
+        tay
+        ; add 1 if head
+        lda #SEGMENT_FLAG_HEAD
+        bit map_elem+centipede::flags
+        beq :+
+            ; flag is set
+            iny
+        :
+        tya
         sta $020D, x
         lda map_elem+centipede::dir
-        and #%00000110
+        and #%00000010
         asl a
         asl a
         asl a
@@ -320,11 +348,14 @@ SPEED = 1
     inx
     inx
     inx ; add 4 to x
+    pla
+    tay
     rts
 .endproc
 
 .proc centipede_draw
     ldx #0
-    map_segment draw_segment_sprite
+    st_addr draw_segment_sprite, map_fn
+    jsr map_segment
     rts
 .endproc

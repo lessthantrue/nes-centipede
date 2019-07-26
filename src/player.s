@@ -144,18 +144,12 @@ doneTopCollision:
   lda player_yhi
   add #SPRITE_VERT_OFFSET
   sta $0200 ;sprite Y
-  sta $0204
-  lda #$10 ;sprite number 16
-  sta $0201 ;sprite tile number
-  sta $0205
+  lda #$31 ;sprite tile number
+  sta $0201
   lda #%00000000
   sta $0202 ;sprite attributes
-  lda #%01000000
-  sta $0206
   lda player_xhi
   sta $0203 ;sprite X
-  adc #$07
-  sta $0207
   rts
 .endproc
 

@@ -1,6 +1,6 @@
 \ : Complete
 * : Not Yet
-x : will not do
+x : Will not / can not do
 
 REFACTORING:
  \ make a preserve/restore all registers macro
@@ -15,11 +15,11 @@ REFACTORING:
 
 DEVELOPMENT:
  \ move and properly draw multiple centipede segments
- * create proper centipede sprites
-   * head drawn differently from body
-   * directions drawn differently
-     * Left/Right
-     * Down
+ \ create proper centipede sprites
+   \ head drawn differently from body
+   \ directions drawn differently
+     \ Left/Right
+     \ Down
  \ add centipede <-> arrow collision
    \ kill centipede segment that was hit
    * set previous segment to head
@@ -44,3 +44,4 @@ PROJECT MANAGEMENT:
 
 BUGS:
   * weird things sometimes happen when hitting mushrooms
+  * weird things sometimes happen when hitting the centipede
