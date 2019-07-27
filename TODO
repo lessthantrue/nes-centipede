@@ -11,7 +11,7 @@ REFACTORING:
  \ split move_centipede and collide_centipede?
  \ transpose centipede data structure (list of struct -> struct of list)
  \ for centipede map, temp store segment in a ZP variable, then write back after function
- * start using oam_used for sprite memory management
+ \ start using oam_used for sprite memory management
  * increase player speed (requires changing location representation)
 
 DEVELOPMENT:
