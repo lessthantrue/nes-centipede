@@ -14,12 +14,11 @@
 .include "board.inc"
 .include "centipede.inc"
 .include "player.inc"
-
-OAM = $0200
+.include "macros.inc"
+.include "spritegfx.inc"
 
 .segment "ZEROPAGE"
 nmis:          .res 1
-oam_used:      .res 1  ; starts at 0
 cur_keys:      .res 2
 new_keys:      .res 2
 
@@ -31,22 +30,15 @@ new_keys:      .res 2
 ; than usual.  These might include music or a scroll split.  In these
 ; cases, you'll need to put more logic into the NMI handler.
 .proc nmi_handler
-  pha
-  txa
-  pha
-  tya
-  pha ; preserve registers
+  push_registers
 
   inc nmis
+  jsr spritegfx_reset
   jsr player_draw
   jsr arrow_draw
   jsr centipede_draw
 
-  pla
-  tay
-  pla
-  tax
-  pla ; restore registers
+  pull_registers
   rti
 .endproc
 
@@ -87,14 +79,6 @@ forever:
   jsr player_move
   jsr arrow_step
   jsr centipede_step
-
-  ; The first entry in OAM (indices 0-3) is "sprite 0".  In games
-  ; with a scrolling playfield and a still status bar, it's used to
-  ; help split the screen.  This demo doesn't use scrolling, but
-  ; yours might, so I'm marking the first entry used anyway.  
-  ldx #4
-  stx oam_used
-  ; adds to oam_used
 
 
   ; Good; we have the full screen ready.  Wait for a vertical blank

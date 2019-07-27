@@ -4,6 +4,7 @@
 .include "constants.inc"
 .include "arrow.inc"
 .include "player.inc"
+.include "spritegfx.inc"
 
 .segment "BSS"
 ; Game variables
@@ -143,13 +144,14 @@ doneTopCollision:
 .proc player_draw
   lda player_yhi
   add #SPRITE_VERT_OFFSET
-  sta $0200 ;sprite Y
+  sta spritegfx_oam_arg+oam::ycord
   lda #$31 ;sprite tile number
-  sta $0201
+  sta spritegfx_oam_arg+oam::tile
   lda #%00000000
-  sta $0202 ;sprite attributes
+  sta spritegfx_oam_arg+oam::flags ;sprite attributes
   lda player_xhi
-  sta $0203 ;sprite X
+  sta spritegfx_oam_arg+oam::xcord ;sprite X
+  jsr spritegfx_load_oam
   rts
 .endproc
 

@@ -3,6 +3,7 @@
 .include "arrow.inc"
 .include "player.inc"
 .include "board.inc"
+.include "spritegfx.inc"
 
 .segment "BSS"
 ; Game variables
@@ -95,22 +96,21 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     bne :+
         ; arrow inactive
         lda #$F0
-        sta $0208
-        sta $0209
-        sta $020A
-        sta $020B
-        rts
+        sta spritegfx_oam_arg+oam::ycord
+        jmp :++
     :
-    ; arrow active
-    lda arrow_y
-    add #SPRITE_VERT_OFFSET
-    sta $0208
+        ; arrow active
+        lda arrow_y
+        add #SPRITE_VERT_OFFSET
+        sta spritegfx_oam_arg+oam::ycord
+    :
     lda #$30
-    sta $0209
+    sta spritegfx_oam_arg+oam::tile
     lda #0
-    sta $020A
+    sta spritegfx_oam_arg+oam::flags
     lda arrow_x
-    sta $020B
+    sta spritegfx_oam_arg+oam::xcord
+    jsr spritegfx_load_oam
     rts
 .endproc
 

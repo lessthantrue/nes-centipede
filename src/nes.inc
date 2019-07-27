@@ -38,6 +38,7 @@ TINT_B = $80
 
 PPUSTATUS = $2002
 OAMADDR = $2003
+OAM = $0200
 ; Don't worry about $2004; let OAM_DMA do the work for you.
 PPUSCROLL = $2005
 PPUADDR = $2006

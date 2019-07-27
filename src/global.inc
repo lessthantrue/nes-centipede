@@ -6,7 +6,6 @@
 
 ; main.s
 .global main, nmi_handler, irq_handler
-.global OAM
 .globalzp cur_keys, new_keys, oam_used
 
 ; ppuclear.s

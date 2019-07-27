@@ -4,6 +4,7 @@
 .include "centipede.inc"
 .include "collision.inc"
 .include "arrow.inc"
+.include "spritegfx.inc"
 
 .struct centipede
     xcord       .byte
@@ -297,22 +298,17 @@ SPEED = 1
 .endproc
 
 .proc draw_segment_sprite
-    tya
-    pha
     lda #SEGMENT_FLAG_ALIVE
     bit map_elem+centipede::flags
     bne :+
         ; no draw
         lda #$F0
-        sta $020C, x
-        sta $020D, x
-        sta $020E, x
-        sta $020F, x
-        jmp done_draw
+        jmp :++
     :
         lda map_elem+centipede::ycord
         add #SPRITE_VERT_OFFSET ; re-align such that centipede zero equals top of board
-        sta $020C, x ; y placement
+    :
+        sta spritegfx_oam_arg+oam::ycord
         ; anchor sprite is $10 
         ; add 16 for downwards
         lda map_elem+centipede::dir
@@ -323,16 +319,16 @@ SPEED = 1
         :
             lda #$20
         :
-        tay
+        tax
         ; add 1 if head
         lda #SEGMENT_FLAG_HEAD
         bit map_elem+centipede::flags
         beq :+
             ; flag is set
-            iny
+            inx
         :
-        tya
-        sta $020D, x
+        txa
+        sta spritegfx_oam_arg+oam::tile
         lda map_elem+centipede::dir
         and #%00000010
         asl a
@@ -340,16 +336,11 @@ SPEED = 1
         asl a
         asl a
         asl a ; shift dir bits left 6 times, lines up perfectly with sprite mirroring
-        sta $020E, x
+        sta spritegfx_oam_arg+oam::flags
         lda map_elem+centipede::xcord
-        sta $020F, x ; x placement
+        sta spritegfx_oam_arg+oam::xcord
+        jsr spritegfx_load_oam
     done_draw:
-    inx
-    inx
-    inx
-    inx ; add 4 to x
-    pla
-    tay
     rts
 .endproc
 
