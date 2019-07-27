@@ -6,7 +6,7 @@ REFACTORING:
  \ make a preserve/restore all registers macro
  \ move common macros (add_multiple, preserve/restore_registers, etc) to common file
  x move common procedures (are there any?) to common file (there were none)
- * compress centipede::dir and centipede::lastDir to one byte
+ \ compress centipede::dir and centipede::lastDir to one byte
  x move everything to individual modules (.inc files as interfaces instead)
  \ split move_centipede and collide_centipede?
  \ transpose centipede data structure (list of struct -> struct of list)
@@ -34,6 +34,8 @@ DEVELOPMENT:
  \ Fix all the color palettes
  * animate centipede
  * level advancement
+ * keep track of score, lives, etc
+   * draw status bar on background
  * sound
  * other enemies (snake, spider, bee, grasshopper)
 
@@ -50,3 +52,4 @@ BUGS:
   * weird things sometimes happen when drawing new mushroom background objects
     * Draws mushrooms one spot to the right of where they should bee
     * Does not occur on online demo?
+  * bg flickers on update

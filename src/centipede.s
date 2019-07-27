@@ -9,8 +9,7 @@
 .struct centipede
     xcord       .byte
     ycord       .byte
-    dir         .byte
-    lastDir     .byte
+    dir     .byte
     flags       .byte ; head, has_initialized_prev, alive, 
 .endstruct
 
@@ -42,7 +41,6 @@ centipede_segments  :   .res 1
 segment_xs          :   .res CENTIPEDE_LEN
 segment_ys          :   .res CENTIPEDE_LEN
 segment_dirs        :   .res CENTIPEDE_LEN
-segment_lastDirs    :   .res CENTIPEDE_LEN
 segment_flags       :   .res CENTIPEDE_LEN
 
 SEGMENT_WIDTH = 8
@@ -76,8 +74,6 @@ SPEED = 1
         sta map_elem+centipede::ycord
         lda segment_dirs, y
         sta map_elem+centipede::dir
-        lda segment_lastDirs, y
-        sta map_elem+centipede::lastDir
         lda segment_flags, y
         sta map_elem+centipede::flags
 
@@ -95,8 +91,6 @@ SPEED = 1
         sta segment_ys, y
         lda map_elem+centipede::dir
         sta segment_dirs, y
-        lda map_elem+centipede::lastDir
-        sta segment_lastDirs, y
         lda map_elem+centipede::flags
         sta segment_flags, y
 
@@ -129,7 +123,6 @@ SPEED = 1
     sta segment_ys, x
     lda #DIR_RIGHT
     sta segment_dirs, x
-    sta segment_lastDirs, x
 
     ; setting flags is a bit more involved
     lda #SEGMENT_FLAG_ALIVE
@@ -171,17 +164,21 @@ SPEED = 1
         :
         ; on a grid position, do collision checks
         lda map_elem+centipede::dir
+        and #$0F
         cmp #DIR_DOWN
         bne not_down ; need special logic when moving down that doesn't involve collisions
             lda #%00000111
             bit map_elem+centipede::ycord
             bne done_collision ; only check on pixel multiples of 8
-            ; set direction to inverted last direction
-            lda map_elem+centipede::lastDir
+            ; set direction to inverted last direction (stored in high nibble)
+            lda map_elem+centipede::dir
+            lsr
+            lsr
+            lsr
+            lsr
             not
             and #%00000011
             sta map_elem+centipede::dir
-            ; lastDir is only used in the down collision case, so we don't need to update it here
         not_down:
         ldx map_elem+centipede::xcord
         cmp #DIR_RIGHT
@@ -213,8 +210,11 @@ SPEED = 1
         lr_collision:
             ; save last direction, set new direction to down
             lda map_elem+centipede::dir
-            sta map_elem+centipede::lastDir
-            lda #DIR_DOWN
+            asl
+            asl
+            asl
+            asl
+            ora #DIR_DOWN
             sta map_elem+centipede::dir
     done_collision:
     rts
@@ -222,6 +222,7 @@ SPEED = 1
 
 .proc move_segment
     lda map_elem+centipede::dir
+    and #$0F
     cmp #DIR_DOWN
     beq move_down
         cmp #DIR_LEFT
@@ -312,6 +313,7 @@ SPEED = 1
         ; anchor sprite is $10 
         ; add 16 for downwards
         lda map_elem+centipede::dir
+        and #$0F
         cmp #DIR_DOWN
         beq :+
             lda #$10
