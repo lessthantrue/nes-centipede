@@ -33,6 +33,7 @@ DEVELOPMENT:
  \ Fix all the color palettes
  * animate centipede
  * level advancement
+ * sound
  * other enemies (snake, spider, bee, grasshopper)
 
 PROJECT MANAGEMENT:
@@ -42,10 +43,9 @@ PROJECT MANAGEMENT:
  \ Put on Github
  \ Double check and delete bg.s
  * set up releases with built .NES file
- * online demo with JSNES
+ \ online demo with JSNES
 
 BUGS:
-  * weird things sometimes happen when hitting mushrooms
-  * weird things sometimes happen when hitting the centipede
+  * weird things sometimes happen when drawing new mushroom background objects
     * Draws mushrooms one spot to the right of where they should bee
     * Does not occur on online demo?
