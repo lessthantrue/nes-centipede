@@ -47,3 +47,5 @@ PROJECT MANAGEMENT:
 BUGS:
   * weird things sometimes happen when hitting mushrooms
   * weird things sometimes happen when hitting the centipede
+    * Draws mushrooms one spot to the right of where they should bee
+    * Does not occur on online demo?

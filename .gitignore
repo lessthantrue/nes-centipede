@@ -1,7 +1,6 @@
 *.sw[a-p]
 *.o
 *~
-*.chr
 /obj/nes/*.s
 /zip.in
 *.nes.deb

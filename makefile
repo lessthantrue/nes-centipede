@@ -81,6 +81,10 @@ zip.in:
 clean:
 	-rm $(objdir)/*.o $(objdir)/*.s
 
+# in case the object folder gets deleted
+$(objdir):
+	mkdir -p $@
+
 # Rules for PRG ROM
 
 objlistntsc = $(foreach o,$(objlist),$(objdir)/$(o).o)
@@ -88,7 +92,7 @@ objlistntsc = $(foreach o,$(objlist),$(objdir)/$(o).o)
 map.txt $(title).nes: nrom128.cfg $(objlistntsc)
 	$(LD65) -o $(title).nes -m map.txt -C $^
 
-$(objdir)/%.o: $(srcdir)/%.s $(srcdir)/nes.inc $(srcdir)/global.inc
+$(objdir)/%.o: $(srcdir)/%.s $(srcdir)/nes.inc $(srcdir)/global.inc | $(objdir)
 	$(AS65) $(CFLAGS65) $< -o $@
 
 $(objdir)/%.o: $(objdir)/%.s
