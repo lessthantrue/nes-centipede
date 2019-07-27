@@ -30,8 +30,10 @@ DEVELOPMENT:
  \ create proper sprite for arrow
  \ compress player to 1 sprite
  \ create proper sprite for player
- * Fix all the color palettes
+ \ Fix all the color palettes
  * animate centipede
+ * level advancement
+ * other enemies (snake, spider, bee, grasshopper)
 
 PROJECT MANAGEMENT:
  \ Update README

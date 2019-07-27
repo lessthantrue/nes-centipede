@@ -137,9 +137,14 @@ copypalloop:
 .endproc
 
 .segment "RODATA"
+COLOR_BG = $0F
 initial_palette:
-  .byt $00,$30,$06,$09,$0F,$06,$0D,$0D,$0F,$30,$06,$1A,$0F,$02,$12,$21
-  .byt $0D,$30,$16,$37,$0F,$06,$16,$26,$0D,$30,$06,$1A,$0F,$02,$12,$21
+  ; background color
+  .byt $0F
+  ; background palette (3B each, each 4th byte unused, should be set to bg color)
+  .byt $30,$06,$09,$0F,$06,$0D,$0D,$0F,$30,$06,$1A,$0F,$02,$12,$21,$0F
+  ; sprite palette (3B each, each 4th byte unused)
+  .byt $16,$20,$1A,$0F,$0F,$06,$16,$0F,$0D,$30,$06,$0F,$0F,$02,$12
 
 ; Include the CHR ROM data
 .segment "CHR"
