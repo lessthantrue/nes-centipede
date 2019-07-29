@@ -13,12 +13,9 @@ player_xhi:       .res 1
 player_ylo:       .res 1
 player_yhi:       .res 1
 
-; constants used by move_player
-; PAL frames are about 20% longer than NTSC frames.  So if you make
-; dual NTSC and PAL versions, or you auto-adapt to the TV system,
-; you'll want PAL velocity values to be 1.2 times the corresponding
-; NTSC values, and PAL accelerations should be 1.44 times NTSC.
-SPEED = 255 ; speed limit in 1/256 px/frame
+; speed in total is 1.5 px/frame
+SPEED_LO = 128 ; speed in 1/256 px/frame
+SPEED_HI = 1   ; speed in px/frame
 
 TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
 
@@ -43,13 +40,15 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
   and #KEY_RIGHT
   beq notRight
     ; Right is pressed. Add to position.
-    clc
     lda player_xlo
-    adc #SPEED
+    add #SPEED_LO
     bcc :+
       inc player_xhi
     :
     sta player_xlo
+    lda player_xhi
+    add #SPEED_HI
+    sta player_xhi
   notRight:
 
   ; left
@@ -58,12 +57,14 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
   beq notLeft
     ; Left is pressed. Subtract from position.
     lda player_xlo
-    sec
-    sbc #SPEED
+    sub #SPEED_LO
     bcs :+
       dec player_xhi
     :
     sta player_xlo
+    lda player_xhi
+    sub #SPEED_HI
+    sta player_xhi
   notLeft:
 
   ; up
@@ -72,12 +73,14 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
   beq notUp
     ; Up is pressed. Subtract from position.
     lda player_ylo
-    sec
-    sbc #SPEED
+    sub #SPEED_LO
     bcs :+
       dec player_yhi
     :
     sta player_ylo
+    lda player_yhi
+    sub #SPEED_HI
+    sta player_yhi
   notUp:
 
   ; down
@@ -86,12 +89,14 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
   beq notDown
     ; Down is pressed. Subtract from position.
     lda player_ylo
-    clc
-    adc #SPEED
+    add #SPEED_LO
     bcc :+
       inc player_yhi
     :
     sta player_ylo
+    lda player_yhi
+    add #SPEED_HI
+    sta player_yhi
   notDown:
 
   ; a

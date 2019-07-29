@@ -3,16 +3,17 @@
 x : Will not / can not do
 
 REFACTORING:
- \ make a preserve/restore all registers macro
- \ move common macros (add_multiple, preserve/restore_registers, etc) to common file
- x move common procedures (are there any?) to common file (there were none)
- \ compress centipede::dir and centipede::lastDir to one byte
- x move everything to individual modules (.inc files as interfaces instead)
- \ split move_centipede and collide_centipede?
- \ transpose centipede data structure (list of struct -> struct of list)
- \ for centipede map, temp store segment in a ZP variable, then write back after function
- \ start using oam_used for sprite memory management
- * increase player speed (requires changing location representation)
+  \ make a preserve/restore all registers macro
+  \ move common macros (add_multiple, preserve/restore_registers, etc) to common file
+  x move common procedures (are there any?) to common file (there were none)
+  \ compress centipede::dir and centipede::lastDir to one byte
+  x move everything to individual modules (.inc files as interfaces instead)
+  \ split move_centipede and collide_centipede?
+  \ transpose centipede data structure (list of struct -> struct of list)
+  \ for centipede map, temp store segment in a ZP variable, then write back after function
+  \ start using oam_used for sprite memory management
+  \ increase player speed (requires changing location representation)
+  * split centipede file somehow (centipede / segment?)
 
 DEVELOPMENT:
  \ move and properly draw multiple centipede segments
@@ -52,4 +53,4 @@ BUGS:
   * weird things sometimes happen when drawing new mushroom background objects
     * Draws mushrooms one spot to the right of where they should bee
     * Does not occur on online demo?
-  * bg flickers on update
+  * bg flickers on PPU nametable update

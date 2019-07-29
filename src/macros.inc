@@ -62,3 +62,14 @@
 .macro not
     eor #%11111111
 .endmacro
+
+; clear bits in a memory location that are set in an argument
+; fucks register a
+.macro cla arg, bits
+    lda bits
+    not
+    and arg
+    sta arg
+.endmacro
+
+    

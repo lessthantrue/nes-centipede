@@ -13,9 +13,10 @@
     flags       .byte ; head, has_initialized_prev, alive, 
 .endstruct
 
-SEGMENT_FLAG_HEAD  = %10000000
-SEGMENT_FLAG_INIT  = %01000000
-SEGMENT_FLAG_ALIVE = %00100000
+SEGMENT_FLAG_HEAD       = %10000000
+SEGMENT_FLAG_INIT       = %01000000
+SEGMENT_FLAG_ALIVE      = %00100000
+SEGMENT_FLAG_HAS_TAIL   = %00010000 ; segment exists at index+1
 
 .macro segment_exit_not_alive
     lda #SEGMENT_FLAG_ALIVE
@@ -131,8 +132,13 @@ SPEED = 1
         ora #SEGMENT_FLAG_HEAD
     :
     cpy #CENTIPEDE_LEN
-    bne :+ ; not tail
+    bne :+ 
+        ; tail
         ora #SEGMENT_FLAG_INIT
+        jmp :++
+    :
+        ; not tail
+        ora #SEGMENT_FLAG_HAS_TAIL
     :
     sta segment_flags, x
     inc centipede_segments
@@ -249,6 +255,8 @@ SPEED = 1
 .endproc
 
 .proc collide_arrow_segment
+    tya
+    pha ; store segment index for later
     lda #ARROW_FLAG_ACTIVE
     bit arrow_f
     beq no_collision ; no arrow -> no collision
@@ -275,6 +283,19 @@ SPEED = 1
         and map_elem+centipede::flags
         sta map_elem+centipede::flags
         jsr arrow_del
+        ; set prev segment to head
+        lda #SEGMENT_FLAG_HAS_TAIL
+        bit map_elem+centipede::flags
+        beq :+
+            ; there is a segment at y+1
+            pla
+            tay
+            iny
+            ; set head flag
+            lda segment_flags, y
+            ora #SEGMENT_FLAG_HEAD
+            sta segment_flags, y
+        :
         ; place mushroom where segment was
         ldx map_elem+centipede::xcord
         ldy map_elem+centipede::ycord
