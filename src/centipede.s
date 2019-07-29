@@ -13,7 +13,6 @@
     flags       .byte ; head, has_initialized_prev, alive, 
 .endstruct
 
-SEGMENT_FLAG_HEAD       = %10000000
 SEGMENT_FLAG_INIT       = %01000000
 SEGMENT_FLAG_ALIVE      = %00100000
 SEGMENT_FLAG_HAS_TAIL   = %00010000 ; segment exists at index+1
@@ -123,9 +122,6 @@ SPEED = 1
     ; setting flags is a bit more involved
     lda #SEGMENT_FLAG_ALIVE
     ldy centipede_segments
-    bne :+ ; not head
-        ora #SEGMENT_FLAG_HEAD
-    :
     cpy #CENTIPEDE_LEN
     bne :+ 
         ; tail
@@ -280,17 +276,6 @@ SPEED = 1
         and map_elem+centipede::flags
         sta map_elem+centipede::flags
         jsr arrow_del
-        ; set prev segment to head
-        lda #SEGMENT_FLAG_HAS_TAIL
-        bit map_elem+centipede::flags
-        beq :+
-            ; there is a segment at y+1
-            iny
-            ; set head flag
-            lda segment_flags, y
-            ora #SEGMENT_FLAG_HEAD
-            sta segment_flags, y
-        :
         ; place mushroom where segment was
         ldx map_elem+centipede::xcord
         ldy map_elem+centipede::ycord
@@ -338,11 +323,14 @@ SPEED = 1
             lda #$20
         :
         sta spritegfx_oam_arg+oam::tile
-        ; add 1 if head
-        lda #SEGMENT_FLAG_HEAD
-        bit map_elem+centipede::flags
+        ; add 1 if head, or if next segment is not alive
+        cpy #0 ; y is 0 if first sesgment generated
         beq :+
-            ; flag is set
+        dey
+        lda segment_flags, y
+        and #SEGMENT_FLAG_ALIVE ; can't use bit because of addressing mode limitations
+        bne :++
+        :
             inc spritegfx_oam_arg+oam::tile
         :
         lda map_elem+centipede::xcord

@@ -13,7 +13,7 @@ REFACTORING:
   \ for centipede map, temp store segment in a ZP variable, then write back after function
   \ start using oam_used for sprite memory management
   \ increase player speed (requires changing location representation)
-  * draw centipede head on next segment not alive, rather than a flag
+  \ draw centipede head on next segment not alive, rather than a flag
   * split centipede file somehow (centipede / segment?)
 
 DEVELOPMENT:
@@ -25,7 +25,6 @@ DEVELOPMENT:
       \ Down
   \ add centipede <-> arrow collision
     \ kill centipede segment that was hit
-    * set previous segment to head
   \ create mushrooms on centipede death
   \ add mushroom <-> arrow collision
   \ reduce(?) mushrooms on hit
