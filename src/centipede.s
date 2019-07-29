@@ -59,15 +59,10 @@ SPEED = 1
 .endproc
 
 .proc map_segment
-    pha
-    lda centipede_segments
-    sta map_iter ; reset counter
-    pla
     ldy #0 ; index
     :
-        dec map_iter
-        bmi :+
-
+        cpy centipede_segments
+        beq :+
         ; copy current segment to temp variable
         lda segment_xs, y
         sta map_elem+centipede::xcord
@@ -255,8 +250,6 @@ SPEED = 1
 .endproc
 
 .proc collide_arrow_segment
-    tya
-    pha ; store segment index for later
     lda #ARROW_FLAG_ACTIVE
     bit arrow_f
     beq no_collision ; no arrow -> no collision
@@ -273,8 +266,12 @@ SPEED = 1
     sta collision_box1_t
     add #SEGMENT_WIDTH
     sta collision_box1_b
+    tya
+    pha
     jsr arrow_load_collision
     jsr collision_box1_contains
+    pla
+    tay
     lda collision_ret
     beq no_collision
         ; kill segment
@@ -288,8 +285,6 @@ SPEED = 1
         bit map_elem+centipede::flags
         beq :+
             ; there is a segment at y+1
-            pla
-            tay
             iny
             ; set head flag
             lda segment_flags, y
@@ -342,16 +337,23 @@ SPEED = 1
         :
             lda #$20
         :
-        tax
+        sta spritegfx_oam_arg+oam::tile
         ; add 1 if head
         lda #SEGMENT_FLAG_HEAD
         bit map_elem+centipede::flags
         beq :+
             ; flag is set
-            inx
+            inc spritegfx_oam_arg+oam::tile
         :
-        txa
-        sta spritegfx_oam_arg+oam::tile
+        lda map_elem+centipede::xcord
+        lsr
+        lsr ; change animation state each 4 x pixels
+        and #%00000001
+        beq :+
+            ; add 2 for animation state 2
+            inc spritegfx_oam_arg+oam::tile
+            inc spritegfx_oam_arg+oam::tile
+        :
         lda map_elem+centipede::dir
         and #%00000010
         asl a

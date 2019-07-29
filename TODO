@@ -13,41 +13,42 @@ REFACTORING:
   \ for centipede map, temp store segment in a ZP variable, then write back after function
   \ start using oam_used for sprite memory management
   \ increase player speed (requires changing location representation)
+  * draw centipede head on next segment not alive, rather than a flag
   * split centipede file somehow (centipede / segment?)
 
 DEVELOPMENT:
- \ move and properly draw multiple centipede segments
- \ create proper centipede sprites
-   \ head drawn differently from body
-   \ directions drawn differently
-     \ Left/Right
-     \ Down
- \ add centipede <-> arrow collision
-   \ kill centipede segment that was hit
-   * set previous segment to head
- \ create mushrooms on centipede death
- \ add mushroom <-> arrow collision
- \ reduce(?) mushrooms on hit
- * add centipede <-> player collision
- \ create proper sprite for arrow
- \ compress player to 1 sprite
- \ create proper sprite for player
- \ Fix all the color palettes
- * animate centipede
- * level advancement
- * keep track of score, lives, etc
-   * draw status bar on background
- * sound
- * other enemies (snake, spider, bee, grasshopper)
+  \ move and properly draw multiple centipede segments
+  \ create proper centipede sprites
+    \ head drawn differently from body
+    \ directions drawn differently
+      \ Left/Right
+      \ Down
+  \ add centipede <-> arrow collision
+    \ kill centipede segment that was hit
+    * set previous segment to head
+  \ create mushrooms on centipede death
+  \ add mushroom <-> arrow collision
+  \ reduce(?) mushrooms on hit
+  * add centipede <-> player collision
+  \ create proper sprite for arrow
+  \ compress player to 1 sprite
+  \ create proper sprite for player
+  \ Fix all the color palettes
+  \ animate centipede
+  * keep track of score, lives, etc
+    * draw status bar on background
+  * level advancement
+  * sound
+  * other enemies (snake, spider, bee, grasshopper)
 
 PROJECT MANAGEMENT:
- \ Update README
-   \ Document change in graphics tools
- \ Remove old python tools for graphics
- \ Put on Github
- \ Double check and delete bg.s
- * set up releases with built .NES file
- \ online demo with JSNES
+  \ Update README
+    \ Document change in graphics tools
+  \ Remove old python tools for graphics
+  \ Put on Github
+  \ Double check and delete bg.s
+  * set up releases with built .NES file
+  \ online demo with JSNES
 
 BUGS:
   * weird things sometimes happen when drawing new mushroom background objects
