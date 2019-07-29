@@ -1,7 +1,7 @@
 CENTIPEDE NES
 =============
 
-This is a port of the arcade game "Centipede" to the Nintendo Entertainment System (NES)
+This is a port of the arcade game "Centipede" to the Nintendo Entertainment System (NES). A demo is available at https://lessthantrue.github.io/nes-centipede/
 
 Built off of the Nrom Template by Pinobatch (https://github.com/pinobatch/nrom-template). Most of the information in this README is copied directly from there.
 
