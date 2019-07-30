@@ -6,6 +6,8 @@
 .segment "ZEROPAGE"
 boardaddr:      .res 2
 ntaddr:         .res 2
+board_arg_x:    .res 1
+board_arg_y:    .res 1
 
 .segment "BSS"
 seed:       .res 2 ; doesn't matter what's here, so long as it's not zero
@@ -36,27 +38,22 @@ board:      .res (WIDTH * HEIGHT)
 ; expects x, y registers to hold x, y location
 ; returns address of nametable index in ntaddr
 .proc board_xy_to_nametable
-    push_registers
-
     jsr reset_ntaddr 
-    txa ; a = x + (y + 30 - HEIGHT) * width
-    add ntaddr
+    lda ntaddr ; a = x + (y + 30 - HEIGHT) * width
+    add board_arg_x
     bcc :+
         inc ntaddr + 1
     :
-    cpy #0
-    beq no_mult_y
     mult_y:
+        dec board_arg_y
+        bmi :++
         add #WIDTH
         bcc :+
             inc ntaddr + 1
         :
-        dey
-        bne mult_y
-    no_mult_y:
+        jmp mult_y
+    :
     sta ntaddr
-
-    pull_registers
     rts
 .endproc
 
@@ -68,12 +65,12 @@ board:      .res (WIDTH * HEIGHT)
     lsr a
     lsr a
     lsr a
-    tax
+    sta board_arg_x
     tya
     lsr a
     lsr a
     lsr a
-    tay
+    sta board_arg_y
     pla
     rts
 .endproc
@@ -81,27 +78,22 @@ board:      .res (WIDTH * HEIGHT)
 ; expects x, y registers to hold x, y location
 ; returns address of index in boardaddr
 .proc board_xy_to_addr
-    push_registers
-
     jsr reset_boardaddr
-    txa ; a = boardaddr + x + y * width
-    add boardaddr
+    lda boardaddr
+    add board_arg_x
     bcc :+
         inc boardaddr + 1
     :
-    cpy #0
-    beq no_mult_y
     mult_y:
+        dec board_arg_y
+        bmi :++
         add #WIDTH
         bcc :+
             inc boardaddr + 1
         :
-        dey
-        bne mult_y
-    no_mult_y:
+        jmp mult_y
+    :
     sta boardaddr
-
-    pull_registers
     rts
 .endproc      
 
@@ -123,6 +115,7 @@ board:      .res (WIDTH * HEIGHT)
 
 ; updates the background at ntaddr with the value in boardaddr
 .proc board_update_background
+    ;rts
     lda ntaddr+1
     sta PPUADDR
     lda ntaddr
@@ -180,10 +173,8 @@ board:      .res (WIDTH * HEIGHT)
         bne y_loop_2
     
     ; place pseudo-random mushrooms
-    ldx #30 ; number of mushrooms
+    ldy #30 ; number of mushrooms
     add_loop:
-        txa
-        pha
         jsr prng
         and #%00011111 ; clamp random value to 31
         cmp #HEIGHT - 5
@@ -191,7 +182,7 @@ board:      .res (WIDTH * HEIGHT)
             sec ; if random number was HEIGHT or greater, subtract HEIGHT
             sbc #HEIGHT - 5
         :
-        tay
+        sta board_arg_y
         ; repeat for x
         jsr prng
         and #%00011111 ; clamp random value to 31
@@ -200,13 +191,11 @@ board:      .res (WIDTH * HEIGHT)
             sec ; same clamping method for WIDTH
             sbc #WIDTH
         :
-        tax
+        sta board_arg_x
         jsr board_xy_to_addr
         lda #04
         jsr board_set_value
-        pla
-        tax
-        dex
+        dey
         bne add_loop
     rts
 .endproc

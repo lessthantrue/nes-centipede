@@ -196,10 +196,10 @@ SPEED = 1
             lda map_elem+centipede::dir
             cmp #DIR_RIGHT
             beq :+
-                dex
-                dex ; check one space to the left
+                dec board_arg_x
+                dec board_arg_x ; check one space to the left
             :
-            inx ; check one space to the right
+            inc board_arg_x ; check one space to the right
             jsr board_xy_to_addr
             jsr board_get_value
             cmp #0

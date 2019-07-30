@@ -71,12 +71,13 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     lda #ARROW_FLAG_ACTIVE
     bit arrow_f
     beq done_collision
-    lda arrow_y
-    and #$07
         ldx arrow_x
         ldy arrow_y
         jsr board_convert_sprite_xy
         jsr board_xy_to_addr
+        ldx arrow_x
+        ldy arrow_y
+        jsr board_convert_sprite_xy
         jsr board_xy_to_nametable
         jsr board_get_value
         cmp #0

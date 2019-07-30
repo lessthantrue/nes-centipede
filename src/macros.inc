@@ -12,6 +12,24 @@
     :
 .endmacro
 
+; adds const * mult to a 2 byte number
+; fucks X, A
+.macro add_multiple_short addr, const, mult
+    lda addr
+    ldx mult
+    :
+        cpx #0
+        beq :++
+        add const
+        bcc :+
+            inc addr+1
+        :
+        dex
+        jmp :--
+    :
+    sta addr
+.endmacro
+
 ; saves all registers on the stack
 .macro push_registers
     pha ; A
