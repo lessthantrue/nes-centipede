@@ -75,17 +75,14 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
         ldy arrow_y
         jsr board_convert_sprite_xy
         jsr board_xy_to_addr
-        ldx arrow_x
-        ldy arrow_y
-        jsr board_convert_sprite_xy
-        jsr board_xy_to_nametable
         jsr board_get_value
         cmp #0
         beq done_collision ; no mushroom -> no collision
         ; collision -> "destroy" arrow, "reduce" mushroom
         sub #1
         jsr board_set_value
-        jsr board_update_background
+        jsr board_xy_to_nametable
+        jsr board_request_update_background
         jsr arrow_del
     done_collision:
     rts

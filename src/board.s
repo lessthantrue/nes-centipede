@@ -4,10 +4,14 @@
 .include "board.inc"
 
 .segment "ZEROPAGE"
-boardaddr:      .res 2
 ntaddr:         .res 2
 board_arg_x:    .res 1
 board_arg_y:    .res 1
+boardaddr:      .res 2
+
+update_ntaddr:  .res 2
+update_data:    .res 1 ; 3 bits for mushroom damage level, bit 4 is "update required" flag
+BOARD_FLAG_REQ_UPDATE = %00010000
 
 .segment "BSS"
 seed:       .res 2 ; doesn't matter what's here, so long as it's not zero
@@ -27,10 +31,10 @@ board:      .res (WIDTH * HEIGHT)
 
 .proc reset_ntaddr
     pha
-    lda #((30 - HEIGHT - 1) * WIDTH)
-    sta ntaddr
     lda #$20
     sta ntaddr + 1
+    lda #((30 - HEIGHT - 1) * WIDTH)
+    sta ntaddr
     pla
     rts
 .endproc
@@ -38,14 +42,16 @@ board:      .res (WIDTH * HEIGHT)
 ; expects x, y registers to hold x, y location
 ; returns address of nametable index in ntaddr
 .proc board_xy_to_nametable
+    pha
     jsr reset_ntaddr 
     lda ntaddr ; a = x + (y + 30 - HEIGHT) * width
     add board_arg_x
     bcc :+
         inc ntaddr + 1
     :
+    ldy board_arg_y
     mult_y:
-        dec board_arg_y
+        dey
         bmi :++
         add #WIDTH
         bcc :+
@@ -54,6 +60,7 @@ board:      .res (WIDTH * HEIGHT)
         jmp mult_y
     :
     sta ntaddr
+    pla
     rts
 .endproc
 
@@ -75,17 +82,19 @@ board:      .res (WIDTH * HEIGHT)
     rts
 .endproc
 
-; expects x, y registers to hold x, y location
+; expects x, y arguments in board_arg_x, board_arg_y
 ; returns address of index in boardaddr
 .proc board_xy_to_addr
+    push_registers
     jsr reset_boardaddr
     lda boardaddr
     add board_arg_x
     bcc :+
         inc boardaddr + 1
     :
+    ldy board_arg_y
     mult_y:
-        dec board_arg_y
+        dey
         bmi :++
         add #WIDTH
         bcc :+
@@ -94,6 +103,7 @@ board:      .res (WIDTH * HEIGHT)
         jmp mult_y
     :
     sta boardaddr
+    pull_registers
     rts
 .endproc      
 
@@ -113,17 +123,40 @@ board:      .res (WIDTH * HEIGHT)
     rts
 .endproc
 
+.proc board_request_update_background
+    ; set update bit
+    ora #BOARD_FLAG_REQ_UPDATE
+    sta update_data
+
+    ; preserve nametable address
+    lda ntaddr
+    sta update_ntaddr
+    lda ntaddr+1
+    sta update_ntaddr+1
+    rts
+.endproc
+
 ; updates the background at ntaddr with the value in boardaddr
 .proc board_update_background
-    ;rts
-    lda ntaddr+1
+    lda #BOARD_FLAG_REQ_UPDATE
+    bit update_data
+    bne :+
+        ; no update required
+        rts
+    :
+
+    lda update_ntaddr+1
     sta PPUADDR
-    lda ntaddr
+    lda update_ntaddr
     sta PPUADDR ; PPU is opposite endian of the CPU
-    jsr board_get_value ; byte at boardaddr in a
+    lda update_data ; byte at boardaddr in a
     and #$07 ; get mushroom growth level
     add #$60 ; convert to sprite index
-    sta PPUDATA ; set background at ntaddr to that
+    ; sta PPUDATA ; set background at ntaddr to that
+    lda #0
+    sta ntaddr
+    sta ntaddr+1
+    sta update_data ; clear data, most importantly update flag
     rts
 .endproc
 
@@ -160,7 +193,7 @@ board:      .res (WIDTH * HEIGHT)
             txa ; preserve registers
             pha
             lda #$00
-            jsr board_set_value ; byte at x, y in a
+            jsr board_set_value
             pla
             tax ; fix registers
             inc boardaddr
@@ -207,9 +240,10 @@ board:      .res (WIDTH * HEIGHT)
     ldy #$AA
     jsr ppu_clear_nt
 
-    lda #$20
+    jsr reset_ntaddr
+    lda ntaddr+1
     sta PPUADDR
-    lda #((30 - HEIGHT - 1) * WIDTH)
+    lda ntaddr
     sta PPUADDR
     lda #%10000000
     sta PPUCTRL

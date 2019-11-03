@@ -27,7 +27,7 @@ srcdir = src
 imgdir = tilesets
 
 #EMU := "/C/Program Files/Nintendulator/Nintendulator.exe"
-EMU :=C:\Users\Nick\Desktop\Emulator\Emulators\fceux-2.2.2-win32\fceux.exe
+EMU :=C:\Users\Nick\Desktop\Emulator\_Emulators\fceux-2.2.2-win32\fceux.exe
 DEBUGEMU := $(EMU)
 # other options for EMU are start (Windows) or gnome-open (GNOME)
 
@@ -80,7 +80,10 @@ zip.in:
 	echo zip.in >> $@
 
 clean:
-	-rm $(objdir)/*.o $(objdir)/*.s
+	-rm $(objdir)/*.o
+	-rm $(title).nes
+	-rm map.txt
+	-rm $(title).nes.deb
 
 # in case the object folder gets deleted
 $(objdir):

@@ -23,7 +23,7 @@ cur_keys:      .res 2
 new_keys:      .res 2
 
 .segment "CODE"
-;;
+
 ; This NMI handler is good enough for a simple "has NMI occurred?"
 ; vblank-detect loop.  But sometimes there are things that you always
 ; want to happen every frame, even if the game logic takes far longer
@@ -33,6 +33,7 @@ new_keys:      .res 2
   push_registers
 
   inc nmis
+  jsr board_update_background
   jsr spritegfx_reset
   jsr player_draw
   jsr arrow_draw
@@ -80,7 +81,6 @@ forever:
   jsr arrow_step
   jsr centipede_step
 
-
   ; Good; we have the full screen ready.  Wait for a vertical blank
   ; and set the scroll registers to display it.
   lda nmis
@@ -103,7 +103,7 @@ vw3:
   jmp forever
 
 ; And that's all there is to it.
-.endproc ;
+.endproc
 
 .proc load_main_palette
   ; seek to the start of palette memory ($3F00-$3F1F)

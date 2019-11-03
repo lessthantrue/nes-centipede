@@ -281,10 +281,10 @@ SPEED = 1
         ldy map_elem+centipede::ycord
         jsr board_convert_sprite_xy
         jsr board_xy_to_addr
-        jsr board_xy_to_nametable
-        lda #$04
+        lda #04
         jsr board_set_value
-        jsr board_update_background
+        jsr board_xy_to_nametable
+        jsr board_request_update_background
     no_collision:
     rts
 .endproc
