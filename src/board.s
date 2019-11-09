@@ -152,7 +152,7 @@ board:      .res (WIDTH * HEIGHT)
     lda update_data ; byte at boardaddr in a
     and #$07 ; get mushroom growth level
     add #$60 ; convert to sprite index
-    ; sta PPUDATA ; set background at ntaddr to that
+    sta PPUDATA ; set background at ntaddr to that
     lda #0
     sta ntaddr
     sta ntaddr+1

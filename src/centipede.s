@@ -38,6 +38,8 @@ CENTIPEDE_INIT_X = $00
 CENTIPEDE_INIT_Y = $00
 
 centipede_segments  :   .res 1
+
+.segment "BSS"
 segment_xs          :   .res CENTIPEDE_LEN
 segment_ys          :   .res CENTIPEDE_LEN
 segment_dirs        :   .res CENTIPEDE_LEN

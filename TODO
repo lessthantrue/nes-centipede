@@ -39,6 +39,8 @@ DEVELOPMENT:
   * level advancement
   * sound
   * other enemies (snake, spider, bee, grasshopper)
+  * make centipede kill player
+  * player collision with mushrooms
 
 PROJECT MANAGEMENT:
   \ Update README
@@ -50,7 +52,9 @@ PROJECT MANAGEMENT:
   \ online demo with JSNES
 
 BUGS:
-  * weird things sometimes happen when drawing new mushroom background objects
-    * Draws mushrooms one spot to the right of where they should bee
-    * Does not occur on online demo?
+  \ weird things sometimes happen when drawing new mushroom background objects
+    \ Draws mushrooms one spot to the right of where they should be
+    \ Does not occur on online demo?
   * bg flickers on PPU nametable update
+  * centipede head flag not always set on segment death
+  * player can wrap around the screen to the left
