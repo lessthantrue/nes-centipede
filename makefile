@@ -17,11 +17,11 @@ version = 0.1
 # PRG ROM.  If it gets too long for one line, you can add a backslash
 # (the \ character) at the end of the line and continue on the next.
 objlist = nrom collision init main board player arrow centipede board pads ppuclear \
-spritegfx segment
+spritegfx segment core/queue core/eventprocessor
 
 AS65 = ca65
 LD65 = ld65
-CFLAGS65 = 
+CFLAGS65 = -g
 objdir = obj/nes
 srcdir = src
 imgdir = tilesets

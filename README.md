@@ -29,7 +29,7 @@ Legal
 The program is distributed under the following license, based on the
 GNU All-Permissive License:
 
-> Copyright 2011-2016 Damian Yerrick
+> Copyright 2011-2016 Nicholas Milford
 > 
 > Copying and distribution of this file, with or without
 > modification, are permitted in any medium without royalty provided

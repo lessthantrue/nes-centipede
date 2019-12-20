@@ -1,4 +1,5 @@
-.include "macros.inc"
+.include "core/macros.inc"
+.include "core/common.inc"
 .include "constants.inc"
 .include "board.inc"
 .include "centipede.inc"
@@ -12,12 +13,7 @@
 map_iter :      .res 1
 map_fn:         .res 2
 
-CENTIPEDE_LEN = 8
-CENTIPEDE_INIT_X = $00
-CENTIPEDE_INIT_Y = $FB
-
 centipede_segments  :   .res 1
-
 centipede_flags     :   .res 1
 
 .segment "BSS"
@@ -26,16 +22,10 @@ segment_ys          :   .res CENTIPEDE_LEN
 segment_dirs        :   .res CENTIPEDE_LEN
 segment_flags       :   .res CENTIPEDE_LEN
 
-SPEED = 1
-
 .segment "CODE"
 
-.proc call_indirect
-    jmp (map_fn) ; wierd hack
-.endproc
-
 .proc map_segment
-    ldy #0 ; index
+    ldy #0
     :
         cpy centipede_segments
         beq :+
@@ -51,10 +41,21 @@ SPEED = 1
 
         ; call function
         tya
-        pha ; preserve y register
-        jsr call_indirect
+        pha
+        lda #>after
+        pha
+        lda #<after
+        sub #1
+        pha
+        lda map_fn+1
+        pha
+        lda map_fn
+        sub #1
+        pha 
+        rts
+        after:
         pla
-        tay ; restore register
+        tay
 
         ; save temp back to current segment
         lda segment_active+segment::xcord
@@ -66,7 +67,6 @@ SPEED = 1
         lda segment_active+segment::flags
         sta segment_flags, y
 
-        ; move on 
         iny
         jmp :-
     :

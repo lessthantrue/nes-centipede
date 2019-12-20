@@ -1,5 +1,5 @@
 .include "nes.inc"
-.include "macros.inc"
+.include "core/macros.inc"
 .include "spritegfx.inc"
 
 .segment "ZEROPAGE"

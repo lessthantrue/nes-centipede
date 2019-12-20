@@ -1,6 +1,6 @@
 .include "nes.inc"
 .include "global.inc"
-.include "macros.inc"
+.include "core/macros.inc"
 .include "board.inc"
 
 .segment "ZEROPAGE"

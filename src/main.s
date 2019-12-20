@@ -14,7 +14,8 @@
 .include "board.inc"
 .include "centipede.inc"
 .include "player.inc"
-.include "macros.inc"
+.include "core/macros.inc"
+.include "core/eventprocessor.inc"
 .include "spritegfx.inc"
 
 .segment "ZEROPAGE"
@@ -85,6 +86,9 @@ forever:
   ; and set the scroll registers to display it.
   lda nmis
 vw3:
+  pha
+  jsr evtp_run
+  pla
   cmp nmis
   beq vw3
   

@@ -55,6 +55,7 @@ BUGS:
   \ weird things sometimes happen when drawing new mushroom background objects
     \ Draws mushrooms one spot to the right of where they should be
     \ Does not occur on online demo?
-  * bg flickers on PPU nametable update
+  * bg flickers on PPU nametable update (?)
+    Flickering only occurs when also drawing the centipede...?
   * centipede head flag not always set on segment death
   * player can wrap around the screen to the left

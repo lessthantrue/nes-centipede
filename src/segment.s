@@ -1,4 +1,4 @@
-.include "macros.inc"
+.include "core/macros.inc"
 .include "constants.inc"
 .include "board.inc"
 .include "arrow.inc"
@@ -35,18 +35,17 @@ segment_active :    .tag segment
     rts
     init_segment:
 
-    ; load a bunch of constants
-    ldx centipede_segments
     lda #CENTIPEDE_INIT_X
     sta segment_xs, x
     lda #CENTIPEDE_INIT_Y
     sta segment_ys, x
-    lda #DIR_DOWN
+    lda #DIR_RIGHT
     sta segment_dirs, x
 
     ; setting flags is a bit more involved
     lda #SEGMENT_FLAG_ALIVE
     sta segment_flags, x
+    inc centipede_segments
     rts
 .endproc
 
@@ -71,7 +70,7 @@ segment_active :    .tag segment
         lda segment_active+segment::flags
         ora #%01000000
         sta segment_active+segment::flags
-        jsr centipede_init_segment
+        jsr segment_init
         :
         ; on a grid position, do collision checks
         lda segment_active+segment::dir
@@ -254,5 +253,12 @@ segment_active :    .tag segment
         sta spritegfx_oam_arg+oam::xcord
         jsr spritegfx_load_oam
     done_draw:
+    rts
+.endproc
+
+.proc segment_step
+    jsr segment_collide_board
+    jsr segment_move
+    jsr segment_collide_arrow
     rts
 .endproc
