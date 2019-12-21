@@ -10,5 +10,6 @@
 
 .globalzp spritegfx_oam_arg
 .global spritegfx_load_oam, spritegfx_reset
+SPRITE_VERT_OFFSET = 23
 
 .endif
