@@ -1,4 +1,5 @@
 .include "core/macros.inc"
+.include "core/eventprocessor.inc"
 .include "constants.inc"
 .include "board.inc"
 .include "arrow.inc"
@@ -13,14 +14,6 @@ SEGMENT_WIDTH = 8
 DIR_RIGHT =     %00000001
 DIR_LEFT =      %00000010
 DIR_DOWN =      %00000100
-
-.macro segment_exit_not_alive
-    lda #SEGMENT_FLAG_ALIVE
-    bit segment_active+segment::flags
-    beq :+
-        rts
-    :
-.endmacro
 
 .segment "ZEROPAGE"
 
@@ -44,6 +37,10 @@ segment_active :    .tag segment
 
     ; setting flags is a bit more involved
     lda #SEGMENT_FLAG_ALIVE
+    cpx #0
+    bne :+
+        ora #SEGMENT_FLAG_HEAD
+    :
     sta segment_flags, x
     inc centipede_segments
     rts
@@ -57,7 +54,7 @@ segment_active :    .tag segment
     and #$07
     bne done_collision
         ; first, check if we need to init another centipede segment
-        lda #%01000000
+        lda #SEGMENT_FLAG_INIT
         bit segment_active+segment::flags
         bne :+ ; bit is set
         lda segment_active+segment::xcord
@@ -66,9 +63,9 @@ segment_active :    .tag segment
         lda segment_active+segment::ycord
         cmp #CENTIPEDE_INIT_Y
         bne :+ ; correct Y position
-        ; clear init bit
+        ; set init bit
         lda segment_active+segment::flags
-        ora #%01000000
+        ora #SEGMENT_FLAG_INIT
         sta segment_active+segment::flags
         jsr segment_init
         :
@@ -228,8 +225,8 @@ segment_active :    .tag segment
         sta spritegfx_oam_arg+oam::tile
         ; add 1 if head, or if next segment is not alive
         lda #SEGMENT_FLAG_HEAD
-        bit segment_active+segment::flags ; can't use bit because of addressing mode limitations
-        bne :+
+        bit segment_active+segment::flags
+        beq :+
             inc spritegfx_oam_arg+oam::tile
         :
         lda segment_active+segment::xcord
@@ -247,7 +244,7 @@ segment_active :    .tag segment
         asl a
         asl a
         asl a
-        asl a ; shift dir bits left 6 times, lines up perfectly with sprite mirroring
+        asl a ; shift dir bits left 5 times, lines up perfectly with sprite mirroring
         sta spritegfx_oam_arg+oam::flags
         lda segment_active+segment::xcord
         sta spritegfx_oam_arg+oam::xcord
@@ -257,6 +254,13 @@ segment_active :    .tag segment
 .endproc
 
 .proc segment_step
+    ; skip everything if it isn't alive
+    lda #SEGMENT_FLAG_ALIVE
+    bit segment_active+segment::flags
+    bne :+
+        rts
+    :
+
     jsr segment_collide_board
     jsr segment_move
     jsr segment_collide_arrow

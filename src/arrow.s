@@ -16,7 +16,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
 .segment "CODE"
 
 .proc arrow_init
-    lda #ARROW_FLAG_ACTIVE
+    lda #0
     sta arrow_f
     rts
 .endproc

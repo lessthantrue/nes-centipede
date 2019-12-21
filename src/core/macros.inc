@@ -89,3 +89,25 @@
     and arg
     sta arg
 .endmacro
+
+.macro  push    r1, r2, r3, r4, r5, r6, r7
+    .ifblank        r1
+        ; First parameter is empty
+        .exitmacro
+    .else
+        lda     r1
+        pha
+    .endif
+        push    r2, r3, r4, r5, r6, r7
+.endmacro
+
+.macro call_with_args routine, a1, a2, a3, a4, a5, a6, a7
+    push a1, a2, a3, a4, a5, a6, a7
+    tsx
+    jsr routine
+    tsx
+    txa
+    add #(.PARAMCOUNT - 1) ; clean up parameters pushed on the stack
+    tax
+    txs
+.endmacro

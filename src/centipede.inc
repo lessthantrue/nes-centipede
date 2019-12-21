@@ -6,8 +6,8 @@
 .globalzp centipede_segments
 
 CENTIPEDE_LEN = 8
-CENTIPEDE_INIT_X = $10
-CENTIPEDE_INIT_Y = $10
+CENTIPEDE_INIT_X = $00
+CENTIPEDE_INIT_Y = $00
 SPEED = 1
 
 .endif

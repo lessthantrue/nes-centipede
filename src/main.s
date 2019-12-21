@@ -1,6 +1,6 @@
 ;
 ; Simple sprite demo for NES
-; Copyright 2011-2014 Damian Yerrick
+; Copyright 2011-2014 Nicholas Milford
 ;
 ; Copying and distribution of this file, with or without
 ; modification, are permitted in any medium without royalty provided
@@ -36,9 +36,9 @@ new_keys:      .res 2
   inc nmis
   jsr board_update_background
   jsr spritegfx_reset
+  jsr centipede_draw
   jsr player_draw
   jsr arrow_draw
-  jsr centipede_draw
 
   pull_registers
   rti
