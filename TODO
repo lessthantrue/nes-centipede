@@ -65,3 +65,4 @@ BUGS:
   \ player can wrap around the screen to the left
   * fix centipede splitting up unnecessarily when a middle segment is hit
     Must wait until diagonal movement
+  * demo screen bounds don't match FCEUX bounds
