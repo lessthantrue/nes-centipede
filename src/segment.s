@@ -14,10 +14,6 @@ DIR_RIGHT =     %00000001
 DIR_LEFT =      %00000010
 DIR_DOWN =      %00000100
 
-.segment "ZEROPAGE"
-
-segment_active :    .tag segment
-
 .segment "CODE"
 
 .proc segment_init
@@ -51,49 +47,51 @@ segment_active :    .tag segment
 .endproc
 
 .proc segment_collide_board
-    lda segment_active+segment::xcord
+    lda segment_xs, y
     and #$07
     beq :+
         rts
     :
-    lda segment_active+segment::ycord
+    lda segment_ys, y
     and #$07
-    bne done_collision
+    beq :+
+        rts
+    : ; else
         ; first, check if we need to init another centipede segment
         lda #SEGMENT_FLAG_INIT
-        bit segment_active+segment::flags
+        and segment_flags, y
         bne :+ ; bit is set
-        lda segment_active+segment::xcord
+        lda segment_xs, y
         cmp #CENTIPEDE_INIT_X + 8
         bne :+ ; correct X position
-        lda segment_active+segment::ycord
+        lda segment_ys, y
         cmp #CENTIPEDE_INIT_Y
         bne :+ ; correct Y position
         ; set init bit
-        lda segment_active+segment::flags
+        lda segment_flags, y
         ora #SEGMENT_FLAG_INIT
-        sta segment_active+segment::flags
+        sta segment_flags, y
         jsr segment_init
         :
         ; on a grid position, do collision checks
-        lda segment_active+segment::dir
+        lda segment_dirs, y
         and #$0F
         cmp #DIR_DOWN
         bne not_down ; need special logic when moving down that doesn't involve collisions
             lda #%00000111
-            bit segment_active+segment::ycord
+            and segment_ys, y
             bne done_collision ; only check on pixel multiples of 8
             ; set direction to inverted last direction (stored in high nibble)
-            lda segment_active+segment::dir
+            lda segment_dirs, y
             lsr
             lsr
             lsr
             lsr
             not
             and #%00000011
-            sta segment_active+segment::dir
+            sta segment_dirs, y
         not_down:
-        ldx segment_active+segment::xcord
+        ldx segment_xs, y
         cmp #DIR_RIGHT
         beq right_collision
             ; check for left collision
@@ -106,8 +104,12 @@ segment_active :    .tag segment
             bne mushroom_collision ; no wall collision here
             jmp lr_collision
         mushroom_collision:
-            call_with_args board_convert_sprite_xy, segment_active+segment::xcord, segment_active+segment::ycord
-            lda segment_active+segment::dir
+            lda segment_ys, y
+            pha
+            lda segment_xs, y
+            pha
+            call_with_args_manual board_convert_sprite_xy, 2
+            lda segment_dirs, y
             cmp #DIR_RIGHT
             beq :+
                 dec board_arg_x
@@ -116,29 +118,28 @@ segment_active :    .tag segment
             inc board_arg_x ; check one space to the right
             jsr board_xy_to_addr
             jsr board_get_value
-            cmp #0
             beq done_collision ; no mushroom -> no collision
         lr_collision:
             ; save last direction, set new direction to down
-            lda segment_active+segment::dir
+            lda segment_dirs, y
             asl
             asl
             asl
             asl
             ora #DIR_DOWN
-            sta segment_active+segment::dir
+            sta segment_dirs, y
     done_collision:
     rts
 .endproc
 
 .proc segment_move
-    lda segment_active+segment::dir
+    lda segment_dirs, y
     and #$0F
     cmp #DIR_DOWN
     beq move_down
         cmp #DIR_LEFT
-        php
-        lda segment_active+segment::xcord
+        php ; cUz LdA cHaNgEs SoMe PrOcEsSoR fLaGs
+        lda segment_xs, y
         plp
         beq :+
         ; move right
@@ -147,12 +148,12 @@ segment_active :    .tag segment
         :
             ; move left
             sub #SPEED
-        sta segment_active+segment::xcord
+        sta segment_xs, y
         jmp done_moving
     move_down:
-        lda segment_active+segment::ycord
+        lda segment_ys, y
         add #SPEED
-        sta segment_active+segment::ycord
+        sta segment_ys, y
     done_moving:
     rts
 .endproc
@@ -162,15 +163,15 @@ segment_active :    .tag segment
     bit arrow_f
     beq no_collision ; no arrow -> no collision
     lda #SEGMENT_FLAG_ALIVE
-    bit segment_active+segment::flags
+    and segment_flags, y
     bne :+
         jmp no_collision
     :
-    lda segment_active+segment::xcord
+    lda segment_xs, y
     sta collision_box1_l
     add #SEGMENT_WIDTH
     sta collision_box1_r
-    lda segment_active+segment::ycord
+    lda segment_ys, y
     sta collision_box1_t
     add #SEGMENT_WIDTH
     sta collision_box1_b
@@ -180,25 +181,35 @@ segment_active :    .tag segment
         ; kill segment
         lda #SEGMENT_FLAG_ALIVE
         not
-        and segment_active+segment::flags
-        sta segment_active+segment::flags
+        and segment_flags, y
+        sta segment_flags, y
         jsr arrow_del
         ; place mushroom where segment was
-        call_with_args board_convert_sprite_xy, segment_active+segment::xcord, segment_active+segment::ycord
+        lda segment_ys, y
+        pha
+        lda segment_xs, y
+        pha
+        call_with_args_manual board_convert_sprite_xy, 2
         jsr board_xy_to_addr
         jsr board_xy_to_nametable
         call_with_args board_set_value, #$04
+        ; set next segment's head flag true
+        iny
+        lda segment_flags, y
+        ora #SEGMENT_FLAG_HEAD
+        sta segment_flags, y
+        dey
     no_collision:
     rts
 .endproc
 
 .proc segment_draw
     ; arg 4: sprite x
-    lda segment_active+segment::xcord
+    lda segment_xs, y
     pha
 
     ; arg 3: sprite flags
-    lda segment_active+segment::dir
+    lda segment_dirs, y
     and #%00000010
     asl a
     asl a
@@ -210,7 +221,7 @@ segment_active :    .tag segment
     ; arg 2: sprite tile index
     ; anchor sprite index is $10 
     ; add 16 for downwards
-    lda segment_active+segment::dir
+    lda segment_dirs, y
     and #$0F
     cmp #DIR_DOWN
     beq :+
@@ -219,34 +230,35 @@ segment_active :    .tag segment
     :
         lda #$20
     :
-    tay
+    tax
     ; add 1 if head, or if next segment is not alive
     lda #SEGMENT_FLAG_HEAD
-    bit segment_active+segment::flags
+    and segment_flags, y
     beq :+
-        iny
+        inx
     :
-    lda segment_active+segment::flags
+    lda segment_flags, y
     and #SEGMENT_MASK_ANIM_OFFSET
-    add segment_active+segment::xcord
+    clc
+    adc segment_xs, y
     and #%00001000
     beq :+
         ; add 2 for animation state 2
-        iny
-        iny
+        inx
+        inx
     :
-    tya
+    txa
     pha
 
     ; arg 1: sprite y
     lda #SEGMENT_FLAG_ALIVE
-    bit segment_active+segment::flags
+    and segment_flags, y
     bne :+
         ; don't draw
         lda #OFFSCREEN
         jmp :++
     :
-        lda segment_active+segment::ycord
+        lda segment_ys, y
     :
     pha
 
@@ -259,7 +271,7 @@ segment_active :    .tag segment
 .proc segment_step
     ; skip everything if it isn't alive
     lda #SEGMENT_FLAG_ALIVE
-    bit segment_active+segment::flags
+    and segment_flags, y
     bne :+
         rts
     :

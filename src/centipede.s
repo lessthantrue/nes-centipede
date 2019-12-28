@@ -27,19 +27,11 @@ segment_flags       :   .res CENTIPEDE_LEN
     :
         cpy centipede_segments
         beq :+
-        ; copy current segment to temp variable
-        lda segment_xs, y
-        sta segment_active+segment::xcord
-        lda segment_ys, y
-        sta segment_active+segment::ycord
-        lda segment_dirs, y
-        sta segment_active+segment::dir
-        lda segment_flags, y
-        sta segment_active+segment::flags
 
         ; call function
         tya
-        pha
+        pha ; both preserve y through function calls AND set it as effective argument 1
+        tsx
         lda #>after
         pha
         lda #<after
@@ -54,16 +46,6 @@ segment_flags       :   .res CENTIPEDE_LEN
         after:
         pla
         tay
-
-        ; save temp back to current segment
-        lda segment_active+segment::xcord
-        sta segment_xs, y
-        lda segment_active+segment::ycord
-        sta segment_ys, y
-        lda segment_active+segment::dir
-        sta segment_dirs, y
-        lda segment_active+segment::flags
-        sta segment_flags, y
 
         iny
         jmp :-

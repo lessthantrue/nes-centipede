@@ -49,9 +49,9 @@ board:      .res (WIDTH * HEIGHT)
     bcc :+
         inc ntaddr + 1
     :
-    ldy board_arg_y
+    ldx board_arg_y
     mult_y:
-        dey
+        dex
         bmi :++
         add #WIDTH
         bcc :+
@@ -93,9 +93,9 @@ board:      .res (WIDTH * HEIGHT)
     bcc :+
         inc boardaddr + 1
     :
-    ldy board_arg_y
+    ldx board_arg_y
     mult_y:
-        dey
+        dex
         bmi :++
         add #WIDTH
         bcc :+

@@ -11,6 +11,7 @@ REFACTORING:
   \ split move_centipede and collide_centipede?
   \ transpose centipede data structure (list of struct -> struct of list)
   \ for centipede map, temp store segment in a ZP variable, then write back after function
+    * undo this, use a stack parameter for the index, make the segment arrays public
   \ start using oam_used for sprite memory management
   \ increase player speed (requires changing location representation)
   \ draw centipede head on next segment not alive, rather than a flag
