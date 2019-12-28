@@ -1,5 +1,6 @@
 .include "nes.inc"
 .include "core/macros.inc"
+.include "core/6502.inc"
 .include "spritegfx.inc"
 
 .segment "ZEROPAGE"
@@ -20,21 +21,28 @@ oam_used:   .res 1  ; starts at 0
   rts
 .endproc
 
-; loads the object at spritegfx_oam_arg into the next available oam sprite location
+; loads the argument object data into OAM memory
+; arg 1: sprite y
+; arg 2: sprite tile index
+; arg 3: sprite flags
+; arg 4: sprite x
 .proc spritegfx_load_oam
     push_registers
-
-    ldx oam_used
-    ldy #0
-    :
-        lda spritegfx_oam_arg, y
-        sta OAM, x
-        inx
-        iny
-        cpy #oam::xcord+1
-        bne :-
-    
-    stx oam_used
+    ldy oam_used
+    lda STACK_TOP+1, x
+    add #SPRITE_VERT_OFFSET
+    sta OAM, y
+    iny
+    lda STACK_TOP+2, x
+    sta OAM, y
+    iny
+    lda STACK_TOP+3, x
+    sta OAM, y
+    iny
+    lda STACK_TOP+4, x
+    sta OAM, y
+    iny
+    sty oam_used
     pull_registers
     rts
 .endproc

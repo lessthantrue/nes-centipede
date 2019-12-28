@@ -1,6 +1,5 @@
 .include "core/macros.inc"
 .include "core/eventprocessor.inc"
-.include "constants.inc"
 .include "board.inc"
 .include "centipede.inc"
 .include "collision.inc"

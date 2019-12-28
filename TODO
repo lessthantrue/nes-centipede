@@ -14,7 +14,7 @@ REFACTORING:
   \ start using oam_used for sprite memory management
   \ increase player speed (requires changing location representation)
   \ draw centipede head on next segment not alive, rather than a flag
-  * split centipede file somehow (centipede / segment?)
+  \ split centipede file somehow (centipede / segment?)
 
 DEVELOPMENT:
   \ move and properly draw multiple centipede segments
@@ -34,9 +34,11 @@ DEVELOPMENT:
   \ create proper sprite for player
   \ Fix all the color palettes
   \ animate centipede
+    * animate centipede better
   * keep track of score, lives, etc
     * draw status bar on background
   * level advancement
+  * make centipede move diagonally, not just down on collision
   * sound
   * other enemies (snake, spider, bee, grasshopper)
   * make centipede kill player
@@ -59,3 +61,5 @@ BUGS:
     Flickering only occurs when also drawing the centipede...?
   * centipede head flag not always set on segment death
   * player can wrap around the screen to the left
+  * fix centipede splitting up unnecessarily when a middle segment is hit
+    Must wait until diagonal movement

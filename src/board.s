@@ -2,20 +2,21 @@
 .include "global.inc"
 .include "core/macros.inc"
 .include "board.inc"
+.include "core/6502.inc"
 
 .segment "ZEROPAGE"
-ntaddr:         .res 2
-board_arg_x:    .res 1
-board_arg_y:    .res 1
-boardaddr:      .res 2
+ntaddr:      .addr $0000
+board_arg_x: .byte $00
+board_arg_y: .byte $00
+boardaddr:   .addr $0000
 
-update_ntaddr:  .res 2
-update_data:    .res 1 ; 3 bits for mushroom damage level, bit 4 is "update required" flag
+update_ntaddr: .addr $0000
+update_data: .byte $00 ; 3 bits for mushroom damage level, bit 4 is "update required" flag
 BOARD_FLAG_REQ_UPDATE = %00010000
 
 .segment "BSS"
 seed:       .res 2 ; doesn't matter what's here, so long as it's not zero
-; 32 spaces wide (32 - margins) by 28 spaces tall = 896 bytes (yikes)
+; 32 spaces wide (32 - margins) by 28 spaces tall = 896 bytes
 WIDTH = 32
 HEIGHT = 26
 board:      .res (WIDTH * HEIGHT)
@@ -39,7 +40,6 @@ board:      .res (WIDTH * HEIGHT)
     rts
 .endproc
 
-; expects x, y registers to hold x, y location
 ; returns address of nametable index in ntaddr
 .proc board_xy_to_nametable
     pha
@@ -65,15 +65,16 @@ board:      .res (WIDTH * HEIGHT)
 .endproc
 
 ; converts sprite coordinates (used by arrow, centipede, player) to background coordinates
-; expects x, y registers to hold sprite x, y location
+; arg 1: x board index
+; arg 2: y board index
 .proc board_convert_sprite_xy
     pha
-    txa
+    lda STACK_TOP+1, x
     lsr a
     lsr a
     lsr a
     sta board_arg_x
-    tya
+    lda STACK_TOP+2, x
     lsr a
     lsr a
     lsr a
@@ -115,11 +116,19 @@ board:      .res (WIDTH * HEIGHT)
     rts
 .endproc
 
-; sets board state at boardaddr to a
-; fucks over X register
+; sets board state at boardaddr
+; arg 1: board value to set
 .proc board_set_value
-    ldx #0 ; needed for pre-indexed indirect mode
-    sta (boardaddr, x)
+    tya ; preserve y
+    pha
+
+    ldy #0
+    lda STACK_TOP+1, x
+    sta (boardaddr), y
+    jsr board_request_update_background
+
+    pla ; restore y
+    tay
     rts
 .endproc
 
@@ -190,12 +199,13 @@ board:      .res (WIDTH * HEIGHT)
     y_loop_2:
         ldx #WIDTH
         x_loop_2:
-            txa ; preserve registers
+            tya ; preserve registers
             pha
-            lda #$00
-            jsr board_set_value
+            ldy #0 ; needed for indirect mode
+            lda #0
+            sta (boardaddr), y
             pla
-            tax ; fix registers
+            tay ; fix registers
             inc boardaddr
             bne :+ ; increment doesn't set carry, so we need to check for zero instead
                 inc boardaddr + 1
@@ -226,8 +236,13 @@ board:      .res (WIDTH * HEIGHT)
         :
         sta board_arg_x
         jsr board_xy_to_addr
-        lda #04
-        jsr board_set_value
+        tya
+        pha
+        ldy #0 ; needed for indirect mode
+        lda #4
+        sta (boardaddr), y
+        pla
+        tay
         dey
         bne add_loop
     rts

@@ -1,6 +1,5 @@
 .include "core/macros.inc"
 .include "core/eventprocessor.inc"
-.include "constants.inc"
 .include "board.inc"
 .include "arrow.inc"
 .include "segment.inc"
@@ -49,7 +48,9 @@ segment_active :    .tag segment
 .proc segment_collide_board
     lda segment_active+segment::xcord
     and #$07
-    bne done_collision
+    beq :+
+        rts
+    :
     lda segment_active+segment::ycord
     and #$07
     bne done_collision
@@ -100,9 +101,7 @@ segment_active :    .tag segment
             bne mushroom_collision ; no wall collision here
             jmp lr_collision
         mushroom_collision:
-            ldx segment_active+segment::xcord
-            ldy segment_active+segment::ycord
-            jsr board_convert_sprite_xy
+            call_with_args board_convert_sprite_xy, segment_active+segment::xcord, segment_active+segment::ycord
             lda segment_active+segment::dir
             cmp #DIR_RIGHT
             beq :+
@@ -138,13 +137,11 @@ segment_active :    .tag segment
         plp
         beq :+
         ; move right
-            clc
-            adc #SPEED
-            adc #SPEED
+            add #SPEED
+            add #SPEED
         :
             ; move left
-            sec
-            sbc #SPEED
+            sub #SPEED
         sta segment_active+segment::xcord
         jmp done_moving
     move_down:
@@ -172,12 +169,7 @@ segment_active :    .tag segment
     sta collision_box1_t
     add #SEGMENT_WIDTH
     sta collision_box1_b
-    tya
-    pha
-    jsr arrow_load_collision
-    jsr collision_box1_contains
-    pla
-    tay
+    call_with_args collision_box1_contains, arrow_x, arrow_y
     lda collision_ret
     beq no_collision
         ; kill segment
@@ -187,68 +179,74 @@ segment_active :    .tag segment
         sta segment_active+segment::flags
         jsr arrow_del
         ; place mushroom where segment was
-        ldx segment_active+segment::xcord
-        ldy segment_active+segment::ycord
-        jsr board_convert_sprite_xy
+        call_with_args board_convert_sprite_xy, segment_active+segment::xcord, segment_active+segment::ycord
         jsr board_xy_to_addr
-        lda #04
-        jsr board_set_value
         jsr board_xy_to_nametable
-        jsr board_request_update_background
+        call_with_args board_set_value, #$04
     no_collision:
     rts
 .endproc
 
 .proc segment_draw
+    ; arg 4: sprite x
+    lda segment_active+segment::xcord
+    pha
+
+    ; arg 3: sprite flags
+    lda segment_active+segment::dir
+    and #%00000010
+    asl a
+    asl a
+    asl a
+    asl a
+    asl a ; shift dir bits left 5 times, lines up perfectly with sprite mirroring
+    pha
+
+    ; arg 2: sprite tile index
+    ; anchor sprite index is $10 
+    ; add 16 for downwards
+    lda segment_active+segment::dir
+    and #$0F
+    cmp #DIR_DOWN
+    beq :+
+        lda #$10
+        jmp :++
+    :
+        lda #$20
+    :
+    tay
+    ; add 1 if head, or if next segment is not alive
+    lda #SEGMENT_FLAG_HEAD
+    bit segment_active+segment::flags
+    beq :+
+        iny
+    :
+    lda segment_active+segment::xcord
+    lsr
+    lsr ; change animation state each 4 x pixels
+    and #%00000001
+    beq :+
+        ; add 2 for animation state 2
+        iny
+        iny
+    :
+    tya
+    pha
+
+    ; arg 1: sprite y
     lda #SEGMENT_FLAG_ALIVE
     bit segment_active+segment::flags
     bne :+
-        ; no draw
-        lda #$F0
+        ; don't draw
+        lda #OFFSCREEN
         jmp :++
     :
         lda segment_active+segment::ycord
-        add #SPRITE_VERT_OFFSET ; re-align such that centipede zero equals top of board
     :
-        sta spritegfx_oam_arg+oam::ycord
-        ; anchor sprite is $10 
-        ; add 16 for downwards
-        lda segment_active+segment::dir
-        and #$0F
-        cmp #DIR_DOWN
-        beq :+
-            lda #$10
-            jmp :++
-        :
-            lda #$20
-        :
-        sta spritegfx_oam_arg+oam::tile
-        ; add 1 if head, or if next segment is not alive
-        lda #SEGMENT_FLAG_HEAD
-        bit segment_active+segment::flags
-        beq :+
-            inc spritegfx_oam_arg+oam::tile
-        :
-        lda segment_active+segment::xcord
-        lsr
-        lsr ; change animation state each 4 x pixels
-        and #%00000001
-        beq :+
-            ; add 2 for animation state 2
-            inc spritegfx_oam_arg+oam::tile
-            inc spritegfx_oam_arg+oam::tile
-        :
-        lda segment_active+segment::dir
-        and #%00000010
-        asl a
-        asl a
-        asl a
-        asl a
-        asl a ; shift dir bits left 5 times, lines up perfectly with sprite mirroring
-        sta spritegfx_oam_arg+oam::flags
-        lda segment_active+segment::xcord
-        sta spritegfx_oam_arg+oam::xcord
-        jsr spritegfx_load_oam
+    pha
+
+    call_with_args_manual spritegfx_load_oam, 4
+
     done_draw:
     rts
 .endproc

@@ -1,4 +1,5 @@
 .include "collision.inc"
+.include "core/6502.inc"
 
 .segment "ZEROPAGE"
 
@@ -45,16 +46,20 @@ collision_ret:        .res 1
 .endproc
 
 ; checks if a point (xy) is within bounding box 1
+; arg 1: x coordinate
+; arg 2: y coordinate
 .proc collision_box1_contains
     lda #$0
     sta collision_ret
-    cpx collision_box1_l
+    lda STACK_TOP+1, x
+    cmp collision_box1_l
     bcc not_inside
-    cpx collision_box1_r
+    cmp collision_box1_r
     bcs not_inside
-    cpy collision_box1_t
+    lda STACK_TOP+2, x
+    cmp collision_box1_t
     bcc not_inside
-    cpy collision_box1_b
+    cmp collision_box1_b
     bcs not_inside
         lda #$1
         sta collision_ret

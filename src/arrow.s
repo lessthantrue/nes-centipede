@@ -1,5 +1,4 @@
 .include "core/macros.inc"
-.include "constants.inc"
 .include "arrow.inc"
 .include "player.inc"
 .include "board.inc"
@@ -71,16 +70,16 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     lda #ARROW_FLAG_ACTIVE
     bit arrow_f
     beq done_collision
-        ldx arrow_x
-        ldy arrow_y
-        jsr board_convert_sprite_xy
+        call_with_args board_convert_sprite_xy, arrow_x, arrow_y
         jsr board_xy_to_addr
         jsr board_get_value
         cmp #0
         beq done_collision ; no mushroom -> no collision
         ; collision -> "destroy" arrow, "reduce" mushroom
         sub #1
-        jsr board_set_value
+        pha
+        call_with_args board_set_value
+        pla
         jsr board_xy_to_nametable
         jsr board_request_update_background
         jsr arrow_del
@@ -93,27 +92,11 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     bit arrow_f
     bne :+
         ; arrow inactive
-        lda #$F0
-        sta spritegfx_oam_arg+oam::ycord
+        call_with_args spritegfx_load_oam, #OFFSCREEN, #$30, #0, #0
         jmp :++
     :
         ; arrow active
-        lda arrow_y
-        add #SPRITE_VERT_OFFSET
-        sta spritegfx_oam_arg+oam::ycord
+        call_with_args spritegfx_load_oam, arrow_y, #$30, #0, arrow_x
     :
-    lda #$30
-    sta spritegfx_oam_arg+oam::tile
-    lda #0
-    sta spritegfx_oam_arg+oam::flags
-    lda arrow_x
-    sta spritegfx_oam_arg+oam::xcord
-    jsr spritegfx_load_oam
-    rts
-.endproc
-
-.proc arrow_load_collision
-    ldx arrow_x
-    ldy arrow_y
     rts
 .endproc

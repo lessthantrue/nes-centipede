@@ -1,7 +1,6 @@
 .include "nes.inc"
 .include "global.inc"
 .include "core/macros.inc"
-.include "constants.inc"
 .include "arrow.inc"
 .include "player.inc"
 .include "spritegfx.inc"
@@ -147,16 +146,7 @@ doneTopCollision:
 ; but a scrolling game will need to "clip" sprites (skip drawing the
 ; parts that are offscreen).
 .proc player_draw
-  lda player_yhi
-  add #SPRITE_VERT_OFFSET
-  sta spritegfx_oam_arg+oam::ycord
-  lda #$31 ;sprite tile number
-  sta spritegfx_oam_arg+oam::tile
-  lda #%00000000
-  sta spritegfx_oam_arg+oam::flags ;sprite attributes
-  lda player_xhi
-  sta spritegfx_oam_arg+oam::xcord ;sprite X
-  jsr spritegfx_load_oam
+  call_with_args spritegfx_load_oam, player_yhi, #$31, #0, player_xhi
   rts
 .endproc
 

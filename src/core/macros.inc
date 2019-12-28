@@ -92,8 +92,23 @@
 
 .macro  push    r1, r2, r3, r4, r5, r6, r7
     .ifblank        r1
-        ; First parameter is empty
+    .ifblank        r2
+    .ifblank        r3
+    .ifblank        r4
+    .ifblank        r5
+    .ifblank        r6
+    .ifblank        r7
+        ; all parameters are empty
         .exitmacro
+    .endif
+    .endif
+    .endif
+    .endif
+    .endif
+    .endif
+    .endif
+    .ifblank r1
+        ; emit nothing
     .else
         lda     r1
         pha
@@ -102,12 +117,24 @@
 .endmacro
 
 .macro call_with_args routine, a1, a2, a3, a4, a5, a6, a7
-    push a1, a2, a3, a4, a5, a6, a7
+    ; args go on the stack in reverse order
+    push a7, a6, a5, a4, a3, a2, a1
     tsx
     jsr routine
     tsx
     txa
     add #(.PARAMCOUNT - 1) ; clean up parameters pushed on the stack
+    tax
+    txs
+.endmacro
+
+; note: push args in reverse order when calling manually
+.macro call_with_args_manual routine, nargs
+    tsx
+    jsr routine
+    tsx
+    txa
+    add #nargs
     tax
     txs
 .endmacro
