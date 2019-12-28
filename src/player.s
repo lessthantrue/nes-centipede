@@ -41,12 +41,13 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     ; Right is pressed. Add to position.
     lda player_xlo
     add #SPEED_LO
-    bcc :+
-      inc player_xhi
-    :
     sta player_xlo
     lda player_xhi
-    add #SPEED_HI
+    adc #SPEED_HI
+    cmp #(256-8)
+    bcc :+
+      lda #(256-8)
+    :
     sta player_xhi
   notRight:
 
@@ -57,12 +58,12 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     ; Left is pressed. Subtract from position.
     lda player_xlo
     sub #SPEED_LO
-    bcs :+
-      dec player_xhi
-    :
     sta player_xlo
     lda player_xhi
-    sub #SPEED_HI
+    sbc #SPEED_HI
+    bcs :+ ; left wall collision
+      lda #0
+    :
     sta player_xhi
   notLeft:
 
@@ -73,12 +74,13 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     ; Up is pressed. Subtract from position.
     lda player_ylo
     sub #SPEED_LO
-    bcs :+
-      dec player_yhi
-    :
     sta player_ylo
     lda player_yhi
-    sub #SPEED_HI
+    sbc #SPEED_HI
+    cmp #TOP_WALL
+    bcs :+
+      lda #TOP_WALL
+    :
     sta player_yhi
   notUp:
 
@@ -86,15 +88,16 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
   lda cur_keys
   and #KEY_DOWN
   beq notDown
-    ; Down is pressed. Subtract from position.
+    ; Down is pressed. Add to position.
     lda player_ylo
     add #SPEED_LO
-    bcc :+
-      inc player_yhi
-    :
     sta player_ylo
     lda player_yhi
-    add #SPEED_HI
+    adc #SPEED_HI
+    cmp #(240-40) ; I don't know why this is the right value
+    bcc :+
+      lda #(240-40)
+    :
     sta player_yhi
   notDown:
 
@@ -105,38 +108,6 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     jsr arrow_launch
   notA:
 
-  ; Test for collision with left wall
-  lda player_xhi
-  cmp #1
-  bcs notHitLeft
-    lda #1
-    sta player_xhi
-    jmp doneWallCollision
-  notHitLeft:
-  ; Test for collision with right wall
-  cmp #(256-18)
-  bcc notHitRight
-    lda #(256-18)
-    sta player_xhi
-  notHitRight:
-  ; Additional checks for collision, if needed, would go here.
-doneWallCollision:
-
-  ; Test for collision with bottom wall
-  lda player_yhi
-  cmp #(240-32-9)
-  bcc notHitBottom
-    lda #(240-32-9)
-    sta player_yhi
-    jmp doneTopCollision
-  notHitBottom:
-  ; Test for collision with top wall
-  cmp #TOP_WALL
-  bcs notHitTop
-    lda #TOP_WALL
-    sta player_yhi
-  notHitTop:
-doneTopCollision:
   rts
 .endproc
 

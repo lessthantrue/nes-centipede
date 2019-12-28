@@ -4,7 +4,7 @@
 .struct segment
     xcord       .byte
     ycord       .byte
-    dir     .byte
+    dir         .byte
     flags       .byte
 .endstruct
 
