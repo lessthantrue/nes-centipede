@@ -34,7 +34,7 @@ DEVELOPMENT:
   \ create proper sprite for player
   \ Fix all the color palettes
   \ animate centipede
-    * animate centipede better
+    \ animate centipede better
   * keep track of score, lives, etc
     * draw status bar on background
   * level advancement

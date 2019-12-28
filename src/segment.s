@@ -41,6 +41,11 @@ segment_active :    .tag segment
         ora #SEGMENT_FLAG_HEAD
     :
     sta segment_flags, x
+    ; keep last 2 bits of segment counter for animation offset
+    txa
+    and #SEGMENT_MASK_ANIM_OFFSET
+    ora segment_flags, x
+    sta segment_flags, x
     inc centipede_segments
     rts
 .endproc
@@ -221,10 +226,10 @@ segment_active :    .tag segment
     beq :+
         iny
     :
-    lda segment_active+segment::xcord
-    lsr
-    lsr ; change animation state each 4 x pixels
-    and #%00000001
+    lda segment_active+segment::flags
+    and #SEGMENT_MASK_ANIM_OFFSET
+    add segment_active+segment::xcord
+    and #%00001000
     beq :+
         ; add 2 for animation state 2
         iny
