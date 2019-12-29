@@ -27,24 +27,28 @@ lives:      .byte $00
     clc
     adc STACK_TOP+1, x
     sta score
+    sta binary
     lda score+1
     adc STACK_TOP+2, x
     sta score+1
-    jsr convert_score
+    sta binary+1
+    jsr clear_output
+    jsr bin2dec_16bit
+    rts
+.endproc
+
+.proc clear_output
+    lda #0
+    ldy #8
+    :
+        sta decimal, y
+        dey
+        bne :-
     rts
 .endproc
 
 .proc gamestate_dec_lives
     dec lives
-    rts
-.endproc
-
-.proc convert_score
-    lda score
-    sta binary
-    lda score+1
-    sta binary+1
-    jsr bin2dec_16bit
     rts
 .endproc
 
@@ -54,13 +58,16 @@ lives:      .byte $00
     sta PPUADDR
     lda #$40
     sta PPUADDR
-    ldy #08
+    ldy #00
     :
         lda decimal, y
-        add #$30 ; number tiles start at 30
+        ora #'0' ; number tiles start at 30
         sta PPUDATA
-        dey
+        iny
+        cpy #8
         bne :-
-
+    lda #$30
+    sta PPUDATA
+    sta PPUDATA ; trailing zeros that never change
     rts
 .endproc

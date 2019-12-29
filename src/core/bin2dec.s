@@ -19,9 +19,11 @@
 ;CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 ;SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+.segment "ZEROPAGE"
 binary:		.byte 0, 0, 0
 decimal: 	.byte 0, 0, 0, 0, 0, 0, 0, 0
 
+.segment "CODE"
 vtable: .byte 3,6,0,1,2,5,0,1,3,6,0
 
 bdgood: .byte 5,5,4,4,4,4,3,3,3,3,2,2,2,2,1,1,1,1 ; last entry is 0, which is in b2table

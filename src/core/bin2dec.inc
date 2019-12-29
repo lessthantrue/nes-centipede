@@ -1,6 +1,7 @@
 .ifndef BIN2DEC_INC
 .define BIN2DEC_INC
 
-.global binary, decimal, bin2dec_16bit
+.globalzp binary, decimal
+.global bin2dec_16bit
 
 .endif
