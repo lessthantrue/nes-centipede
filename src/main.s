@@ -34,11 +34,6 @@ new_keys:      .res 2
   push_registers
 
   inc nmis
-  jsr board_update_background
-  jsr spritegfx_reset
-  jsr centipede_draw
-  jsr player_draw
-  jsr arrow_draw
 
   pull_registers
   rti
@@ -82,6 +77,10 @@ forever:
   jsr player_move
   jsr arrow_step
   jsr centipede_step
+  jsr spritegfx_reset
+  jsr centipede_draw
+  jsr player_draw
+  jsr arrow_draw
 
   ; Good; we have the full screen ready.  Wait for a vertical blank
   ; and set the scroll registers to display it.
@@ -92,7 +91,10 @@ vw3:
   pla
   cmp nmis
   beq vw3
-  
+
+  jsr board_update_background
+  jsr gamestate_draw
+
   ; Copy the display list from main RAM to the PPU
   lda #0
   sta OAMADDR
@@ -112,10 +114,13 @@ vw3:
 
 .proc load_main_palette
   ; seek to the start of palette memory ($3F00-$3F1F)
+  lda PPUSTATUS
   ldx #$3F
   stx PPUADDR
   ldx #$00
   stx PPUADDR
+  stx PPUSCROLL
+  stx PPUSCROLL
 copypalloop:
   lda initial_palette,x
   sta PPUDATA

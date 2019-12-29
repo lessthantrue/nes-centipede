@@ -23,6 +23,8 @@
   stx PPUADDR
   ldx #$00
   stx PPUADDR
+  stx PPUSCROLL
+  stx PPUSCROLL
 
   ; Clear the 960 spaces of the main part of the nametable,
   ; using a 4 times unrolled loop
@@ -73,8 +75,11 @@ loop:
 ; @param Y vertical scroll position (0-239)
 ; @param C if true, sprites will be visible
 .proc ppu_screen_on
+  ldx #0
+  stx PPUADDR
+  stx PPUADDR
   stx PPUSCROLL
-  sty PPUSCROLL
+  stx PPUSCROLL
   sta PPUCTRL
   lda #BG_ON
   bcc :+

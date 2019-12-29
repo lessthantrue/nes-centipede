@@ -3,7 +3,7 @@
 
 .include "core/macros.inc"
 
-.global gamestate_init, gamestate_addscore, gamestate_dec_lives
+.global gamestate_init, gamestate_addscore, gamestate_dec_lives, gamestate_draw
 
 SEGMENT_SCORE = 100
 MUSHROOM_SCORE = 1

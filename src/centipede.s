@@ -67,7 +67,6 @@ segment_flags       :   .res CENTIPEDE_LEN
 .endproc
 
 .proc centipede_draw
-    ldx #0
     st_addr segment_draw, map_fn
     jsr map_segment
     rts

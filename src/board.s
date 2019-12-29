@@ -145,7 +145,7 @@ board:      .res (WIDTH * HEIGHT)
     rts
 .endproc
 
-; updates the background at ntaddr with the value in boardaddr
+; updates the background at ntaddr with the value in boardaddr if requested in update_data
 .proc board_update_background
     lda #BOARD_FLAG_REQ_UPDATE
     bit update_data
@@ -153,11 +153,12 @@ board:      .res (WIDTH * HEIGHT)
         ; no update required
         rts
     :
-
+    
+    lda PPUSTATUS
     lda update_ntaddr+1
     sta PPUADDR
     lda update_ntaddr
-    sta PPUADDR ; PPU is opposite endian of the CPU
+    sta PPUADDR ; MSB then LSB in PPUADDR
     lda update_data ; byte at boardaddr in a
     and #$07 ; get mushroom growth level
     add #$60 ; convert to sprite index
@@ -166,6 +167,7 @@ board:      .res (WIDTH * HEIGHT)
     sta ntaddr
     sta ntaddr+1
     sta update_data ; clear data, most importantly update flag
+
     rts
 .endproc
 
@@ -256,12 +258,11 @@ board:      .res (WIDTH * HEIGHT)
     jsr ppu_clear_nt
 
     jsr reset_ntaddr
+    lda PPUSTATUS
     lda ntaddr+1
     sta PPUADDR
     lda ntaddr
     sta PPUADDR
-    lda #%10000000
-    sta PPUCTRL
 
     jsr reset_boardaddr
     ldy #HEIGHT
@@ -285,6 +286,11 @@ board:      .res (WIDTH * HEIGHT)
             bne x_loop_2
         dey
         bne y_loop_2
+
+    ; enable NMIs
+    lda #%10000000
+    ora PPUCTRL
+    sta PPUCTRL
 
     rts
 .endproc

@@ -73,22 +73,20 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     beq done_collision
         call_with_args board_convert_sprite_xy, arrow_x, arrow_y
         jsr board_xy_to_addr
+        jsr board_xy_to_nametable
         jsr board_get_value
         cmp #0
         beq done_collision ; no mushroom -> no collision
         ; collision -> "destroy" arrow, "reduce" mushroom
         sub #1
-        pha
+        pha ; manual argument 1: new mushroom growth level
         bne :+ ; increment score if the mushroom was completely destroyed
             php
             gamestate_add_score MUSHROOM_SCORE
             plp
         :
-        call_with_args board_set_value
-        pla
+        call_with_args_manual board_set_value, 1
 
-        jsr board_xy_to_nametable
-        jsr board_request_update_background
         jsr arrow_del
     done_collision:
     rts
@@ -96,7 +94,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
 
 .proc arrow_draw
     lda #ARROW_FLAG_ACTIVE
-    bit arrow_f
+    ; bit arrow_f
     bne :+
         ; arrow inactive
         call_with_args spritegfx_load_oam, #OFFSCREEN, #$30, #0, #0

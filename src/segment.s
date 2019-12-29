@@ -208,6 +208,9 @@ DIR_DOWN =      %00000100
     rts
 .endproc
 
+.proc temp_empty_proc
+    rts
+.endproc
 .proc segment_draw
     ; arg 4: sprite x
     lda segment_xs, y
@@ -227,6 +230,7 @@ DIR_DOWN =      %00000100
     ; anchor sprite index is $10 
     ; add 16 for downwards
     lda segment_dirs, y
+    ; ###################
     and #$0F
     cmp #DIR_DOWN
     beq :+
@@ -253,11 +257,13 @@ DIR_DOWN =      %00000100
         inx
     :
     txa
+    ; ########################
     pha
 
     ; arg 1: sprite y
     lda #SEGMENT_FLAG_ALIVE
     and segment_flags, y
+    ; lda segment_ys, y
     bne :+
         ; don't draw
         lda #OFFSCREEN
