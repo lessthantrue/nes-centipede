@@ -93,6 +93,7 @@ vw3:
   beq vw3
 
   jsr board_update_background
+  lda PPUSTATUS
   jsr gamestate_draw
 
   ; Copy the display list from main RAM to the PPU
