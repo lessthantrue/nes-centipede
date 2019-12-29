@@ -1,4 +1,4 @@
-.include "core/macros.inc"
+
 .include "core/eventprocessor.inc"
 .include "board.inc"
 .include "arrow.inc"
@@ -7,6 +7,7 @@
 .include "global.inc"
 .include "centipede.inc"
 .include "collision.inc"
+.include "gamestate.inc"
 
 SEGMENT_WIDTH = 8
 
@@ -161,7 +162,9 @@ DIR_DOWN =      %00000100
 .proc segment_collide_arrow
     lda #ARROW_FLAG_ACTIVE
     bit arrow_f
-    beq no_collision ; no arrow -> no collision
+    bne :+
+        jmp no_collision ; no arrow -> no collision
+    :
     lda #SEGMENT_FLAG_ALIVE
     and segment_flags, y
     bne :+
@@ -199,6 +202,8 @@ DIR_DOWN =      %00000100
         ora #SEGMENT_FLAG_HEAD
         sta segment_flags, y
         dey
+        ; add score to game state
+        gamestate_add_score SEGMENT_SCORE
     no_collision:
     rts
 .endproc

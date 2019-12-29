@@ -1,5 +1,8 @@
+.ifndef MACROS_INC
+.define MACROS_INC
+
 ; adds const * mult to a
-; fucks X
+; uses X
 .macro add_multiple const, mult
     ldx mult
     :
@@ -13,7 +16,7 @@
 .endmacro
 
 ; adds const * mult to a 2 byte number
-; fucks X, A
+; uses X, A
 .macro add_multiple_short addr, const, mult
     lda addr
     ldx mult
@@ -56,8 +59,8 @@
     sta place+1
 .endmacro
 
-; adds to memory
-; fucks A
+; adds to memory with carry
+; uses A
 .macro adm mem, amt
     lda mem
     adc amt
@@ -82,7 +85,7 @@
 .endmacro
 
 ; clear bits in a memory location that are set in an argument
-; fucks register a
+; uses A
 .macro cla arg, bits
     lda bits
     not
@@ -138,3 +141,5 @@
     tax
     txs
 .endmacro
+
+.endif

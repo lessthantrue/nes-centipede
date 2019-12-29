@@ -1,21 +1,38 @@
 .include "gamestate.inc"
 .include "global.inc"
 .include "nes.inc"
+.include "core/6502.inc"
 
-.segment "BSS"
-score:      .res 2
-lives:      .res 1
+.segment "ZEROPAGE"
+score:      .word $0000
+lives:      .byte $00
 
-; 100 points per centipede segment killed
-; 1 point per mushroom killed
-; 5 points per poison mushroom killed
-; 200 points per flea killed
-; 600/900 points per spider killed, depending on proximity
-; 1000 points per scorpion
-SEGMENT_SCORE = 100
-MUSHROOM_SCORE = 1
-POISON_MUSHROOM_SCORE = 5
-FLEA_SCORE = 100
-SPIDER_FAR_SCORE = 600
-SPIDER_NEAR_SCORE = 900
-SCORPION_SCORE = 1000
+.segment "CODE"
+
+.proc gamestate_init
+    lda #0
+    sta score
+    sta score+1
+    lda #3
+    sta lives
+    rts
+.endproc
+
+; adds an amount to the game score
+; arg 1: low byte of score value to add
+; arg 2: high byte of score value to add
+.proc gamestate_addscore
+    lda score
+    clc
+    adc STACK_TOP+1, x
+    sta score
+    lda score+1
+    adc STACK_TOP+2, x
+    sta score+1
+    rts
+.endproc
+
+.proc gamestate_dec_lives
+    dec lives
+    rts
+.endproc

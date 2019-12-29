@@ -14,9 +14,9 @@
 .include "board.inc"
 .include "centipede.inc"
 .include "player.inc"
-.include "core/macros.inc"
 .include "core/eventprocessor.inc"
 .include "spritegfx.inc"
+.include "gamestate.inc"
 
 .segment "ZEROPAGE"
 nmis:          .res 1
@@ -73,6 +73,7 @@ new_keys:      .res 2
   jsr player_init
   jsr centipede_init
   jsr arrow_init
+  jsr gamestate_init
 
 forever:
 

@@ -1,14 +1,15 @@
-.include "core/macros.inc"
+
 .include "arrow.inc"
 .include "player.inc"
 .include "board.inc"
 .include "spritegfx.inc"
+.include "gamestate.inc"
 
 .segment "BSS"
 ; Game variables
 arrow_x:    .res 1
 arrow_y:    .res 1
-arrow_f:    .res 1 ; flags: active, ???
+arrow_f:    .res 1
 
 SPEED = 5 ; velocity in px/frame (everything will work as long as this is less than 8)
 
@@ -78,8 +79,14 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
         ; collision -> "destroy" arrow, "reduce" mushroom
         sub #1
         pha
+        bne :+ ; increment score if the mushroom was completely destroyed
+            php
+            gamestate_add_score MUSHROOM_SCORE
+            plp
+        :
         call_with_args board_set_value
         pla
+
         jsr board_xy_to_nametable
         jsr board_request_update_background
         jsr arrow_del
