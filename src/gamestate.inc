@@ -6,7 +6,8 @@
 .global gamestate_init, gamestate_addscore, gamestate_dec_lives
 .global gamestate_draw_score, gamestate_draw_lives
 
-SEGMENT_SCORE = 100
+SEGMENT_SCORE = 10
+HEAD_SCORE = 100
 MUSHROOM_SCORE = 1
 POISON_MUSHROOM_SCORE = 5
 FLEA_SCORE = 100

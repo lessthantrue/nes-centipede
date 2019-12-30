@@ -203,7 +203,14 @@ DIR_DOWN =      %00000100
         sta segment_flags, y
         dey
         ; add score to game state
-        gamestate_add_score SEGMENT_SCORE
+        lda #SEGMENT_FLAG_HEAD
+        and segment_flags, y
+        beq :+
+            gamestate_add_score HEAD_SCORE ; head is worth more points
+            jmp :++
+        :
+            gamestate_add_score SEGMENT_SCORE
+        :
     no_collision:
     rts
 .endproc
