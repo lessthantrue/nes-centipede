@@ -11,7 +11,7 @@ REFACTORING:
   \ split move_centipede and collide_centipede?
   \ transpose centipede data structure (list of struct -> struct of list)
   \ for centipede map, temp store segment in a ZP variable, then write back after function
-    * undo this, use a stack parameter for the index, make the segment arrays public
+    \ undo this, just use the Y register, make the segment arrays public
   \ start using oam_used for sprite memory management
   \ increase player speed (requires changing location representation)
   \ draw centipede head on next segment not alive, rather than a flag
@@ -37,13 +37,15 @@ DEVELOPMENT:
   \ Fix all the color palettes
   \ animate centipede
     \ animate centipede better
-  * keep track of score, lives, etc
-    * draw status bar on background
+  \ keep track of score, lives, etc and display on a status bar
+    \ score
+    \ lives
+    * new lives after 10,000 points
+  * make centipede kill player
   * level advancement
   * make centipede move diagonally, not just down on collision
   * sound
   * other enemies (snake, spider, bee, grasshopper)
-  * make centipede kill player
   * player collision with mushrooms
 
 PROJECT MANAGEMENT:
@@ -59,10 +61,12 @@ BUGS:
   \ weird things sometimes happen when drawing new mushroom background objects
       Draws extra mushrooms one spot to the right of where they should be
       Does not occur on online demo?
-  * bg flickers on PPU nametable update (?)
+  \ bg flickers on PPU nametable update (?)
     Flickering only occurs when also drawing the centipede...?
-  * previous segment head flag not always set on next segment death
+  \ previous segment head flag not always set on next segment death
+    see "fix centipede splitting up unnecessarily"
   \ player can wrap around the screen to the left
   * fix centipede splitting up unnecessarily when a middle segment is hit
     Must wait until diagonal movement
   * demo screen bounds don't match FCEUX bounds
+  * head is 100 points, other segments are only 10

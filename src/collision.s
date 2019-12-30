@@ -5,7 +5,7 @@
 
 ; left, right, top, bottom of two bounding boxes
 collision_box1_l:     .res 1
-collision_box1_r:     .res 1
+collision_box1_r:     .res 1 ; l < r
 collision_box1_t:     .res 1 ; t < b (graphical top)
 collision_box1_b:     .res 1
 
@@ -24,24 +24,19 @@ collision_ret:        .res 1
     sta collision_ret
     lda collision_box1_l
     cmp collision_box2_r
-    bcc lr_overlap
-    lda collision_box1_r
-    cmp collision_box2_l
-    bcs lr_overlap
-    jmp no_overlap
-    lr_overlap:
+    bcs no_collision ; 1.l >= 2.r
+    lda collision_box2_l
+    cmp collision_box1_r
+    bcs no_collision ; 2.l >= 1.r
     lda collision_box1_t
     cmp collision_box2_b
-    bcc tb_overlap
-    lda collision_box1_b
-    cmp collision_box2_t
-    bcs tb_overlap
-    jmp no_overlap
-    tb_overlap:
-        ; definitely overlap
-        lda #$1
+    bcs no_collision ; 1.t >= 2.b
+    lda collision_box2_t
+    cmp collision_box1_b
+    bcs no_collision ; 2.t >= 1.b
+        lda #1
         sta collision_ret
-    no_overlap:
+    no_collision:
     rts
 .endproc
 

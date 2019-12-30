@@ -9,7 +9,7 @@
 .include "collision.inc"
 .include "gamestate.inc"
 
-SEGMENT_WIDTH = 8
+SEGMENT_SIZE = 8
 
 DIR_RIGHT =     %00000001
 DIR_LEFT =      %00000010
@@ -172,11 +172,11 @@ DIR_DOWN =      %00000100
     :
     lda segment_xs, y
     sta collision_box1_l
-    add #SEGMENT_WIDTH
+    add #SEGMENT_SIZE
     sta collision_box1_r
     lda segment_ys, y
     sta collision_box1_t
-    add #SEGMENT_WIDTH
+    add #SEGMENT_SIZE
     sta collision_box1_b
     call_with_args collision_box1_contains, arrow_x, arrow_y
     lda collision_ret
@@ -208,9 +208,6 @@ DIR_DOWN =      %00000100
     rts
 .endproc
 
-.proc temp_empty_proc
-    rts
-.endproc
 .proc segment_draw
     ; arg 4: sprite x
     lda segment_xs, y
@@ -240,7 +237,6 @@ DIR_DOWN =      %00000100
         lda #$20
     :
     tax
-    ; add 1 if head, or if next segment is not alive
     lda #SEGMENT_FLAG_HEAD
     and segment_flags, y
     beq :+
@@ -257,13 +253,11 @@ DIR_DOWN =      %00000100
         inx
     :
     txa
-    ; ########################
     pha
 
     ; arg 1: sprite y
     lda #SEGMENT_FLAG_ALIVE
     and segment_flags, y
-    ; lda segment_ys, y
     bne :+
         ; don't draw
         lda #OFFSCREEN
@@ -279,6 +273,24 @@ DIR_DOWN =      %00000100
     rts
 .endproc
 
+.proc segment_collide_player
+    lda segment_xs, y
+    sta collision_box1_l
+    add #SEGMENT_SIZE
+    sta collision_box1_r
+    lda segment_ys, y
+    sta collision_box1_t
+    add #SEGMENT_SIZE
+    sta collision_box1_b    
+    jsr collision_box_overlap
+    lda collision_ret
+    beq :+ ; ret = 0 -> no collision
+        ; collision found, do stuff
+        jsr gamestate_dec_lives
+    :
+    rts
+.endproc
+
 .proc segment_step
     ; skip everything if it isn't alive
     lda #SEGMENT_FLAG_ALIVE
@@ -290,5 +302,6 @@ DIR_DOWN =      %00000100
     jsr segment_collide_board
     jsr segment_move
     jsr segment_collide_arrow
+    jsr segment_collide_player
     rts
 .endproc

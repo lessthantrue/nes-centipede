@@ -1,9 +1,10 @@
 .include "nes.inc"
 .include "global.inc"
-.include "core/macros.inc"
 .include "arrow.inc"
 .include "player.inc"
 .include "spritegfx.inc"
+.include "collision.inc"
+.include "gamestate.inc"
 
 .segment "BSS"
 ; Game variables
@@ -108,16 +109,29 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     jsr arrow_launch
   notA:
 
+  ; b
+  lda cur_keys
+  and #KEY_B
+  beq notB
+    jsr gamestate_dec_lives
+  notB:
+
   rts
 .endproc
 
-;;
-; Draws the player's character to the display list as six sprites.
-; In the template, we don't need to handle half-offscreen actors,
-; but a scrolling game will need to "clip" sprites (skip drawing the
-; parts that are offscreen).
 .proc player_draw
   call_with_args spritegfx_load_oam, player_yhi, #$31, #0, player_xhi
   rts
 .endproc
 
+.proc player_setup_collision
+  lda player_xhi
+  sta collision_box2_l
+  add #8 
+  sta collision_box2_r
+  lda player_yhi
+  sta collision_box2_t
+  add #8
+  sta collision_box2_b
+  rts
+.endproc

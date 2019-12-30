@@ -3,10 +3,12 @@
 .include "nes.inc"
 .include "core/6502.inc"
 .include "core/bin2dec.inc"
+.include "spritegfx.inc"
 
 .segment "ZEROPAGE"
 score:      .word $0000
 lives:      .byte $00
+lives_temp: .byte $00 ; needed for draw lives
 
 .segment "CODE"
 
@@ -48,11 +50,16 @@ lives:      .byte $00
 .endproc
 
 .proc gamestate_dec_lives
-    dec lives
+    pha
+    lda lives
+    beq :+
+        dec lives
+    :
+    pla
     rts
 .endproc
 
-.proc gamestate_draw
+.proc gamestate_draw_score
     lda PPUSTATUS
     lda #$20
     sta PPUADDR
@@ -69,5 +76,34 @@ lives:      .byte $00
     lda #$30
     sta PPUDATA
     sta PPUDATA ; trailing zeros that never change
+    rts
+.endproc
+
+.proc gamestate_draw_lives
+    ldx #8
+    stx lives_temp
+    ; TODO: clear out old OAMs for removed lives, or something
+    lda #(112+40)
+    draw_loop:
+        sub #8
+        tay ; preserve A, we'll need it later
+        pha ; arg 4: sprite x
+        lda #0
+        pha ; arg 3: attributes
+        lda #$31
+        pha ; arg 2: tile index
+        ldx lives_temp
+        cpx lives
+        bcc :+
+            lda #$E7
+            jmp :++
+        :
+            lda #$F7
+        :
+        pha ; arg 1: sprite y
+        call_with_args_manual spritegfx_load_oam, 4
+        tya
+        dec lives_temp
+        bne draw_loop
     rts
 .endproc

@@ -76,11 +76,13 @@ forever:
   jsr read_pads
   jsr player_move
   jsr arrow_step
+  jsr player_setup_collision
   jsr centipede_step
   jsr spritegfx_reset
   jsr centipede_draw
   jsr player_draw
   jsr arrow_draw
+  jsr gamestate_draw_lives
 
   ; Good; we have the full screen ready.  Wait for a vertical blank
   ; and set the scroll registers to display it.
@@ -94,7 +96,7 @@ vw3:
 
   jsr board_update_background
   lda PPUSTATUS
-  jsr gamestate_draw
+  jsr gamestate_draw_score
 
   ; Copy the display list from main RAM to the PPU
   lda #0
