@@ -94,7 +94,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
 
 .proc arrow_draw
     lda #ARROW_FLAG_ACTIVE
-    ; bit arrow_f
+    bit arrow_f
     bne :+
         ; arrow inactive
         call_with_args spritegfx_load_oam, #OFFSCREEN, #$30, #0, #0
