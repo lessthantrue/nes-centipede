@@ -41,10 +41,11 @@ lives_temp: .byte $00 ; needed for draw lives
 
 .proc clear_output
     lda #0
-    ldy #8
+    ldy #0
     :
         sta decimal, y
-        dey
+        iny
+        cpy #8
         bne :-
     rts
 .endproc

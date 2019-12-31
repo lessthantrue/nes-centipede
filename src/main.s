@@ -10,13 +10,15 @@
 
 .include "nes.inc"
 .include "global.inc"
-.include "arrow.inc"
-.include "board.inc"
-.include "centipede.inc"
-.include "player.inc"
 .include "core/eventprocessor.inc"
 .include "spritegfx.inc"
+.include "gamestaterunner.inc"
+.include "arrow.inc"
+.include "player.inc"
+.include "centipede.inc"
+.include "board.inc"
 .include "statusbar.inc"
+.include "gamestates/playing.inc"
 
 .segment "ZEROPAGE"
 nmis:          .res 1
@@ -70,19 +72,17 @@ new_keys:      .res 2
   jsr arrow_init
   jsr statusbar_init
 
+  st_addr state_playing_logic, gamestaterunner_logicfn
+  st_addr state_playing_bg, gamestaterunner_bgfn
+  st_addr state_playing_transition, gamestaterunner_transitionfn
+
 forever:
 
   ; Game logic
-  jsr read_pads
-  jsr player_move
-  jsr arrow_step
-  jsr player_setup_collision
-  jsr centipede_step
+  jsr gamestaterunner_transition
   jsr spritegfx_reset
-  jsr centipede_draw
-  jsr player_draw
-  jsr arrow_draw
-  jsr statusbar_draw_lives
+  jsr read_pads
+  jsr gamestaterunner_logic
 
   ; Good; we have the full screen ready.  Wait for a vertical blank
   ; and set the scroll registers to display it.
@@ -94,9 +94,7 @@ vw3:
   cmp nmis
   beq vw3
 
-  jsr board_update_background
-  lda PPUSTATUS
-  jsr statusbar_draw_score
+  jsr gamestaterunner_bg
 
   ; Copy the display list from main RAM to the PPU
   lda #0

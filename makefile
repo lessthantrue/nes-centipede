@@ -17,13 +17,13 @@ version = 0.1
 # PRG ROM.  If it gets too long for one line, you can add a backslash
 # (the \ character) at the end of the line and continue on the next.
 objlist = nrom collision init main board player arrow centipede board pads ppuclear \
-spritegfx segment statusbar core/queue core/eventprocessor core/bin2dec
+spritegfx segment statusbar core/queue core/eventprocessor core/bin2dec gamestaterunner \
+gamestates/playing
 
 AS65 = ca65
 LD65 = ld65
 CFLAGS65 = -g
 objdir = obj/nes
-subdirs = core
 srcdir = src
 imgdir = tilesets
 
@@ -90,9 +90,6 @@ clean:
 $(objdir):
 	mkdir -p $@
 
-$(subdirs): $(objdir)
-	mkdir -p $(objdir)/$(subdirs)
-
 # Rules for PRG ROM
 
 objlistntsc = $(foreach o,$(objlist),$(objdir)/$(o).o)
@@ -100,10 +97,8 @@ objlistntsc = $(foreach o,$(objlist),$(objdir)/$(o).o)
 map.txt $(title).nes: nrom128.cfg $(objlistntsc)
 	$(LD65) -o $(title).nes -m map.txt -C $^
 
-$(objdir)/%.o: $(srcdir)/%.s $(srcdir)/nes.inc $(srcdir)/global.inc | $(objdir) $(subdirs)
-	$(AS65) $(CFLAGS65) $< -o $@
-
-$(objdir)/%.o: $(objdir)/%.s
+$(objdir)/%.o: $(srcdir)/%.s $(srcdir)/nes.inc $(srcdir)/global.inc | $(objdir)
+	mkdir -p $(@D)
 	$(AS65) $(CFLAGS65) $< -o $@
 
 ##### I'll get around to this when I add sounds / music

@@ -203,6 +203,8 @@ DIR_DOWN =      %00000100
         sta segment_flags, y
         dey
         ; add score to game state
+        tya
+        pha ; preserve y
         lda #SEGMENT_FLAG_HEAD
         and segment_flags, y
         beq :+
@@ -211,6 +213,8 @@ DIR_DOWN =      %00000100
         :
             statusbar_add_score SEGMENT_SCORE
         :
+        pla
+        tay ; restore y
     no_collision:
     rts
 .endproc
