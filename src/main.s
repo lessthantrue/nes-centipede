@@ -16,7 +16,7 @@
 .include "player.inc"
 .include "core/eventprocessor.inc"
 .include "spritegfx.inc"
-.include "gamestate.inc"
+.include "statusbar.inc"
 
 .segment "ZEROPAGE"
 nmis:          .res 1
@@ -68,7 +68,7 @@ new_keys:      .res 2
   jsr player_init
   jsr centipede_init
   jsr arrow_init
-  jsr gamestate_init
+  jsr statusbar_init
 
 forever:
 
@@ -82,7 +82,7 @@ forever:
   jsr centipede_draw
   jsr player_draw
   jsr arrow_draw
-  jsr gamestate_draw_lives
+  jsr statusbar_draw_lives
 
   ; Good; we have the full screen ready.  Wait for a vertical blank
   ; and set the scroll registers to display it.
@@ -96,7 +96,7 @@ vw3:
 
   jsr board_update_background
   lda PPUSTATUS
-  jsr gamestate_draw_score
+  jsr statusbar_draw_score
 
   ; Copy the display list from main RAM to the PPU
   lda #0

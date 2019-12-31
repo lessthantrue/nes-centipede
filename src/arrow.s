@@ -3,7 +3,7 @@
 .include "player.inc"
 .include "board.inc"
 .include "spritegfx.inc"
-.include "gamestate.inc"
+.include "statusbar.inc"
 
 .segment "BSS"
 ; Game variables
@@ -82,7 +82,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
         pha ; manual argument 1: new mushroom growth level
         bne :+ ; increment score if the mushroom was completely destroyed
             php
-            gamestate_add_score MUSHROOM_SCORE
+            statusbar_add_score MUSHROOM_SCORE
             plp
         :
         call_with_args_manual board_set_value, 1

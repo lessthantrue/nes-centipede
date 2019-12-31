@@ -4,7 +4,7 @@
 .include "player.inc"
 .include "spritegfx.inc"
 .include "collision.inc"
-.include "gamestate.inc"
+.include "statusbar.inc"
 
 .segment "BSS"
 ; Game variables
@@ -113,7 +113,7 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
   lda cur_keys
   and #KEY_B
   beq notB
-    jsr gamestate_dec_lives
+    jsr statusbar_dec_lives
   notB:
 
   rts

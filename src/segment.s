@@ -7,7 +7,7 @@
 .include "global.inc"
 .include "centipede.inc"
 .include "collision.inc"
-.include "gamestate.inc"
+.include "statusbar.inc"
 
 SEGMENT_SIZE = 8
 
@@ -206,10 +206,10 @@ DIR_DOWN =      %00000100
         lda #SEGMENT_FLAG_HEAD
         and segment_flags, y
         beq :+
-            gamestate_add_score HEAD_SCORE ; head is worth more points
+            statusbar_add_score HEAD_SCORE ; head is worth more points
             jmp :++
         :
-            gamestate_add_score SEGMENT_SCORE
+            statusbar_add_score SEGMENT_SCORE
         :
     no_collision:
     rts
@@ -234,7 +234,6 @@ DIR_DOWN =      %00000100
     ; anchor sprite index is $10 
     ; add 16 for downwards
     lda segment_dirs, y
-    ; ###################
     and #$0F
     cmp #DIR_DOWN
     beq :+
@@ -275,8 +274,6 @@ DIR_DOWN =      %00000100
     pha
 
     call_with_args_manual spritegfx_load_oam, 4
-
-    done_draw:
     rts
 .endproc
 
@@ -293,7 +290,7 @@ DIR_DOWN =      %00000100
     lda collision_ret
     beq :+ ; ret = 0 -> no collision
         ; collision found, do stuff
-        jsr gamestate_dec_lives
+        jsr statusbar_dec_lives
     :
     rts
 .endproc

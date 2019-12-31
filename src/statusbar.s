@@ -1,4 +1,4 @@
-.include "gamestate.inc"
+.include "statusbar.inc"
 .include "global.inc"
 .include "nes.inc"
 .include "core/6502.inc"
@@ -12,7 +12,7 @@ lives_temp: .byte $00 ; needed for draw lives
 
 .segment "CODE"
 
-.proc gamestate_init
+.proc statusbar_init
     lda #0
     sta score
     sta score+1
@@ -24,7 +24,7 @@ lives_temp: .byte $00 ; needed for draw lives
 ; adds an amount to the game score
 ; arg 1: low byte of score value to add
 ; arg 2: high byte of score value to add
-.proc gamestate_addscore
+.proc statusbar_addscore
     lda score
     clc
     adc STACK_TOP+1, x
@@ -49,7 +49,7 @@ lives_temp: .byte $00 ; needed for draw lives
     rts
 .endproc
 
-.proc gamestate_dec_lives
+.proc statusbar_dec_lives
     pha
     lda lives
     beq :+
@@ -59,7 +59,7 @@ lives_temp: .byte $00 ; needed for draw lives
     rts
 .endproc
 
-.proc gamestate_draw_score
+.proc statusbar_draw_score
     lda PPUSTATUS
     lda #$20
     sta PPUADDR
@@ -79,7 +79,7 @@ lives_temp: .byte $00 ; needed for draw lives
     rts
 .endproc
 
-.proc gamestate_draw_lives
+.proc statusbar_draw_lives
     ldx #8
     stx lives_temp
     ; TODO: clear out old OAMs for removed lives, or something
