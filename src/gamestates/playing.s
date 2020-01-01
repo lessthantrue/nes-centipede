@@ -41,6 +41,8 @@ player_dead_flag: .byte $00
     st_addr state_dead_logic, gamestaterunner_logicfn
     st_addr state_dead_bg, gamestaterunner_bgfn
     st_addr state_dead_transition, gamestaterunner_transitionfn
+    lda #0
+    sta player_dead_flag
     rts 
 .endproc
 
