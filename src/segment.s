@@ -8,6 +8,7 @@
 .include "centipede.inc"
 .include "collision.inc"
 .include "statusbar.inc"
+.include "events/playerdead.inc"
 
 SEGMENT_SIZE = 8
 
@@ -294,6 +295,7 @@ DIR_DOWN =      %00000100
     lda collision_ret
     beq :+ ; ret = 0 -> no collision
         ; collision found, do stuff
+        jsr player_dead_notify
         jsr statusbar_dec_lives
     :
     rts

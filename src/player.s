@@ -5,6 +5,7 @@
 .include "spritegfx.inc"
 .include "collision.inc"
 .include "statusbar.inc"
+.include "events/playerdead.inc"
 
 .segment "BSS"
 ; Game variables
@@ -113,7 +114,7 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
   lda cur_keys
   and #KEY_B
   beq notB
-    jsr statusbar_dec_lives
+    jsr player_dead_notify
   notB:
 
   rts

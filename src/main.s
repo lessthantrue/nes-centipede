@@ -19,6 +19,7 @@
 .include "board.inc"
 .include "statusbar.inc"
 .include "gamestates/playing.inc"
+.include "events/playerdead.inc"
 
 .segment "ZEROPAGE"
 nmis:          .res 1
@@ -71,10 +72,13 @@ new_keys:      .res 2
   jsr centipede_init
   jsr arrow_init
   jsr statusbar_init
+  jsr player_dead_init
 
   st_addr state_playing_logic, gamestaterunner_logicfn
   st_addr state_playing_bg, gamestaterunner_bgfn
   st_addr state_playing_transition, gamestaterunner_transitionfn
+
+  call_with_args player_dead_subscribe, #<state_playing_player_dead_handler, #>state_playing_player_dead_handler
 
 forever:
 
