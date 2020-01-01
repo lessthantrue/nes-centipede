@@ -47,7 +47,8 @@ DEVELOPMENT:
   \ level advancement
     \ palette color change
   * menu screen before starting
-  * game over after all lives are expired, return to menu screen
+  * game over after all lives are expired, return to menu screen, reset score
+  * change centipede speed with levels
   * make centipede move diagonally, not just down on collision
   * sound
   * other enemies (scorpion, spider, flea, grasshopper?)
@@ -74,5 +75,5 @@ BUGS:
   \ player can wrap around the screen to the left
   * fix centipede splitting up unnecessarily when a middle segment is hit
     Wait until diagonal movement, that might fix it
-  * JSNES screen bounds don't match FCEUX screen bounds
+  \ JSNES screen bounds don't match FCEUX screen bounds
   \ head is 100 points, other segments are only 10
