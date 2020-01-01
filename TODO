@@ -45,6 +45,8 @@ DEVELOPMENT:
     \ player death animation
     \ level reset
   * level advancement
+    * pallete color change
+  * game over after all lives are expired
   * make centipede move diagonally, not just down on collision
   * sound
   * other enemies (scorpion, spider, flea, grasshopper?)
