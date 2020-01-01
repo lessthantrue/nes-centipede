@@ -65,7 +65,7 @@ statusbar_level:    .byte $00 ; technically not status bar, but we keep track of
     lda PPUSTATUS
     lda #$20
     sta PPUADDR
-    lda #$40
+    lda #$41
     sta PPUADDR
     ldy #00
     :
@@ -75,9 +75,6 @@ statusbar_level:    .byte $00 ; technically not status bar, but we keep track of
         iny
         cpy #8
         bne :-
-    lda #$30
-    sta PPUDATA
-    sta PPUDATA ; trailing zeros that never change
     rts
 .endproc
 

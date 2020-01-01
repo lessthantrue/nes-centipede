@@ -4,8 +4,8 @@
 .include "../spritegfx.inc"
 .include "playing.inc"
 .include "../gamestaterunner.inc"
-.include "../core/macros.inc"
 .include "../arrow.inc"
+.include "../statusbar.inc"
 
 .segment "BSS"
 dead_timer:     .byte $CF
@@ -84,6 +84,7 @@ dead_timer:     .byte $CF
         rts ; timer not expired, stay in state
     :
     ; transition to the same level, starting over
+    jsr statusbar_dec_lives
     jsr player_init
     jsr centipede_init
     jsr arrow_init

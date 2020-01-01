@@ -190,9 +190,9 @@ board:      .res (WIDTH * HEIGHT)
 
 .proc board_init
     ; set random seed
-    lda #%11001011
+    lda #62
     sta seed
-    lda #%10011000
+    lda #104
     sta seed+1
 
     ; zero board
@@ -218,25 +218,26 @@ board:      .res (WIDTH * HEIGHT)
         bne y_loop_2
     
     ; place pseudo-random mushrooms
-    ldy #30 ; number of mushrooms
+    ldy #40 ; number of mushrooms
     add_loop:
         jsr prng
         and #%00011111 ; clamp random value to 31
-        cmp #HEIGHT - 5
+        cmp #HEIGHT-1
         bmi :+
             sec ; if random number was HEIGHT or greater, subtract HEIGHT
-            sbc #HEIGHT - 5
+            sbc #HEIGHT-1
         :
         sta board_arg_y
         ; repeat for x
         jsr prng
         and #%00011111 ; clamp random value to 31
-        cmp #WIDTH
+        cmp #WIDTH - 2
         bmi :+
             sec ; same clamping method for WIDTH
-            sbc #WIDTH
+            sbc #WIDTH - 2
         :
         sta board_arg_x
+        inc board_arg_x
         jsr board_xy_to_addr
         tya
         pha

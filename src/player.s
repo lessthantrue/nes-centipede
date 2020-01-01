@@ -46,9 +46,9 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     sta player_xlo
     lda player_xhi
     adc #SPEED_HI
-    cmp #(256-8)
+    cmp #(256-16)
     bcc :+
-      lda #(256-8)
+      lda #(256-16)
     :
     sta player_xhi
   notRight:
@@ -63,8 +63,9 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     sta player_xlo
     lda player_xhi
     sbc #SPEED_HI
+    cmp #8
     bcs :+ ; left wall collision
-      lda #0
+      lda #8
     :
     sta player_xhi
   notLeft:

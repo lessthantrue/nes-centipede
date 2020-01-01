@@ -296,7 +296,6 @@ DIR_DOWN =      %00000100
     beq :+ ; ret = 0 -> no collision
         ; collision found, do stuff
         jsr player_dead_notify
-        jsr statusbar_dec_lives
     :
     rts
 .endproc
