@@ -44,9 +44,10 @@ DEVELOPMENT:
   \ make centipede kill player
     \ player death animation
     \ level reset
-  * level advancement
-    * pallete color change
-  * game over after all lives are expired
+  \ level advancement
+    \ palette color change
+  * menu screen before starting
+  * game over after all lives are expired, return to menu screen
   * make centipede move diagonally, not just down on collision
   * sound
   * other enemies (scorpion, spider, flea, grasshopper?)
