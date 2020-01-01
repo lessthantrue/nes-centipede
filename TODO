@@ -30,7 +30,7 @@ DEVELOPMENT:
   \ create mushrooms on centipede death
   \ add mushroom <-> arrow collision
   \ reduce(?) mushrooms on hit
-  * add centipede <-> player collision
+  \ add centipede <-> player collision
   \ create proper sprite for arrow
   \ compress player to 1 sprite
   \ create proper sprite for player
@@ -42,8 +42,8 @@ DEVELOPMENT:
     \ lives
     * new lives after 10,000 points
   \ make centipede kill player
-    * player death animation
-    * level reset
+    \ player death animation
+    \ level reset
   * level advancement
   * make centipede move diagonally, not just down on collision
   * sound
