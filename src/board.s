@@ -254,7 +254,7 @@ board:      .res (WIDTH * HEIGHT)
     ; Start by clearing the first nametable
     ldx #$20
     lda #00
-    ldy #$AA
+    ldy #$00
     jsr ppu_clear_nt
 
     jsr reset_ntaddr

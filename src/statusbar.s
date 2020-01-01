@@ -9,6 +9,7 @@
 score:      .word $0000
 lives:      .byte $00
 lives_temp: .byte $00 ; needed for draw lives
+level:      .byte $00 ; technically not status bar, but we keep track of it here
 
 .segment "CODE"
 

@@ -6,6 +6,7 @@
 .include "../statusbar.inc"
 .include "../nes.inc"
 .include "dead.inc"
+.include "nextlevel.inc"
 .include "../gamestaterunner.inc"
 
 .segment "BSS"
@@ -27,22 +28,33 @@ player_dead_flag: .byte $00
 
 .proc state_playing_bg
     jsr board_update_background
-    lda PPUSTATUS
+    ; lda PPUSTATUS
     jsr statusbar_draw_score
     rts
 .endproc
 
 .proc state_playing_transition
     lda player_dead_flag
-    bne :+
-        rts ; player not dead
+    beq :+
+        ; player died
+        st_addr state_dead_logic, gamestaterunner_logicfn
+        st_addr state_dead_bg, gamestaterunner_bgfn
+        st_addr state_dead_transition, gamestaterunner_transitionfn
+        lda #0
+        sta player_dead_flag
+        rts
+    : ; player not dead
+
+    jsr centipede_is_dead
+    cmp #0
+    beq :+
+        ; centipede is dead
+        st_addr state_nextlevel_logic, gamestaterunner_logicfn
+        st_addr state_nextlevel_bg, gamestaterunner_bgfn
+        st_addr state_nextlevel_transition, gamestaterunner_transitionfn
+        lda #100
+        sta state_nextlevel_delay
     :
-    ; player died
-    st_addr state_dead_logic, gamestaterunner_logicfn
-    st_addr state_dead_bg, gamestaterunner_bgfn
-    st_addr state_dead_transition, gamestaterunner_transitionfn
-    lda #0
-    sta player_dead_flag
     rts 
 .endproc
 

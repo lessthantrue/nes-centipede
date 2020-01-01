@@ -71,3 +71,19 @@ segment_flags       :   .res CENTIPEDE_LEN
     jsr map_segment
     rts
 .endproc
+
+.proc centipede_is_dead
+    ldy #CENTIPEDE_LEN
+    :
+        dey
+        lda #SEGMENT_FLAG_ALIVE
+        and segment_flags, y
+        bne NOT_DEAD
+        cpy #0
+        bne :-
+    lda #1
+    rts
+    NOT_DEAD:
+    lda #0
+    rts
+.endproc

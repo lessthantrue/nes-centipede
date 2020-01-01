@@ -32,7 +32,7 @@
 loop1:
   .repeat 4
     sta PPUDATA
-  .endrepeat
+  .endrep
   dex
   bne loop1
 

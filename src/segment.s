@@ -22,7 +22,7 @@ DIR_DOWN =      %00000100
     ldx centipede_segments
     cpx #CENTIPEDE_LEN
     bne init_segment
-    rts
+    rts ; already have 8 segments, don't make any more
     init_segment:
 
     lda #CENTIPEDE_INIT_X
