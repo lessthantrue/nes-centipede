@@ -5,7 +5,7 @@
 
 .global statusbar_init, statusbar_addscore, statusbar_dec_lives
 .global statusbar_draw_score, statusbar_draw_lives
-.globalzp level
+.globalzp statusbar_level
 
 SEGMENT_SCORE = 10
 HEAD_SCORE = 100

@@ -8,6 +8,7 @@
 .include "dead.inc"
 .include "nextlevel.inc"
 .include "../gamestaterunner.inc"
+.include "../spritegfx.inc"
 
 .segment "BSS"
 player_dead_flag: .byte $00

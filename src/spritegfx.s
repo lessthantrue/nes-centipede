@@ -1,12 +1,13 @@
 .include "nes.inc"
-.include "core/macros.inc"
 .include "core/6502.inc"
 .include "spritegfx.inc"
+.include "statusbar.inc"
 
 .segment "ZEROPAGE"
 
 spritegfx_oam_arg :   .tag oam
 oam_used:   .res 1  ; starts at 0
+palette:    .res 1
 
 .segment "CODE"
 
@@ -18,6 +19,9 @@ oam_used:   .res 1  ; starts at 0
   ; help split the screen.  Not using this yet, but maybe someday.
   ldx #4
   stx oam_used
+  lda statusbar_level
+  and #%00000011
+  sta palette
   rts
 .endproc
 
@@ -37,6 +41,8 @@ oam_used:   .res 1  ; starts at 0
     sta OAM, y
     iny
     lda STACK_TOP+3, x
+    and #%11111100
+    ora palette ; all sprites have the same palette
     sta OAM, y
     iny
     lda STACK_TOP+4, x

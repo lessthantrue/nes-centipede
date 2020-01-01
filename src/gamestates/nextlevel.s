@@ -28,8 +28,8 @@ next_bg_attribute       :   .res 1
 
     ; increment level, and construct the background attribute byte with it
     ; (2 bit value repeated 4 times)
-    inc level
-    lda level
+    inc statusbar_level
+    lda statusbar_level
     and #%00000011
     sta next_bg_attribute
     .repeat 3

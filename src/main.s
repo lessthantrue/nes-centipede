@@ -143,8 +143,10 @@ initial_palette:
   ; background palette (3B each, each 4th byte unused, should be set to bg color)
   ; order: normal mushroom fill, poison mushroom outline, normal mushroom outline
   .byt $30,$06,$1A,$0F, $27,$2C,$15,$0F, $2C,$28,$16,$0F, $2C,$02,$27,$0F
+
   ; sprite palette (3B each, each 4th byte unused)
-  .byt $16,$20,$1A, $0D,$17,$15, $16,$0F,$0D, $30,$06,$0F, $0F,$02,$12
+  ; order: eye color, player body color, centipede color
+  .byt $16,$20,$1A,$0F, $2C,$27,$15,$0F, $28,$2C,$16,$0F, $02,$2C,$27,$0F
 
 ; Include the CHR ROM data
 .segment "CHR"
