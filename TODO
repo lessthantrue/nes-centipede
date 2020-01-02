@@ -17,6 +17,7 @@ REFACTORING:
   \ draw centipede head on next segment not alive, rather than a flag
   \ split centipede file somehow (centipede / segment?)
   \ start passing function parameters on the stack to save static memory
+  * figure out why the header guard for macros.inc isn't working
 
 DEVELOPMENT:
   \ move and properly draw multiple centipede segments
@@ -50,9 +51,11 @@ DEVELOPMENT:
   * game over after all lives are expired, return to menu screen, reset score
   * change centipede speed with levels
   * make centipede move diagonally, not just down on collision
+  * count damaged mushrooms when death occurs
   * sound
   * other enemies (scorpion, spider, flea, grasshopper?)
   * player collision with mushrooms
+  * poison mushrooms?
 
 PROJECT MANAGEMENT:
   \ Update README
