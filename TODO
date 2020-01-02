@@ -53,6 +53,9 @@ DEVELOPMENT:
   * make centipede move diagonally, not just down on collision
   * count damaged mushrooms when death occurs
   * sound
+    \ centipede walking around
+    * arrow hitting things
+    * centipede getting hit
   * other enemies (scorpion, spider, flea, grasshopper?)
   * player collision with mushrooms
   * poison mushrooms?
