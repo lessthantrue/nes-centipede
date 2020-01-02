@@ -20,6 +20,7 @@
 .include "statusbar.inc"
 .include "gamestates/playing.inc"
 .include "events/playerdead.inc"
+.include "sound.inc"
 
 .segment "ZEROPAGE"
 nmis:          .res 1
@@ -73,6 +74,7 @@ new_keys:      .res 2
   jsr arrow_init
   jsr statusbar_init
   jsr player_dead_init
+  jsr sound_init
 
   st_addr state_playing_logic, gamestaterunner_logicfn
   st_addr state_playing_bg, gamestaterunner_bgfn

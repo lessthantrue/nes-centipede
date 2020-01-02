@@ -18,7 +18,7 @@ version = 0.1
 # (the \ character) at the end of the line and continue on the next.
 objlist = nrom collision init main board player arrow centipede board pads ppuclear \
 spritegfx segment statusbar core/queue core/eventprocessor core/bin2dec gamestaterunner \
-gamestates/playing events/playerdead gamestates/dead gamestates/nextlevel
+gamestates/playing events/playerdead gamestates/dead gamestates/nextlevel sound
 
 AS65 = ca65
 LD65 = ld65
