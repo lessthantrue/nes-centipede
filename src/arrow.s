@@ -4,6 +4,7 @@
 .include "board.inc"
 .include "spritegfx.inc"
 .include "statusbar.inc"
+.include "events/events.inc"
 
 .segment "BSS"
 ; Game variables
@@ -25,7 +26,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     lda #ARROW_FLAG_ACTIVE
     bit arrow_f
     bne :+
-        ; arrow not active
+        notify arrow_shoot
         lda player_yhi
         sta arrow_y
         lda player_xhi
@@ -35,6 +36,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
         ora #ARROW_FLAG_ACTIVE
         sta arrow_f
     :
+    ; arrow not active
     rts
 .endproc
 

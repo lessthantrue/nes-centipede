@@ -3,6 +3,7 @@
 
 .include "playerdead.inc"
 .include "segmentkill.inc"
+.include "arrowshoot.inc"
 
 .macro subscribe event, handler
     call_with_args .ident(.sprintf("%s_subscribe", .string(event))), #<handler, #>handler

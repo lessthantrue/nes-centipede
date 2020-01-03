@@ -61,6 +61,7 @@ nmis:          .res 1
   ; event initialization
   init player_dead
   init segment_kill
+  init arrow_shoot
 
   ; other setup
   jsr player_init

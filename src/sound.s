@@ -17,6 +17,7 @@ centipede_march_timer:  .res 1
     lda #MARCH_SOUND_DELAY
     sta centipede_march_timer
     subscribe segment_kill, segment_kill_handler
+    subscribe arrow_shoot, arrow_shoot_handler
     rts
 .endproc
 
@@ -27,21 +28,21 @@ centipede_march_timer:  .res 1
         sta centipede_march_timer
 
         ; set channel
-        lda #%10000001 ; volume/envelope setting and duty cycle flags
-        sta APU_SQ1_ENV
+        lda #%10010100 ; volume/envelope setting and duty cycle flags
+        sta APU_NSE_ENV
         lda #$00
         sta APU_SQ1_SWP ; sweep, not needed (constant pitch)
-        lda periodTableLo+14
+        lda periodTableLo+17
         sta APU_SQ1_LOW ; note low bits
         lda #%10000000 ; length bits: eigth note at 75bpm (first 5 bits)
-        ora periodTableHi+14 ; note high bits
+        ora periodTableHi+17 ; note high bits
         sta APU_SQ1_HIG
     :
     rts
 .endproc
 
 .proc segment_kill_handler
-    lda #%10000001
+    lda #%10010111
     sta APU_SQ2_ENV
     lda $00
     sta APU_SQ2_SWP
@@ -49,6 +50,19 @@ centipede_march_timer:  .res 1
     sta APU_SQ2_LOW
     lda #%10000000
     ora periodTableHi+25
+    sta APU_SQ2_HIG
+    rts
+.endproc
+
+.proc arrow_shoot_handler
+    lda #%00011111
+    sta APU_SQ2_ENV
+    lda #$82
+    sta APU_SQ2_SWP
+    lda periodTableLo+65
+    sta APU_SQ2_LOW
+    lda #%11100000
+    ora periodTableHi+65
     sta APU_SQ2_HIG
     rts
 .endproc

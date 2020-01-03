@@ -19,7 +19,7 @@ version = 0.1
 objlist = nrom collision init main board player arrow centipede board pads ppuclear \
 spritegfx segment statusbar core/queue core/eventprocessor core/bin2dec gamestaterunner \
 gamestates/playing events/playerdead gamestates/dead gamestates/nextlevel sound \
-events/segmentkill
+events/segmentkill events/arrowshoot
 
 AS65 = ca65
 LD65 = ld65
