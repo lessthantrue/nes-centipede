@@ -1,5 +1,5 @@
 .ifndef EVENT_MACROS_INC
-.define EVENT_MACROS_INC 1
+EVENT_MACROS_INC = 1
 
 .include "../core/macros.inc"
 .include "../core/6502.inc"
@@ -20,12 +20,7 @@
     .segment "CODE"
 
     .proc .ident(.sprintf("%s_init", .string(evt_name)))
-        ldy #(NUM_SUBS * 2)
         lda #0
-        :
-            dey
-            sta subscribers, y
-            bne :-
         sta subscriber_count
         rts
     .endproc
@@ -48,6 +43,7 @@
     .endproc
 
     .proc .ident(.sprintf("%s_notify", .string(evt_name)))
+        push_registers
         ldx #0
         LOOP_START:
             cpx subscriber_count
@@ -72,6 +68,7 @@
             inx ; move to next address
             jmp LOOP_START
         LOOP_END:
+        pull_registers
         rts
     .endproc
 .endmacro

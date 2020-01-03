@@ -7,7 +7,7 @@
 .include "centipede.inc"
 .include "collision.inc"
 .include "statusbar.inc"
-.include "events/playerdead.inc"
+.include "events/events.inc"
 
 SEGMENT_SIZE = 8
 
@@ -187,6 +187,8 @@ DIR_DOWN =      %00000100
         and segment_flags, y
         sta segment_flags, y
         jsr arrow_del
+        ; notify people subscribed to the event
+        notify segment_kill
         ; place mushroom where segment was
         lda segment_ys, y
         pha
@@ -293,8 +295,8 @@ DIR_DOWN =      %00000100
     jsr collision_box_overlap
     lda collision_ret
     beq :+ ; ret = 0 -> no collision
-        ; collision found, do stuff
-        jsr player_dead_notify
+        ; collision found, notify player death subscribers
+        notify player_dead
     :
     rts
 .endproc

@@ -17,8 +17,10 @@ REFACTORING:
   \ draw centipede head on next segment not alive, rather than a flag
   \ split centipede file somehow (centipede / segment?)
   \ start passing function parameters on the stack to save static memory
-  * figure out why the header guard for macros.inc isn't working
+  \ figure out why the header guard for macros.inc isn't working
+    instead of .define HEADER_INC, use HEADER_INC = 1
   * move a bunch of stuff to core, make a common header
+  * find a way to put all of the event stuff in the same file
 
 DEVELOPMENT:
   \ move and properly draw multiple centipede segments
@@ -56,7 +58,7 @@ DEVELOPMENT:
   * sound
     \ centipede walking around
     * arrow hitting things
-    * centipede getting hit
+    \ centipede getting hit
     * player death
   * other enemies (scorpion, spider, flea, grasshopper?)
   * player collision with mushrooms

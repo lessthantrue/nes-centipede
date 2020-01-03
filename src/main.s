@@ -57,19 +57,23 @@ nmis:          .res 1
   ; Load the nametable (background map).
   jsr board_init
   jsr board_draw
-  
-  ; Set up game variables, as if it were the start of a new level.
+
+  ; event initialization
+  init player_dead
+  init segment_kill
+
+  ; other setup
   jsr player_init
   jsr centipede_init
   jsr arrow_init
   jsr statusbar_init
-  jsr player_dead_init
   jsr sound_init
 
   st_addr state_playing_logic, gamestaterunner_logicfn
   st_addr state_playing_bg, gamestaterunner_bgfn
   st_addr state_playing_transition, gamestaterunner_transitionfn
 
+  ; set up events
   subscribe player_dead, state_playing_player_dead_handler
 
 forever:
