@@ -1,5 +1,5 @@
 .ifndef MACROS_INC
-.define MACROS_INC
+MACROS_INC = 1
 
 ; adds const * mult to a
 ; uses X

@@ -18,6 +18,7 @@ REFACTORING:
   \ split centipede file somehow (centipede / segment?)
   \ start passing function parameters on the stack to save static memory
   * figure out why the header guard for macros.inc isn't working
+  * move a bunch of stuff to core, make a common header
 
 DEVELOPMENT:
   \ move and properly draw multiple centipede segments
@@ -56,6 +57,7 @@ DEVELOPMENT:
     \ centipede walking around
     * arrow hitting things
     * centipede getting hit
+    * player death
   * other enemies (scorpion, spider, flea, grasshopper?)
   * player collision with mushrooms
   * poison mushrooms?

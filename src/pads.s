@@ -12,9 +12,11 @@
 ; 2011-07: Damian Yerrick added labels for the local variables and
 ;          copious comments and made USE_DAS a compile-time option
 ;
+.include "pads.inc"
 
-.export read_pads
-.importzp cur_keys, new_keys
+.segment "ZEROPAGE"
+cur_keys:      .res 2
+new_keys:      .res 2
 
 JOY1      = $4016
 JOY2      = $4017

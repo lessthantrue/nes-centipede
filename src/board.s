@@ -1,8 +1,8 @@
 .include "nes.inc"
-.include "global.inc"
 .include "core/macros.inc"
 .include "board.inc"
 .include "core/6502.inc"
+.include "ppuclear.inc"
 
 .segment "ZEROPAGE"
 ntaddr:      .addr $0000

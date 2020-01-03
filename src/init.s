@@ -1,5 +1,7 @@
+.include "init.inc"
 .include "nes.inc"
-.include "global.inc"
+.include "main.inc"
+.include "ppuclear.inc"
 
 .segment "CODE"
 .proc reset_handler

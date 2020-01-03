@@ -8,7 +8,7 @@
 ; code copies.  This file is offered as-is, without any warranty.
 ;
 .include "nes.inc"
-.export ppu_clear_nt, ppu_clear_oam, ppu_screen_on
+.include "ppuclear.inc"
 
 ;;
 ; Clears a nametable to a given tile number and attribute value.

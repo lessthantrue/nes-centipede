@@ -4,7 +4,6 @@
 .include "arrow.inc"
 .include "segment.inc"
 .include "spritegfx.inc"
-.include "global.inc"
 .include "centipede.inc"
 .include "collision.inc"
 .include "statusbar.inc"

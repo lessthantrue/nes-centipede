@@ -9,7 +9,6 @@
 .include "nextlevel.inc"
 .include "../gamestaterunner.inc"
 .include "../spritegfx.inc"
-.include "../sound.inc"
 
 .segment "BSS"
 player_dead_flag: .byte $00
@@ -25,7 +24,6 @@ player_dead_flag: .byte $00
     jsr player_draw
     jsr arrow_draw
     jsr statusbar_draw_lives
-    jsr sound_run
     rts
 .endproc
 

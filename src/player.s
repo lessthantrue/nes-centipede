@@ -1,5 +1,5 @@
 .include "nes.inc"
-.include "global.inc"
+.include "pads.inc"
 .include "arrow.inc"
 .include "player.inc"
 .include "spritegfx.inc"

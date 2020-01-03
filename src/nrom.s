@@ -1,3 +1,6 @@
+.include "main.inc"
+.include "init.inc"
+
 .import nmi_handler, reset_handler, irq_handler
 
 .segment "INESHDR"

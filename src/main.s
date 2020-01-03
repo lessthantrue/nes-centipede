@@ -1,15 +1,7 @@
-;
-; Simple sprite demo for NES
-; Copyright 2011-2014 Nicholas Milford
-;
-; Copying and distribution of this file, with or without
-; modification, are permitted in any medium without royalty provided
-; the copyright notice and this notice are preserved in all source
-; code copies.  This file is offered as-is, without any warranty.
-;
-
+.include "main.inc"
+.include "ppuclear.inc"
 .include "nes.inc"
-.include "global.inc"
+.include "pads.inc"
 .include "core/eventprocessor.inc"
 .include "spritegfx.inc"
 .include "gamestaterunner.inc"
@@ -19,13 +11,11 @@
 .include "board.inc"
 .include "statusbar.inc"
 .include "gamestates/playing.inc"
-.include "events/playerdead.inc"
+.include "events/events.inc"
 .include "sound.inc"
 
 .segment "ZEROPAGE"
 nmis:          .res 1
-cur_keys:      .res 2
-new_keys:      .res 2
 
 .segment "CODE"
 
@@ -80,7 +70,7 @@ new_keys:      .res 2
   st_addr state_playing_bg, gamestaterunner_bgfn
   st_addr state_playing_transition, gamestaterunner_transitionfn
 
-  call_with_args player_dead_subscribe, #<state_playing_player_dead_handler, #>state_playing_player_dead_handler
+  subscribe player_dead, state_playing_player_dead_handler
 
 forever:
 
@@ -88,6 +78,7 @@ forever:
   jsr gamestaterunner_transition
   jsr spritegfx_reset
   jsr read_pads
+  jsr sound_run
   jsr gamestaterunner_logic
 
   ; Good; we have the full screen ready.  Wait for a vertical blank

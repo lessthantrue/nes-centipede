@@ -1,5 +1,4 @@
 .include "statusbar.inc"
-.include "global.inc"
 .include "nes.inc"
 .include "core/6502.inc"
 .include "core/bin2dec.inc"

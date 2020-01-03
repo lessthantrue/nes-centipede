@@ -97,7 +97,7 @@ objlistntsc = $(foreach o,$(objlist),$(objdir)/$(o).o)
 map.txt $(title).nes: nrom128.cfg $(objlistntsc)
 	$(LD65) -o $(title).nes -m map.txt -C $^
 
-$(objdir)/%.o: $(srcdir)/%.s $(srcdir)/nes.inc $(srcdir)/global.inc | $(objdir)
+$(objdir)/%.o: $(srcdir)/%.s $(srcdir)/nes.inc | $(objdir)
 	mkdir -p $(@D)
 	$(AS65) $(CFLAGS65) $< -o $@
 
