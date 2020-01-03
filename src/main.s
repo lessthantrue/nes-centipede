@@ -62,6 +62,7 @@ nmis:          .res 1
   init player_dead
   init segment_kill
   init arrow_shoot
+  init centipede_kill
 
   ; other setup
   jsr player_init
@@ -76,6 +77,7 @@ nmis:          .res 1
 
   ; set up events
   subscribe player_dead, state_playing_player_dead_handler
+  subscribe centipede_kill, state_playing_centipede_dead_handler
 
 forever:
 

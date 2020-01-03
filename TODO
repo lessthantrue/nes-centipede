@@ -20,7 +20,7 @@ REFACTORING:
   \ figure out why the header guard for macros.inc isn't working
     instead of .define HEADER_INC, use HEADER_INC = 1
   * move a bunch of stuff to core, make a common header
-  * find a way to put all of the event stuff in the same file
+  \ find a way to put all of the event stuff in the same file
 
 DEVELOPMENT:
   \ move and properly draw multiple centipede segments
@@ -60,6 +60,7 @@ DEVELOPMENT:
     * arrow hitting things
     \ centipede getting hit
     * player death
+    problem: CAN'T FIND DETAILS ON WHAT SPIDER OR LEVEL UP JINGLE IS 
   * other enemies (scorpion, spider, flea, grasshopper?)
   * player collision with mushrooms
   * poison mushrooms?

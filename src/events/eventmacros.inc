@@ -4,31 +4,38 @@ EVENT_MACROS_INC = 1
 .include "../core/macros.inc"
 .include "../core/6502.inc"
 
-.macro make_event evt_name, sub_count
+.define MAKE_SYMBOL(format) .ident(.sprintf(format, .string(evt_name)))
 
-    .ifblank sub_count
-        .define NUM_SUBS 3
-    .else
-        .define NUM_SUBS sub_count
-    .endif
+.macro make_event evt_name, max_subs
+
+    .local subscribers
+    .local sub_count
 
     ; basically the whole file
     .segment "BSS"
-    subscribers:        .res NUM_SUBS * 2
-    subscriber_count:   .res 1
+    .ifblank max_subs
+    subscribers: .res (3 * 2)
+    .else
+    subscribers: .res (max_subs * 2)
+    .endif
+    sub_count:      .res 2
 
     .segment "CODE"
 
-    .proc .ident(.sprintf("%s_init", .string(evt_name)))
+    .proc MAKE_SYMBOL "%s_init"
         lda #0
-        sta subscriber_count
+        sta sub_count
         rts
     .endproc
 
-    .proc .ident(.sprintf("%s_subscribe", .string(evt_name)))
+    .proc MAKE_SYMBOL "%s_subscribe"
         ; look for the first zero address
-        ldy subscriber_count
-        cpy #(NUM_SUBS * 2)
+        ldy sub_count
+        .ifblank max_subs
+        cpy #(3 * 2)
+        .else
+        cpy #(max_subs * 2)
+        .endif
         bne :+
             brk ; Error state: too many subscribers
         :
@@ -38,15 +45,15 @@ EVENT_MACROS_INC = 1
         lda STACK_TOP+1, x
         sta subscribers, y
         iny
-        sty subscriber_count
+        sty sub_count
         rts
     .endproc
 
-    .proc .ident(.sprintf("%s_notify", .string(evt_name)))
+    .proc MAKE_SYMBOL "%s_notify"
         push_registers
         ldx #0
         LOOP_START:
-            cpx subscriber_count
+            cpx sub_count
             beq LOOP_END
             txa
             pha ; preserve x
@@ -74,9 +81,9 @@ EVENT_MACROS_INC = 1
 .endmacro
 
 .macro make_event_header evt_name
-    .global .ident(.sprintf("%s_notify", .string(evt_name)))
-    .global .ident(.sprintf("%s_subscribe", .string(evt_name)))
-    .global .ident(.sprintf("%s_init", .string(evt_name)))
+    .global MAKE_SYMBOL "%s_init"
+    .global MAKE_SYMBOL "%s_subscribe"
+    .global MAKE_SYMBOL "%s_notify"
 .endmacro
 
 .endif

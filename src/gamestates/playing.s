@@ -11,7 +11,8 @@
 .include "../spritegfx.inc"
 
 .segment "BSS"
-player_dead_flag: .byte $00
+player_dead_flag: .res 1
+centipede_dead_flag: .res 1
 
 .segment "CODE"
 
@@ -46,15 +47,16 @@ player_dead_flag: .byte $00
         rts
     : ; player not dead
 
-    jsr centipede_is_dead
-    cmp #0
+    lda centipede_dead_flag
     beq :+
-        ; centipede is dead
+        ; centipede died
         st_addr state_nextlevel_logic, gamestaterunner_logicfn
         st_addr state_nextlevel_bg, gamestaterunner_bgfn
         st_addr state_nextlevel_transition, gamestaterunner_transitionfn
         lda #100
         sta state_nextlevel_delay
+        lda #0
+        sta centipede_dead_flag
     :
     rts 
 .endproc
@@ -62,5 +64,11 @@ player_dead_flag: .byte $00
 .proc state_playing_player_dead_handler
     lda #1
     sta player_dead_flag
+    rts
+.endproc
+
+.proc state_playing_centipede_dead_handler
+    lda #1
+    sta centipede_dead_flag
     rts
 .endproc

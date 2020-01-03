@@ -6,6 +6,7 @@
 .include "arrow.inc"
 .include "spritegfx.inc"
 .include "segment.inc"
+.include "events/events.inc"
 
 .segment "ZEROPAGE"
 
@@ -57,6 +58,7 @@ segment_flags       :   .res CENTIPEDE_LEN
     lda #0
     sta centipede_segments
     jsr segment_init
+    subscribe segment_kill, segment_kill_handler
     rts
 .endproc
 
@@ -85,5 +87,15 @@ segment_flags       :   .res CENTIPEDE_LEN
     rts
     NOT_DEAD:
     lda #0
+    rts
+.endproc
+
+.proc segment_kill_handler
+    jsr centipede_is_dead
+    cmp #0
+    beq :+
+        ; centipede is dead
+        notify centipede_kill
+    :
     rts
 .endproc
