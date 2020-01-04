@@ -5,7 +5,7 @@
 ; Copying and distribution of this file, with or without
 ; modification, are permitted in any medium without royalty provided
 ; the copyright notice and this notice are preserved in all source
-; code copies.  This file is offered as-is, without any warranty.
+; code copies.    This file is offered as-is, without any warranty.
 ;
 .include "nes.inc"
 .include "ppuclear.inc"
@@ -19,30 +19,30 @@
 ; @param Y attribute value ($00, $55, $AA, or $FF)
 .proc ppu_clear_nt
 
-  ; Set base PPU address to XX00
-  stx PPUADDR
-  ldx #$00
-  stx PPUADDR
-  stx PPUSCROLL
-  stx PPUSCROLL
+    ; Set base PPU address to XX00
+    stx PPUADDR
+    ldx #$00
+    stx PPUADDR
+    stx PPUSCROLL
+    stx PPUSCROLL
 
-  ; Clear the 960 spaces of the main part of the nametable,
-  ; using a 4 times unrolled loop
-  ldx #960/4
+    ; Clear the 960 spaces of the main part of the nametable,
+    ; using a 4 times unrolled loop
+    ldx #960/4
 loop1:
-  .repeat 4
-    sta PPUDATA
-  .endrep
-  dex
-  bne loop1
+    .repeat 4
+        sta PPUDATA
+    .endrep
+    dex
+    bne loop1
 
-  ; Clear the 64 entries of the attribute table
-  ldx #64
+    ; Clear the 64 entries of the attribute table
+    ldx #64
 loop2:
-  sty PPUDATA
-  dex
-  bne loop2
-  rts
+    sty PPUDATA
+    dex
+    bne loop2
+    rts
 .endproc
 
 ;;
@@ -51,20 +51,20 @@ loop2:
 ; X is 0 at the end.
 .proc ppu_clear_oam
 
-  ; First round the address down to a multiple of 4 so that it won't
-  ; freeze should the address get corrupted.
-  txa
-  and #%11111100
-  tax
-  lda #$FF  ; Any Y value from $EF through $FF will work
+    ; First round the address down to a multiple of 4 so that it won't
+    ; freeze should the address get corrupted.
+    txa
+    and #%11111100
+    tax
+    lda #$FF    ; Any Y value from $EF through $FF will work
 loop:
-  sta OAM,x
-  inx
-  inx
-  inx
-  inx
-  bne loop
-  rts
+    sta OAM,x
+    inx
+    inx
+    inx
+    inx
+    bne loop
+    rts
 .endproc
 
 ;;
@@ -75,17 +75,17 @@ loop:
 ; @param Y vertical scroll position (0-239)
 ; @param C if true, sprites will be visible
 .proc ppu_screen_on
-  ldx #0
-  stx PPUADDR
-  stx PPUADDR
-  stx PPUSCROLL
-  stx PPUSCROLL
-  sta PPUCTRL
-  lda #BG_ON
-  bcc :+
-  lda #BG_ON|OBJ_ON
+    ldx #0
+    stx PPUADDR
+    stx PPUADDR
+    stx PPUSCROLL
+    stx PPUSCROLL
+    sta PPUCTRL
+    lda #BG_ON
+    bcc :+
+    lda #BG_ON|OBJ_ON
 :
-  sta PPUMASK
-  rts
+    sta PPUMASK
+    rts
 .endproc
 

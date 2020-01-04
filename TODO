@@ -3,88 +3,89 @@
 x : Will not / can not do
 
 REFACTORING:
-  \ make a preserve/restore all registers macro
-  \ move common macros (add_multiple, preserve/restore_registers, etc) to common file
-  x move common procedures (are there any?) to common file (there were none)
-  \ compress centipede::dir and centipede::lastDir to one byte
-  x move everything to individual modules (.inc files as interfaces instead)
-  \ split move_centipede and collide_centipede?
-  \ transpose centipede data structure (list of struct -> struct of list)
-  \ for centipede map, temp store segment in a ZP variable, then write back after function
-    \ undo this, just use the Y register, make the segment arrays public
-  \ start using oam_used for sprite memory management
-  \ increase player speed (requires changing location representation)
-  \ draw centipede head on next segment not alive, rather than a flag
-  \ split centipede file somehow (centipede / segment?)
-  \ start passing function parameters on the stack to save static memory
-  \ figure out why the header guard for macros.inc isn't working
-    instead of .define HEADER_INC, use HEADER_INC = 1
-  * move a bunch of stuff to core, make a common header
-  \ find a way to put all of the event stuff in the same file
+    \ make a preserve/restore all registers macro
+    \ move common macros (add_multiple, preserve/restore_registers, etc) to common file
+    x move common procedures (are there any?) to common file (there were none)
+    \ compress centipede::dir and centipede::lastDir to one byte
+    x move everything to individual modules (.inc files as interfaces instead)
+    \ split move_centipede and collide_centipede?
+    \ transpose centipede data structure (list of struct -> struct of list)
+    \ for centipede map, temp store segment in a ZP variable, then write back after function
+        \ undo this, just use the Y register, make the segment arrays public
+    \ start using oam_used for sprite memory management
+    \ increase player speed (requires changing location representation)
+    \ draw centipede head on next segment not alive, rather than a flag
+    \ split centipede file somehow (centipede / segment?)
+    \ start passing function parameters on the stack to save static memory
+    \ figure out why the header guard for macros.inc isn't working
+        instead of .define HEADER_INC, use HEADER_INC = 1
+    * move a bunch of stuff to core, make a common header
+    \ find a way to put all of the event stuff in the same file
 
 DEVELOPMENT:
-  \ move and properly draw multiple centipede segments
-  \ create proper centipede sprites
-    \ head drawn differently from body
-    \ directions drawn differently
-      \ Left/Right
-      \ Down
-  \ add centipede <-> arrow collision
-    \ kill centipede segment that was hit
-  \ create mushrooms on centipede death
-  \ add mushroom <-> arrow collision
-  \ reduce(?) mushrooms on hit
-  \ add centipede <-> player collision
-  \ create proper sprite for arrow
-  \ compress player to 1 sprite
-  \ create proper sprite for player
-  \ Fix all the color palettes
-  \ animate centipede
-    \ animate centipede better
-  \ keep track of score, lives, etc and display on a status bar
-    \ score
-    \ lives
-    * new lives after 10,000 points
-  \ make centipede kill player
-    \ player death animation
-    \ level reset
-  \ level advancement
-    \ palette color change
-  * menu screen before starting
-  * game over after all lives are expired, return to menu screen, reset score
-  * change centipede speed with levels
-  * make centipede move diagonally, not just down on collision
-  * count damaged mushrooms when death occurs
-  * sound
-    \ centipede walking around
-    \ arrow shooting
-    \ centipede getting hit
-    \ player death
-    problem: CAN'T FIND DETAILS ON WHAT SPIDER OR LEVEL UP JINGLE IS 
-  * other enemies (scorpion, spider, flea, grasshopper?)
-  * player collision with mushrooms
-  * poison mushrooms?
+    \ move and properly draw multiple centipede segments
+    \ create proper centipede sprites
+        \ head drawn differently from body
+        \ directions drawn differently
+            \ Left/Right
+            \ Down
+    \ add centipede <-> arrow collision
+        \ kill centipede segment that was hit
+    \ create mushrooms on centipede death
+    \ add mushroom <-> arrow collision
+    \ reduce(?) mushrooms on hit
+    \ add centipede <-> player collision
+    \ create proper sprite for arrow
+    \ compress player to 1 sprite
+    \ create proper sprite for player
+    \ Fix all the color palettes
+    \ animate centipede
+        \ animate centipede better
+    \ keep track of score, lives, etc and display on a status bar
+        \ score
+        \ lives
+        * new lives after 10,000 points
+    \ make centipede kill player
+        \ player death animation
+        \ level reset
+    \ level advancement
+        \ palette color change
+    * menu screen before starting
+    * game over after all lives are expired, return to menu screen, reset score
+    * change centipede speed with levels
+    * make centipede move diagonally, not just down on collision
+    * count damaged mushrooms when death occurs
+    * sound
+        \ centipede walking around
+        \ arrow shooting
+        \ centipede getting hit
+        \ player death
+        problem: CAN'T FIND DETAILS ON WHAT SPIDER OR LEVEL UP JINGLE IS 
+    * other enemies (scorpion, spider, flea, grasshopper?)
+    * player collision with mushrooms
+    * poison mushrooms?
+        it should be possible as long as normal mushrooms and poison mushrooms share a color
 
 PROJECT MANAGEMENT:
-  \ Update README
-    \ Document change in graphics tools
-  \ Remove old python tools for graphics
-  \ Put on Github
-  \ Double check and delete bg.s
-  * set up releases with built .NES file
-  \ online demo with JSNES
+    \ Update README
+        \ Document change in graphics tools
+    \ Remove old python tools for graphics
+    \ Put on Github
+    \ Double check and delete bg.s
+    * set up releases with built .NES file
+    \ online demo with JSNES
 
 BUGS:
-  \ weird things sometimes happen when drawing new mushroom background objects
-    Draws extra mushrooms one spot to the right of where they should be
-    Does not occur on online demo?
-  \ bg flickers on PPU nametable update (?)
-    Flickering only occurs when also drawing the centipede...?
-    It was some screen wrapping PPU hardware implementation stuff
-  \ previous segment head flag not always set on next segment death
-    see "fix centipede splitting up unnecessarily"
-  \ player can wrap around the screen to the left
-  * fix centipede splitting up unnecessarily when a middle segment is hit
-    Wait until diagonal movement, that might fix it
-  \ JSNES screen bounds don't match FCEUX screen bounds
-  \ head is 100 points, other segments are only 10
+    \ weird things sometimes happen when drawing new mushroom background objects
+        Draws extra mushrooms one spot to the right of where they should be
+        Does not occur on online demo?
+    \ bg flickers on PPU nametable update (?)
+        Flickering only occurs when also drawing the centipede...?
+        It was some screen wrapping PPU hardware implementation stuff
+    \ previous segment head flag not always set on next segment death
+        see "fix centipede splitting up unnecessarily"
+    \ player can wrap around the screen to the left
+    * fix centipede splitting up unnecessarily when a middle segment is hit
+        Wait until diagonal movement, that might fix it
+    \ JSNES screen bounds don't match FCEUX screen bounds
+    \ head is 100 points, other segments are only 10

@@ -14,15 +14,15 @@ palette:    .res 1
 ; resets internal sprite graphics variables.
 ; call at the start of each frame.
 .proc spritegfx_reset
-  ; The first entry in OAM (indices 0-3) is "sprite 0".  In games
-  ; with a scrolling playfield and a still status bar, it's used to
-  ; help split the screen.  Not using this yet, but maybe someday.
-  ldx #4
-  stx oam_used
-  lda statusbar_level
-  and #%00000011
-  sta palette
-  rts
+    ; The first entry in OAM (indices 0-3) is "sprite 0".  In games
+    ; with a scrolling playfield and a still status bar, it's used to
+    ; help split the screen.  Not using this yet, but maybe someday.
+    ldx #4
+    stx oam_used
+    lda statusbar_level
+    and #%00000011
+    sta palette
+    rts
 .endproc
 
 ; loads the argument object data into OAM memory
