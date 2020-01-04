@@ -52,11 +52,13 @@ DEVELOPMENT:
     \ level advancement
         \ palette color change
     * menu screen before starting
-    * game over after all lives are expired, return to menu screen, reset score
+    \ game over after all lives are expired
+        * return to menu screen, reset score
     * change centipede speed with levels
     * make centipede move diagonally, not just down on collision
+    * make centipede move back upwards once reaching the bottom
     * count damaged mushrooms when death occurs
-    * sound
+    \ sound
         \ centipede walking around
         \ arrow shooting
         \ centipede getting hit
