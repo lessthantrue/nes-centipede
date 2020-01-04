@@ -54,15 +54,12 @@ centipede_active:        .res 1
 .endproc
 
 .proc segment_kill_handler
-    lda #%10010111
-    sta APU_SQ2_ENV
-    lda $00
-    sta APU_SQ2_SWP
-    lda periodTableLo+25
-    sta APU_SQ2_LOW
-    lda #%10000000
-    ora periodTableHi+25
-    sta APU_SQ2_HIG
+    lda #%00000100
+    sta APU_NSE_ENV
+    lda #$0D
+    sta APU_NSE_PRD
+    lda #%10010000
+    sta APU_NSE_LEN
     rts
 .endproc
 
