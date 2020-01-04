@@ -6,6 +6,7 @@
 .include "../gamestaterunner.inc"
 .include "../arrow.inc"
 .include "../statusbar.inc"
+.include "gameover.inc"
 
 .segment "BSS"
 dead_timer:     .byte $CF
@@ -85,6 +86,13 @@ dead_timer:     .byte $CF
     :
     ; transition to the same level, starting over
     jsr statusbar_dec_lives
+    bne :+
+        ; out of lives, go to gameover screen
+        st_addr state_gameover_logic, gamestaterunner_logicfn
+        st_addr state_gameover_bg, gamestaterunner_bgfn
+        st_addr state_gameover_transition, gamestaterunner_transitionfn
+        rts
+    :
     jsr player_init
     jsr centipede_reset
     jsr arrow_init

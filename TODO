@@ -21,6 +21,7 @@ REFACTORING:
         instead of .define HEADER_INC, use HEADER_INC = 1
     * move a bunch of stuff to core, make a common header
     \ find a way to put all of the event stuff in the same file
+    * find a way to make game state stuff easier
 
 DEVELOPMENT:
     \ move and properly draw multiple centipede segments

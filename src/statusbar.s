@@ -51,12 +51,10 @@ statusbar_level:    .byte $00 ; technically not status bar, but we keep track of
 .endproc
 
 .proc statusbar_dec_lives
-    pha
     lda lives
     beq :+
         dec lives
     :
-    pla
     rts
 .endproc
 
