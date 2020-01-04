@@ -9,6 +9,7 @@
 .include "nextlevel.inc"
 .include "../gamestaterunner.inc"
 .include "../spritegfx.inc"
+.include "../sound.inc"
 
 .segment "BSS"
 player_dead_flag: .res 1
@@ -25,12 +26,12 @@ centipede_dead_flag: .res 1
     jsr player_draw
     jsr arrow_draw
     jsr statusbar_draw_lives
+    jsr sound_run_default
     rts
 .endproc
 
 .proc state_playing_bg
     jsr board_update_background
-    ; lda PPUSTATUS
     jsr statusbar_draw_score
     rts
 .endproc

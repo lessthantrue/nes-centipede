@@ -7,6 +7,7 @@
 .include "../centipede.inc"
 .include "../statusbar.inc"
 .include "../board.inc"
+.include "../events/events.inc"
 
 .segment "BSS"
 state_nextlevel_delay   :   .res 1
@@ -74,7 +75,8 @@ next_bg_attribute       :   .res 1
     :
     
     ; transition to the next level, starting over
-    jsr centipede_init
+    notify level_up
+    jsr centipede_reset
     st_addr state_playing_logic, gamestaterunner_logicfn
     st_addr state_playing_bg, gamestaterunner_bgfn
     st_addr state_playing_transition, gamestaterunner_transitionfn

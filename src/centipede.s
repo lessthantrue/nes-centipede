@@ -55,10 +55,15 @@ segment_flags       :   .res CENTIPEDE_LEN
 .endproc
 
 .proc centipede_init
+    subscribe segment_kill, segment_kill_handler
+    jsr centipede_reset
+    rts
+.endproc
+
+.proc centipede_reset
     lda #0
     sta centipede_segments
     jsr segment_init
-    subscribe segment_kill, segment_kill_handler
     rts
 .endproc
 

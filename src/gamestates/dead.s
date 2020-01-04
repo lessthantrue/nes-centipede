@@ -86,7 +86,7 @@ dead_timer:     .byte $CF
     ; transition to the same level, starting over
     jsr statusbar_dec_lives
     jsr player_init
-    jsr centipede_init
+    jsr centipede_reset
     jsr arrow_init
 
     st_addr state_playing_logic, gamestaterunner_logicfn

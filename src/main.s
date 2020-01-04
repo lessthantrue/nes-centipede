@@ -63,6 +63,7 @@ nmis:          .res 1
   init segment_kill
   init arrow_shoot
   init centipede_kill
+  init level_up
 
   ; other setup
   jsr player_init
@@ -85,7 +86,6 @@ forever:
   jsr gamestaterunner_transition
   jsr spritegfx_reset
   jsr read_pads
-  jsr sound_run
   jsr gamestaterunner_logic
 
   ; Good; we have the full screen ready.  Wait for a vertical blank
