@@ -15,7 +15,7 @@ centipede_active:        .res 1
 ; centipede walking on triangle
 ; shooting on sq1
 ; everything else on sq2
-; later: player death / enemy kill on noise?
+; player death / enemy kill on noise
 
 .proc sound_init
     lda #$0F
@@ -28,6 +28,7 @@ centipede_active:        .res 1
     sta centipede_march_timer
     subscribe segment_kill, segment_kill_handler
     subscribe arrow_shoot, arrow_shoot_handler
+    subscribe player_dead, player_dead_handler
     rts
 .endproc
 
@@ -73,5 +74,15 @@ centipede_active:        .res 1
     lda #%11100000
     ora periodTableHi+65
     sta APU_SQ1_HIG
+    rts
+.endproc
+
+.proc player_dead_handler
+    lda #%00001111
+    sta APU_NSE_ENV
+    lda #$0E
+    sta APU_NSE_PRD
+    lda #%11000000
+    sta APU_NSE_LEN
     rts
 .endproc
