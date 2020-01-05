@@ -1,9 +1,15 @@
 .include "gameover.inc"
+.include "../gamestaterunner.inc"
+.include "menu.inc"
 .include "../nes.inc"
+.include "../core/macros.inc"
+
+.segment "BSS"
+state_gameover_delay:   .res 1
 
 .segment "CODE"
 GAMEOVER_MSG_LEN = 12
-gameover_msg: .byte $0, "GAME  OVER", $0
+gameover_msg: .byte " GAME  OVER "
 
 .proc state_gameover_logic
     rts
@@ -61,5 +67,11 @@ gameover_msg: .byte $0, "GAME  OVER", $0
 .endproc
 
 .proc state_gameover_transition
+    dec state_gameover_delay
+    bne :+
+        st_addr state_menu_logic, gamestaterunner_logicfn
+        st_addr state_menu_bg, gamestaterunner_bgfn
+        st_addr state_menu_transition, gamestaterunner_transitionfn
+    :
     rts
 .endproc

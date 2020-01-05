@@ -80,6 +80,7 @@ loop:
     stx PPUADDR
     stx PPUSCROLL
     stx PPUSCROLL
+    ora PPUCTRL
     sta PPUCTRL
     lda #BG_ON
     bcc :+

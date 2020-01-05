@@ -10,6 +10,7 @@
 .include "centipede.inc"
 .include "board.inc"
 .include "statusbar.inc"
+.include "gamestates/menu.inc"
 .include "gamestates/playing.inc"
 .include "events/events.inc"
 .include "sound.inc"
@@ -72,13 +73,17 @@ nmis:                    .res 1
     jsr statusbar_init
     jsr sound_init
 
-    st_addr state_playing_logic, gamestaterunner_logicfn
-    st_addr state_playing_bg, gamestaterunner_bgfn
-    st_addr state_playing_transition, gamestaterunner_transitionfn
+    st_addr state_menu_logic, gamestaterunner_logicfn
+    st_addr state_menu_bg, gamestaterunner_bgfn
+    st_addr state_menu_transition, gamestaterunner_transitionfn
 
     ; set up events
     subscribe player_dead, state_playing_player_dead_handler
     subscribe centipede_kill, state_playing_centipede_dead_handler
+
+    ; turn on vblank NMIs
+    lda #VBLANK_NMI|OBJ_1000|BG_0000
+    sta PPUCTRL
 
 forever:
 
@@ -92,9 +97,6 @@ forever:
     ; and set the scroll registers to display it.
     lda nmis
 vw3:
-    pha
-    jsr evtp_run
-    pla
     cmp nmis
     beq vw3
 

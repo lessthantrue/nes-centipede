@@ -88,6 +88,8 @@ dead_timer:     .byte $CF
     jsr statusbar_dec_lives
     bne :+
         ; out of lives, go to gameover screen
+        lda #240
+        sta state_gameover_delay
         st_addr state_gameover_logic, gamestaterunner_logicfn
         st_addr state_gameover_bg, gamestaterunner_bgfn
         st_addr state_gameover_transition, gamestaterunner_transitionfn

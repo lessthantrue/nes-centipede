@@ -51,13 +51,19 @@ DEVELOPMENT:
         \ level reset
     \ level advancement
         \ palette color change
+        * change palette setting to properly color levels 5+
     * menu screen before starting
     \ game over after all lives are expired
         * return to menu screen, reset score
     * change centipede speed with levels
+        * change centipede waves with levels
+            level 1 has 1 centipede of length 8
+            level 2 has 1 centipede of length 7 and 1 severed head
+            level 3 has 1 centipede of length 6 and 2 severed heads
+            and so on
     * make centipede move diagonally, not just down on collision
     * make centipede move back upwards once reaching the bottom
-    * count damaged mushrooms when death occurs
+    * count and repair damaged mushrooms when death occurs
     \ sound
         \ centipede walking around
         \ arrow shooting
@@ -66,9 +72,8 @@ DEVELOPMENT:
         problem: CAN'T FIND DETAILS ON WHAT SPIDER OR LEVEL UP JINGLE IS 
     * other enemies (scorpion, spider, flea, grasshopper?)
     * player collision with mushrooms
-    * poison mushrooms?
-        it should be possible as long as normal mushrooms and poison mushrooms share a color
-
+    * poison mushrooms? it is possible
+    
 PROJECT MANAGEMENT:
     \ Update README
         \ Document change in graphics tools

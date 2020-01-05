@@ -109,7 +109,7 @@ board:      .res (WIDTH * HEIGHT)
 .endproc      
 
 ; sets a to the board state at boardaddr
-; fucks over X register btw
+; uses register X
 .proc board_get_value
     ldx #0
     lda (boardaddr, x) ; indirect mode
@@ -252,14 +252,7 @@ board:      .res (WIDTH * HEIGHT)
 .endproc
 
 .proc board_draw
-    ; Start by clearing the first nametable
-    ldx #$20
-    lda #00
-    ldy #$00
-    jsr ppu_clear_nt
-
     jsr reset_ntaddr
-    lda PPUSTATUS
     lda ntaddr+1
     sta PPUADDR
     lda ntaddr
@@ -287,11 +280,6 @@ board:      .res (WIDTH * HEIGHT)
             bne x_loop_2
         dey
         bne y_loop_2
-
-    ; enable NMIs
-    lda #%10000000
-    ora PPUCTRL
-    sta PPUCTRL
 
     rts
 .endproc
