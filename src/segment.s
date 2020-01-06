@@ -144,16 +144,16 @@ DIR_DOWN =      %00000100
         plp
         beq :+
         ; move right
-            add #SPEED
-            add #SPEED
+            add centipede_speed
+            add centipede_speed
         :
             ; move left
-            sub #SPEED
+            sub centipede_speed
         sta segment_xs, y
         jmp done_moving
     move_down:
         lda segment_ys, y
-        add #SPEED
+        add centipede_speed
         sta segment_ys, y
     done_moving:
     rts

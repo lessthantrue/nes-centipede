@@ -14,6 +14,7 @@ map_iter :      .res 1
 map_fn:         .res 2
 
 centipede_segments  :   .res 1
+centipede_speed     :   .res 1
 
 .segment "BSS"
 segment_xs          :   .res CENTIPEDE_LEN
@@ -55,7 +56,10 @@ segment_flags       :   .res CENTIPEDE_LEN
 .endproc
 
 .proc centipede_init
+    subscribe level_up, level_up_handler
     subscribe segment_kill, segment_kill_handler
+    lda #1
+    sta centipede_speed
     jsr centipede_reset
     rts
 .endproc
@@ -103,4 +107,11 @@ segment_flags       :   .res CENTIPEDE_LEN
         notify centipede_kill
     :
     rts
+.endproc
+
+.proc level_up_handler
+    lda centipede_speed
+    and #%00000001
+    add #1
+    sta centipede_speed
 .endproc

@@ -55,12 +55,12 @@ DEVELOPMENT:
     * menu screen before starting
     \ game over after all lives are expired
         * return to menu screen, reset score
-    * change centipede speed with levels
-        * change centipede waves with levels
-            level 1 has 1 centipede of length 8
-            level 2 has 1 centipede of length 7 and 1 severed head
-            level 3 has 1 centipede of length 6 and 2 severed heads
-            and so on
+    \ change centipede speed with levels
+    * change centipede waves with levels
+        level 1 has 1 centipede of length 8
+        level 2 has 1 centipede of length 7 and 1 severed head
+        level 3 has 1 centipede of length 6 and 2 severed heads
+        and so on
     * make centipede move diagonally, not just down on collision
     * make centipede move back upwards once reaching the bottom
     * count and repair damaged mushrooms when death occurs
@@ -97,3 +97,4 @@ BUGS:
         Wait until diagonal movement, that might fix it
     \ JSNES screen bounds don't match FCEUX screen bounds
     \ head is 100 points, other segments are only 10
+    * player dies on level load in JSNES
