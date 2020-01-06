@@ -90,3 +90,17 @@ loop:
     rts
 .endproc
 
+; @param Y attribute value ($00, $55, $AA, or $FF)
+.proc ppu_clear_attr
+    lda #$23
+    sta PPUADDR
+    lda #$C0
+    sta PPUADDR
+    ; Clear the 64 entries of the attribute table
+    ldx #64
+loop2:
+    sty PPUDATA
+    dex
+    bne loop2
+    rts
+.endproc

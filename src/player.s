@@ -111,12 +111,19 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
         jsr arrow_launch
     notA:
 
-    ; b
+    ; b: debug death
     lda cur_keys
     and #KEY_B
     beq notB
         notify player_dead
     notB:
+
+    ; select: debug next level
+    lda cur_keys
+    and #KEY_SELECT
+    beq notSelect
+        notify centipede_kill
+    notSelect:
 
     rts
 .endproc

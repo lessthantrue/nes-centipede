@@ -5,10 +5,10 @@
 .include "spritegfx.inc"
 
 .segment "ZEROPAGE"
-score:              .word $0000
-lives:              .byte $00
-lives_temp:         .byte $00 ; needed for draw lives
-statusbar_level:    .byte $00 ; technically not status bar, but we keep track of it here
+score:              .res 2
+lives:              .res 1
+lives_temp:         .res 1 ; needed for draw lives
+statusbar_level:    .res 1 ; technically not status bar, but we keep track of it here
 
 .segment "CODE"
 
@@ -16,6 +16,7 @@ statusbar_level:    .byte $00 ; technically not status bar, but we keep track of
     lda #0
     sta score
     sta score+1
+    sta statusbar_level
     lda #3
     sta lives
     rts

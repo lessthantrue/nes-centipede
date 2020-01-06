@@ -3,6 +3,7 @@
 .include "menu.inc"
 .include "../nes.inc"
 .include "../core/macros.inc"
+.include "../statusbar.inc"
 
 .segment "BSS"
 state_gameover_delay:   .res 1
@@ -69,6 +70,7 @@ gameover_msg: .byte " GAME  OVER "
 .proc state_gameover_transition
     dec state_gameover_delay
     bne :+
+        jsr statusbar_init
         st_addr state_menu_logic, gamestaterunner_logicfn
         st_addr state_menu_bg, gamestaterunner_bgfn
         st_addr state_menu_transition, gamestaterunner_transitionfn

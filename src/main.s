@@ -12,6 +12,7 @@
 .include "statusbar.inc"
 .include "gamestates/menu.inc"
 .include "gamestates/playing.inc"
+.include "gamestates/nextlevel.inc"
 .include "events/events.inc"
 .include "sound.inc"
 
@@ -52,7 +53,7 @@ nmis:                    .res 1
     ; Now the PPU has stabilized, and we're still in vblank.  Copy the
     ; palette right now because if you load a palette during forced
     ; blank (not vblank), it'll be visible as a rainbow streak.
-    jsr load_main_palette
+    load_palette palette_set_0
 
     ; While in forced blank we have full access to VRAM.
     ; Load the nametable (background map).
@@ -118,37 +119,6 @@ vw3:
 
 ; And that's all there is to it.
 .endproc
-
-.proc load_main_palette
-    ; seek to the start of palette memory ($3F00-$3F1F)
-    lda PPUSTATUS
-    ldx #$3F
-    stx PPUADDR
-    ldx #$00
-    stx PPUADDR
-    stx PPUSCROLL
-    stx PPUSCROLL
-copypalloop:
-    lda initial_palette,x
-    sta PPUDATA
-    inx
-    cpx #32
-    bcc copypalloop
-    rts
-.endproc
-
-.segment "RODATA"
-COLOR_BG = $0F
-initial_palette:
-    ; background color
-    .byt $0F
-    ; background palette (3B each, each 4th byte unused, should be set to bg color)
-    ; order: normal mushroom fill, poison mushroom outline, normal mushroom outline
-    .byt $30,$06,$1A,$0F, $27,$2C,$15,$0F, $2C,$28,$16,$0F, $2C,$02,$27,$0F
-
-    ; sprite palette (3B each, each 4th byte unused)
-    ; order: eye color, player body color, centipede color
-    .byt $16,$20,$1A,$0F, $2C,$27,$15,$0F, $28,$2C,$16,$0F, $02,$2C,$27,$0F
 
 ; Include the CHR ROM data
 .segment "CHR"

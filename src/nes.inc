@@ -9,7 +9,7 @@
 ;
 
 .ifndef NES_INC
-.define NES_INC 1
+NES_INC = 1
 
 APUFLAGS = $4015
 APU_FLAG_SQ1 = %00000001

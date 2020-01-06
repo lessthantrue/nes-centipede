@@ -7,6 +7,7 @@
 .include "../arrow.inc"
 .include "../gamestaterunner.inc"
 .include "../core/macros.inc"
+.include "../ppuclear.inc"
 .include "play_init.inc"
 
 .segment "CODE"
@@ -83,6 +84,9 @@ menu_extralife_msg: .byte " BONUS EVERY 12000 "
         iny
         jmp :-
     :
+
+    ldy #$00
+    jsr ppu_clear_attr
 
     rts
 .endproc
