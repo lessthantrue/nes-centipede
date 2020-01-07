@@ -11,9 +11,8 @@
 
 SEGMENT_SIZE = 8
 
-DIR_RIGHT =     %00000001
-DIR_LEFT =      %00000010
-DIR_DOWN =      %00000100
+DIR_RIGHT =     %00000001 ; left = not right
+DIR_DOWN =      %00000010
 
 .segment "CODE"
 
@@ -38,8 +37,13 @@ DIR_DOWN =      %00000100
         ora #SEGMENT_FLAG_HEAD
     :
     sta segment_flags, x
-    ; keep last 2 bits of segment counter for animation offset
+    ; keep last 3 bits of segment counter for animation offset
     txa
+    asl
+    asl
+    asl
+    asl
+    asl
     and #SEGMENT_MASK_ANIM_OFFSET
     ora segment_flags, x
     sta segment_flags, x
@@ -82,7 +86,7 @@ DIR_DOWN =      %00000100
         beq not_down
             ; need special logic when moving down that doesn't involve collisions
             lda segment_dirs, y
-            and #%00000011 ; switch down bit off
+            and #%00000001 ; switch down bit off
             sta segment_dirs, y
             ; jmp done_collision
         not_down:
@@ -135,7 +139,7 @@ DIR_DOWN =      %00000100
         bne :+
             ; change directions
             lda segment_dirs, y
-            eor #%00000011 ; swap last 2 bits
+            eor #%00000001 ; swap last bit
             sta segment_dirs, y
         :
 
@@ -145,17 +149,17 @@ DIR_DOWN =      %00000100
         sta segment_ys, y
     :
     lda segment_dirs, y
-    and #DIR_LEFT
+    and #DIR_RIGHT
     php ; cUz LdA cHaNgEs SoMe PrOcEsSoR fLaGs
     lda segment_xs, y
     plp
     bne :+
-    ; move right
-        add centipede_speed
-        add centipede_speed
-    :
-        ; move left
+    ; move left
         sub centipede_speed
+        sub centipede_speed
+    :
+        ; move right
+        add centipede_speed
     sta segment_xs, y
     rts
 .endproc
@@ -229,43 +233,33 @@ DIR_DOWN =      %00000100
 
     ; arg 3: sprite flags
     lda segment_dirs, y
-    and #%00000010
+    and #%00000001
     asl a
     asl a
     asl a
     asl a
-    asl a ; shift dir bits left 5 times, lines up perfectly with sprite mirroring
+    asl a
+    asl a ; shift dir bits left 6 times, lines up perfectly with sprite mirroring
     pha
 
     ; arg 2: sprite tile index
-    ; anchor sprite index is $10 
-    ; add 16 for downwards
+    ; there is a LOT of bit arithmetic about to happen
+    lda segment_flags, y
+    and #SEGMENT_MASK_ANIM_OFFSET|SEGMENT_FLAG_HEAD
+    lsr
+    lsr
+    lsr
+    lsr
+    add #$10
+    pha
     lda segment_dirs, y
     and #DIR_DOWN
-    bne :+
-        lda #$10
-        jmp :++
-    :
-        lda #$20
-    :
-    tax
-    lda #SEGMENT_FLAG_HEAD
-    and segment_flags, y
     beq :+
-        inx
+        ; dir down set
+        pla
+        add #DIR_DOWN
+        pha
     :
-    lda segment_flags, y
-    and #SEGMENT_MASK_ANIM_OFFSET
-    clc
-    adc segment_xs, y
-    and #%00001000
-    beq :+
-        ; add 2 for animation state 2
-        inx
-        inx
-    :
-    txa
-    pha
 
     ; arg 1: sprite y
     lda #SEGMENT_FLAG_ALIVE
@@ -301,6 +295,23 @@ DIR_DOWN =      %00000100
     rts
 .endproc
 
+.proc segment_step_animation
+    lda segment_xs, y
+    and #$7
+    cmp #2
+    beq :+
+    cmp #6
+    beq :+
+    jmp :++
+    :
+        ; 2 or 6 above a multiple of 8
+        lda segment_flags, y
+        add #%00100000
+        sta segment_flags, y
+    :
+    rts
+.endproc
+
 .proc segment_step
     ; skip everything if it isn't alive
     lda #SEGMENT_FLAG_ALIVE
@@ -309,6 +320,7 @@ DIR_DOWN =      %00000100
         rts
     :
 
+    jsr segment_step_animation
     jsr segment_collide_board
     jsr segment_move
     jsr segment_collide_arrow

@@ -129,7 +129,7 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
 .endproc
 
 .proc player_draw
-    call_with_args spritegfx_load_oam, player_yhi, #$31, #0, player_xhi
+    call_with_args spritegfx_load_oam, player_yhi, #$21, #0, player_xhi
     rts
 .endproc
 

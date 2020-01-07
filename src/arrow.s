@@ -99,11 +99,11 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     bit arrow_f
     bne :+
         ; arrow inactive
-        call_with_args spritegfx_load_oam, #OFFSCREEN, #$30, #0, #0
+        call_with_args spritegfx_load_oam, #OFFSCREEN, #$20, #0, #0
         jmp :++
     :
         ; arrow active
-        call_with_args spritegfx_load_oam, arrow_y, #$30, #0, arrow_x
+        call_with_args spritegfx_load_oam, arrow_y, #$20, #0, arrow_x
     :
     rts
 .endproc
