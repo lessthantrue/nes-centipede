@@ -48,6 +48,7 @@ DIR_DOWN =      %00000100
 .endproc
 
 .proc segment_collide_board
+    ; only check collisions on pixel multiples of 8
     lda segment_xs, y
     and #$07
     beq :+
@@ -58,6 +59,7 @@ DIR_DOWN =      %00000100
     beq :+
         rts
     : ; else
+        ; ############################ segment init
         ; first, check if we need to init another centipede segment
         lda #SEGMENT_FLAG_INIT
         and segment_flags, y
@@ -74,35 +76,28 @@ DIR_DOWN =      %00000100
         sta segment_flags, y
         jsr segment_init
         :
-        ; on a grid position, do collision checks
+        ; ############################# collision checks
         lda segment_dirs, y
-        and #$0F
-        cmp #DIR_DOWN
-        bne not_down ; need special logic when moving down that doesn't involve collisions
-            lda #%00000111
-            and segment_ys, y
-            bne done_collision ; only check on pixel multiples of 8
-            ; set direction to inverted last direction (stored in high nibble)
+        and #DIR_DOWN
+        beq not_down
+            ; need special logic when moving down that doesn't involve collisions
             lda segment_dirs, y
-            lsr
-            lsr
-            lsr
-            lsr
-            not
-            and #%00000011
+            and #%00000011 ; switch down bit off
             sta segment_dirs, y
+            ; jmp done_collision
         not_down:
         ldx segment_xs, y
-        cmp #DIR_RIGHT
-        beq right_collision
+        lda segment_dirs, y
+        and #DIR_RIGHT
+        bne right_collision
             ; check for left collision
-            cpx #8
-            bne mushroom_collision ; no wall collision here
+            cpx #16
+            bcs mushroom_collision ; no wall collision here
             jmp lr_collision
         right_collision:
             ; check for right collision
             cpx #240
-            bne mushroom_collision ; no wall collision here
+            bcc mushroom_collision ; no wall collision here
             jmp lr_collision
         mushroom_collision:
             lda segment_ys, y
@@ -111,8 +106,8 @@ DIR_DOWN =      %00000100
             pha
             call_with_args_manual board_convert_sprite_xy, 2
             lda segment_dirs, y
-            cmp #DIR_RIGHT
-            beq :+
+            and #DIR_RIGHT
+            bne :+
                 dec board_arg_x
                 dec board_arg_x ; check one space to the left
             :
@@ -121,12 +116,8 @@ DIR_DOWN =      %00000100
             jsr board_get_value
             beq done_collision ; no mushroom -> no collision
         lr_collision:
-            ; save last direction, set new direction to down
+            ; set new direction to down + previous direction
             lda segment_dirs, y
-            asl
-            asl
-            asl
-            asl
             ora #DIR_DOWN
             sta segment_dirs, y
     done_collision:
@@ -135,27 +126,37 @@ DIR_DOWN =      %00000100
 
 .proc segment_move
     lda segment_dirs, y
-    and #$0F
-    cmp #DIR_DOWN
-    beq move_down
-        cmp #DIR_LEFT
-        php ; cUz LdA cHaNgEs SoMe PrOcEsSoR fLaGs
-        lda segment_xs, y
-        plp
-        beq :+
-        ; move right
-            add centipede_speed
-            add centipede_speed
+    and #DIR_DOWN
+    beq :++
+        ; turn back to finish diagonal movement if y value is 4 more than a multiple of 8
+        lda segment_ys, y
+        and #$07
+        cmp #4
+        bne :+
+            ; change directions
+            lda segment_dirs, y
+            eor #%00000011 ; swap last 2 bits
+            sta segment_dirs, y
         :
-            ; move left
-            sub centipede_speed
-        sta segment_xs, y
-        jmp done_moving
-    move_down:
+
+        ; finish moving down
         lda segment_ys, y
         add centipede_speed
         sta segment_ys, y
-    done_moving:
+    :
+    lda segment_dirs, y
+    and #DIR_LEFT
+    php ; cUz LdA cHaNgEs SoMe PrOcEsSoR fLaGs
+    lda segment_xs, y
+    plp
+    bne :+
+    ; move right
+        add centipede_speed
+        add centipede_speed
+    :
+        ; move left
+        sub centipede_speed
+    sta segment_xs, y
     rts
 .endproc
 
@@ -240,9 +241,8 @@ DIR_DOWN =      %00000100
     ; anchor sprite index is $10 
     ; add 16 for downwards
     lda segment_dirs, y
-    and #$0F
-    cmp #DIR_DOWN
-    beq :+
+    and #DIR_DOWN
+    bne :+
         lda #$10
         jmp :++
     :

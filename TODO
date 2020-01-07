@@ -61,7 +61,7 @@ DEVELOPMENT:
         level 2 has 1 centipede of length 7 and 1 severed head
         level 3 has 1 centipede of length 6 and 2 severed heads
         and so on
-    * make centipede move diagonally, not just down on collision
+    \ make centipede move diagonally, not just down on collision
     * make centipede move back upwards once reaching the bottom
     * count and repair damaged mushrooms when death occurs
     \ sound
@@ -94,7 +94,7 @@ BUGS:
         see "fix centipede splitting up unnecessarily"
     \ player can wrap around the screen to the left
     * fix centipede splitting up unnecessarily when a middle segment is hit
-        Wait until diagonal movement, that might fix it
+        Wait until diagonal movement, that might fix it. Update: did not fix it
     \ JSNES screen bounds don't match FCEUX screen bounds
     \ head is 100 points, other segments are only 10
     * player dies on level load in JSNES
