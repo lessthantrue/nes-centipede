@@ -45,16 +45,16 @@ DEVELOPMENT:
     \ keep track of score, lives, etc and display on a status bar
         \ score
         \ lives
-        * new lives after 10,000 points
+        * new lives after 12,000 points
     \ make centipede kill player
         \ player death animation
         \ level reset
     \ level advancement
         \ palette color change
-        * change palette setting to properly color levels 5+
-    * menu screen before starting
+        \ change palette setting to properly color levels 5+
+    \ menu screen before starting
     \ game over after all lives are expired
-        * return to menu screen, reset score
+        \ return to menu screen, reset score
     \ change centipede speed with levels
     * change centipede waves with levels
         level 1 has 1 centipede of length 8
