@@ -1,7 +1,7 @@
 .include "spider.inc"
-.include "spritegfx.inc"
-.include "core/macros.inc"
-.include "random.inc"
+.include "../spritegfx.inc"
+.include "../core/macros.inc"
+.include "../random.inc"
 
 ; Spider : These appear from the top left or right of the player 
 ; area. They will either bounce across the player's area at 

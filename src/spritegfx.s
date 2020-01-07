@@ -1,7 +1,7 @@
 .include "nes.inc"
 .include "core/6502.inc"
 .include "spritegfx.inc"
-.include "statusbar.inc"
+.include "game/game.inc"
 
 .segment "ZEROPAGE"
 

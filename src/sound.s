@@ -1,6 +1,5 @@
 .include "sound.inc"
 .include "nes.inc"
-.include "centipede.inc"
 .include "core/ntscperiods.s"
 .include "events/events.inc"
 

@@ -16,10 +16,11 @@ version = 0.1
 # Space-separated list of assembly language files that make up the
 # PRG ROM.  If it gets too long for one line, you can add a backslash
 # (the \ character) at the end of the line and continue on the next.
-objlist = nrom collision init main board player arrow centipede board pads ppuclear \
-spritegfx segment statusbar core/queue core/eventprocessor core/bin2dec gamestaterunner \
-gamestates/playing gamestates/dead gamestates/nextlevel sound gamestates/gameover\
-events/events gamestates/menu gamestates/play_init random spider
+objlist = nrom init main collision gamestaterunner ppuclear sound spritegfx random pads \
+game/arrow game/board game/centipede game/segment game/spider game/statusbar game/player \
+gamestates/dead gamestates/gameover gamestates/menu gamestates/nextlevel gamestates/play_init gamestates/playing \
+events/events \
+core/bin2dec core/ntscperiods
 
 AS65 = ca65
 LD65 = ld65

@@ -1,7 +1,7 @@
 .ifndef STATUSBAR_INC
 .define STATUSBAR_INC
 
-.include "core/macros.inc"
+.include "../core/macros.inc"
 
 .global statusbar_init, statusbar_addscore, statusbar_dec_lives
 .global statusbar_draw_score, statusbar_draw_lives

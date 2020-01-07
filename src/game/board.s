@@ -1,9 +1,9 @@
-.include "nes.inc"
-.include "core/macros.inc"
+.include "../nes.inc"
+.include "../core/macros.inc"
 .include "board.inc"
-.include "core/6502.inc"
-.include "ppuclear.inc"
-.include "random.inc"
+.include "../core/6502.inc"
+.include "../ppuclear.inc"
+.include "../random.inc"
 
 .segment "ZEROPAGE"
 ntaddr:      .addr $0000

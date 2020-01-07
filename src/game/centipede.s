@@ -1,12 +1,12 @@
-.include "core/macros.inc"
-.include "core/eventprocessor.inc"
+.include "../core/macros.inc"
+.include "../core/eventprocessor.inc"
 .include "board.inc"
 .include "centipede.inc"
-.include "collision.inc"
+.include "../collision.inc"
 .include "arrow.inc"
-.include "spritegfx.inc"
+.include "../spritegfx.inc"
 .include "segment.inc"
-.include "events/events.inc"
+.include "../events/events.inc"
 
 .segment "ZEROPAGE"
 

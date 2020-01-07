@@ -1,11 +1,11 @@
-.include "nes.inc"
-.include "pads.inc"
+.include "../nes.inc"
+.include "../pads.inc"
 .include "arrow.inc"
 .include "player.inc"
-.include "spritegfx.inc"
-.include "collision.inc"
+.include "../spritegfx.inc"
+.include "../collision.inc"
 .include "statusbar.inc"
-.include "events/events.inc"
+.include "../events/events.inc"
 
 .segment "BSS"
 ; Game variables

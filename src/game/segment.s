@@ -1,13 +1,13 @@
 
-.include "core/eventprocessor.inc"
+.include "../core/eventprocessor.inc"
 .include "board.inc"
 .include "arrow.inc"
 .include "segment.inc"
-.include "spritegfx.inc"
+.include "../spritegfx.inc"
 .include "centipede.inc"
-.include "collision.inc"
+.include "../collision.inc"
 .include "statusbar.inc"
-.include "events/events.inc"
+.include "../events/events.inc"
 
 SEGMENT_SIZE = 8
 

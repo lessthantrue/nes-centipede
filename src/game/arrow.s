@@ -2,9 +2,9 @@
 .include "arrow.inc"
 .include "player.inc"
 .include "board.inc"
-.include "spritegfx.inc"
+.include "../spritegfx.inc"
 .include "statusbar.inc"
-.include "events/events.inc"
+.include "../events/events.inc"
 
 .segment "BSS"
 ; Game variables

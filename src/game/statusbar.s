@@ -1,8 +1,8 @@
 .include "statusbar.inc"
-.include "nes.inc"
-.include "core/6502.inc"
-.include "core/bin2dec.inc"
-.include "spritegfx.inc"
+.include "../nes.inc"
+.include "../core/6502.inc"
+.include "../core/bin2dec.inc"
+.include "../spritegfx.inc"
 
 .segment "ZEROPAGE"
 score:              .res 2
