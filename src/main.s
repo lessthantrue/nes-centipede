@@ -15,6 +15,8 @@
 .include "gamestates/nextlevel.inc"
 .include "events/events.inc"
 .include "sound.inc"
+.include "random.inc"
+.include "spider.inc"
 
 .segment "ZEROPAGE"
 nmis:                    .res 1
@@ -54,6 +56,7 @@ nmis:                    .res 1
     ; palette right now because if you load a palette during forced
     ; blank (not vblank), it'll be visible as a rainbow streak.
     load_palette palette_set_0
+    jsr random_init
 
     ; While in forced blank we have full access to VRAM.
     ; Load the nametable (background map).

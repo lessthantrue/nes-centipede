@@ -6,6 +6,7 @@
 .include "../gamestaterunner.inc"
 .include "../arrow.inc"
 .include "../statusbar.inc"
+.include "../spider.inc"
 .include "gameover.inc"
 
 .segment "BSS"
@@ -98,6 +99,7 @@ dead_timer:     .byte $CF
     jsr player_init
     jsr centipede_reset
     jsr arrow_init
+    jsr spider_init
 
     st_addr state_playing_logic, gamestaterunner_logicfn
     st_addr state_playing_bg, gamestaterunner_bgfn

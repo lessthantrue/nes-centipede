@@ -10,6 +10,7 @@
 .include "../gamestaterunner.inc"
 .include "../spritegfx.inc"
 .include "../sound.inc"
+.include "../spider.inc"
 
 .segment "BSS"
 player_dead_flag: .res 1
@@ -27,6 +28,8 @@ centipede_dead_flag: .res 1
     jsr arrow_draw
     jsr statusbar_draw_lives
     jsr sound_run_default
+    jsr spider_draw
+    jsr spider_step
     rts
 .endproc
 

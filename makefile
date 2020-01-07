@@ -19,7 +19,7 @@ version = 0.1
 objlist = nrom collision init main board player arrow centipede board pads ppuclear \
 spritegfx segment statusbar core/queue core/eventprocessor core/bin2dec gamestaterunner \
 gamestates/playing gamestates/dead gamestates/nextlevel sound gamestates/gameover\
-events/events gamestates/menu gamestates/play_init
+events/events gamestates/menu gamestates/play_init random spider
 
 AS65 = ca65
 LD65 = ld65

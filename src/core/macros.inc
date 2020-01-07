@@ -112,6 +112,8 @@ MACROS_INC = 1
     .endif
     .ifblank r1
         ; emit nothing
+    .elseif .match({r1}, a)
+        pha
     .else
         lda     r1
         pha

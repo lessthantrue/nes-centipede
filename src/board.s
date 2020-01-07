@@ -3,6 +3,7 @@
 .include "board.inc"
 .include "core/6502.inc"
 .include "ppuclear.inc"
+.include "random.inc"
 
 .segment "ZEROPAGE"
 ntaddr:      .addr $0000
@@ -15,7 +16,6 @@ update_data: .byte $00 ; 3 bits for mushroom damage level, bit 4 is "update requ
 BOARD_FLAG_REQ_UPDATE = %00010000
 
 .segment "BSS"
-seed:       .res 2 ; doesn't matter what's here, so long as it's not zero
 ; 32 spaces wide (32 - margins) by 28 spaces tall = 896 bytes
 WIDTH = 32
 HEIGHT = 26
@@ -171,30 +171,7 @@ board:      .res (WIDTH * HEIGHT)
     rts
 .endproc
 
-; Returns a random 8-bit number in A (0-255), clobbers X (0).
-.proc prng
-	ldx #8     ; iteration count (generates 8 bits)
-	lda seed+0
-:
-	asl        ; shift the register
-	rol seed+1
-	bcc :+
-	eor #$2D   ; apply XOR feedback whenever a 1 bit is shifted out
-:
-	dex
-	bne :--
-	sta seed+0
-	cmp #0     ; reload flags
-	rts
-.endproc
-
 .proc board_init
-    ; set random seed
-    lda #62
-    sta seed
-    lda #104
-    sta seed+1
-
     ; zero board
     jsr reset_boardaddr
     ldy #HEIGHT
@@ -220,7 +197,7 @@ board:      .res (WIDTH * HEIGHT)
     ; place pseudo-random mushrooms
     ldy #40 ; number of mushrooms
     add_loop:
-        jsr prng
+        jsr rand8
         and #%00011111 ; clamp random value to 31
         cmp #HEIGHT-1
         bmi :+
@@ -229,7 +206,7 @@ board:      .res (WIDTH * HEIGHT)
         :
         sta board_arg_y
         ; repeat for x
-        jsr prng
+        jsr rand8
         and #%00011111 ; clamp random value to 31
         cmp #WIDTH - 2
         bmi :+
