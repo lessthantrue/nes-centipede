@@ -87,7 +87,7 @@ statusbar_level:    .res 1 ; technically not status bar, but we keep track of it
         pha ; arg 4: sprite x
         lda #0
         pha ; arg 3: attributes
-        lda #$31
+        lda #$21
         pha ; arg 2: tile index
         ldx lives_temp
         cpx lives

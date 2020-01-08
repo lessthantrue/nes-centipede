@@ -73,7 +73,13 @@ DEVELOPMENT:
         \ centipede getting hit
         \ player death
         problem: CAN'T FIND DETAILS ON WHAT SPIDER OR LEVEL UP JINGLE IS 
-    * other enemies (scorpion, spider, flea, grasshopper?)
+    * spider
+        \ base behavior
+        * spawn randomly
+        * destroy mushrooms
+        * jingle/music/sound/whatever
+        * proper scoring
+    * other enemies (scorpion, flea, grasshopper?)
     * player collision with mushrooms
     * poison mushrooms? it is possible
     

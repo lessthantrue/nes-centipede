@@ -2,6 +2,11 @@
 .include "../spritegfx.inc"
 .include "../core/macros.inc"
 .include "../random.inc"
+.include "player.inc"
+.include "arrow.inc"
+.include "statusbar.inc"
+.include "../collision.inc"
+.include "../events/events.inc"
 
 ; Spider : These appear from the top left or right of the player 
 ; area. They will either bounce across the player's area at 
@@ -12,29 +17,31 @@
 ;  the area. They destroy mushrooms they cross over.
 
 .segment "BSS"
-spider_x:   .res 1
-spider_y:   .res 1
-spider_f:   .res 1 ; flags as defined below
+spider_x:       .res 1
+spider_y:       .res 1
+spider_f:       .res 1 ; flags as defined below
+spider_anim:    .res 1 ; animation state (tile index)
 
-SPIDER_INIT_X_LEFT = 0
-SPIDER_INIT_X_RIGHT = 255
-SPIDER_INIT_Y = 200
+SPIDER_INIT_X_LEFT = 8
+SPIDER_INIT_X_RIGHT = 248
+SPIDER_INIT_Y = 132
 
 SPIDER_FLAG_LEFT    = %00000001 ; set if the spider started on the left side and is going right
 SPIDER_FLAG_ALIVE   = %00000010
 SPIDER_FLAG_HORIZ   = %00000100 ; set if the spider is moving diagonally
 SPIDER_FLAG_VERT    = %00001000 ; set if the spider is moving up
 
-SPIDER_BOUNDS_TOP = 190
-SPIDER_BOUNDS_BOT = 230
+SPIDER_BOUNDS_TOP = SPIDER_INIT_Y
+SPIDER_BOUNDS_BOT = 200
 
 SPIDER_SPEED = 2
 
 .segment "CODE"
 
 .proc spider_init
-    jsr rand8
-    and #SPIDER_FLAG_LEFT ; this bit is randomly set
+    ; jsr rand8
+    ; and #SPIDER_FLAG_LEFT ; this bit is randomly set
+    lda #0
     ora #SPIDER_FLAG_ALIVE|SPIDER_FLAG_HORIZ
     sta spider_f
     and #SPIDER_FLAG_LEFT
@@ -48,6 +55,8 @@ SPIDER_SPEED = 2
     sta spider_x
     lda #SPIDER_INIT_Y
     sta spider_y
+    lda #$30
+    sta spider_anim
     rts
 .endproc
 
@@ -55,7 +64,7 @@ SPIDER_SPEED = 2
     ; vertical
     lda #SPIDER_FLAG_VERT
     bit spider_f
-    beq :+
+    bne :+
         ; spider moving down
         lda spider_y
         add #SPIDER_SPEED
@@ -95,8 +104,9 @@ SPIDER_SPEED = 2
     bcs :+
         ; top collision. Spider needs to start moving down, so clear the vert bit
         lda spider_f
-        and #(256-SPIDER_FLAG_VERT)
+        and #(255-SPIDER_FLAG_VERT)
         sta spider_f
+        jmp collision_occur
     :
 
     lda spider_y
@@ -106,7 +116,20 @@ SPIDER_SPEED = 2
         lda spider_f
         ora #SPIDER_FLAG_VERT
         sta spider_f
+        jmp collision_occur
     :
+
+    rts ; don't continue if no collision occured
+
+    collision_occur:
+        ; randomly set spider horizontal flag
+        lda spider_f
+        and #(255-SPIDER_FLAG_HORIZ)
+        sta spider_f ; clear spider bit
+        jsr rand8
+        and #SPIDER_FLAG_HORIZ
+        ora spider_f
+        sta spider_f ; set horiz bit only if that bit is set in the random number
 
     rts
 .endproc
@@ -115,14 +138,59 @@ SPIDER_SPEED = 2
     lda #SPIDER_FLAG_ALIVE
     bit spider_f
     bne :+
+        ; spider dead
         call_with_args spritegfx_load_oam, #OFFSCREEN, #$20, #0, #0
         call_with_args spritegfx_load_oam, #OFFSCREEN, #$20, #0, #0
         rts
     :
     lda spider_x
-    call_with_args spritegfx_load_oam, spider_y, #$20, #0, a
     sub #8
-    call_with_args spritegfx_load_oam, spider_y, #$20, #0, a
+    call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, a
+    lda spider_x
+    inc spider_anim
+    call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, a
+    
+    inc spider_anim
+    lda spider_anim
+    cmp #$40
+    bne :+
+        lda #$30
+        sta spider_anim
+    :
+
+    rts
+.endproc
+
+.proc spider_collide_player
+    lda spider_x
+    sub #8
+    sta collision_box1_l
+    add #16
+    sta collision_box1_r
+    lda spider_y
+    sta collision_box1_t
+    add #8
+    sta collision_box1_b
+    jsr player_setup_collision
+    jsr collision_box_overlap
+    cmp #1
+    bne :+
+        notify player_dead
+    :
+    rts
+.endproc
+
+.proc spider_collide_arrow
+    ; called immediately after collide player, so don't
+    ; have to set up collision box again
+    call_with_args collision_box1_contains, arrow_x, arrow_y
+    lda collision_ret
+    beq :+
+        statusbar_add_score SPIDER_NEAR_SCORE
+        jsr arrow_del
+        lda #0
+        sta spider_f
+    :
     rts
 .endproc
 
@@ -136,5 +204,7 @@ SPIDER_SPEED = 2
 
     jsr spider_move
     jsr spider_collide_walls
+    jsr spider_collide_player
+    jsr spider_collide_arrow
     rts
 .endproc
