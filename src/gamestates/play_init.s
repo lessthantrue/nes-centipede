@@ -1,12 +1,10 @@
 .include "../gamestaterunner.inc"
 .include "playing.inc"
 .include "../core/macros.inc"
-.include "../board.inc"
-.include "../centipede.inc"
 .include "play_init.inc"
 .include "../nes.inc"
 .include "../ppuclear.inc"
-.include "../spider.inc"
+.include "../game/game.inc"
 
 ; this state exists because some background drawing needs to be done
 ; before moving from main menu to playing
@@ -14,7 +12,6 @@
 .segment "CODE"
 
 .proc state_play_init_logic
-    jsr spider_init
     rts
 .endproc
 

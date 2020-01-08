@@ -2,13 +2,11 @@
 .include "../pads.inc"
 .include "playing.inc"
 .include "../nes.inc"
-.include "../player.inc"
-.include "../centipede.inc"
-.include "../arrow.inc"
 .include "../gamestaterunner.inc"
 .include "../core/macros.inc"
 .include "../ppuclear.inc"
 .include "play_init.inc"
+.include "../game/game.inc"
 
 .segment "CODE"
 
@@ -19,8 +17,7 @@ MENU_EXTRALIFE_MSG_LEN = 19
 menu_extralife_msg: .byte " BONUS EVERY 12000 "
 
 .proc state_menu_logic
-    jsr centipede_step
-    jsr centipede_draw
+    jsr menu_step
     rts
 .endproc
 
@@ -95,9 +92,7 @@ menu_extralife_msg: .byte " BONUS EVERY 12000 "
     lda #KEY_START
     bit cur_keys
     beq :+
-        jsr centipede_reset
-        jsr player_init
-        jsr arrow_init
+        jsr game_full_reset
         st_addr state_play_init_logic, gamestaterunner_logicfn
         st_addr state_play_init_bg, gamestaterunner_bgfn
         st_addr state_play_init_transition, gamestaterunner_transitionfn

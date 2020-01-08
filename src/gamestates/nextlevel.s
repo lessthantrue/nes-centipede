@@ -2,13 +2,9 @@
 .include "../gamestaterunner.inc"
 .include "../nes.inc"
 .include "playing.inc"
-.include "../arrow.inc"
-.include "../player.inc"
-.include "../centipede.inc"
-.include "../statusbar.inc"
-.include "../board.inc"
 .include "../events/events.inc"
 .include "../ppuclear.inc"
+.include "../game/game.inc"
 
 .segment "BSS"
 state_nextlevel_delay   :   .res 1
@@ -80,8 +76,7 @@ palette_set_2:
 .endproc
 
 .proc state_nextlevel_bg
-    jsr board_update_background
-    jsr statusbar_draw_score
+    jsr game_bg
     lda state_nextlevel_delay
     beq :+
         rts
@@ -102,7 +97,7 @@ palette_set_2:
     
     ; transition to the next level, starting over
     notify level_up
-    jsr centipede_reset
+    jsr game_level_reset
     st_addr state_playing_logic, gamestaterunner_logicfn
     st_addr state_playing_bg, gamestaterunner_bgfn
     st_addr state_playing_transition, gamestaterunner_transitionfn

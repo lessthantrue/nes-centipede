@@ -1,16 +1,11 @@
 .include "playing.inc"
-.include "../arrow.inc"
-.include "../player.inc"
-.include "../centipede.inc"
-.include "../board.inc"
-.include "../statusbar.inc"
 .include "../nes.inc"
 .include "dead.inc"
 .include "nextlevel.inc"
 .include "../gamestaterunner.inc"
 .include "../spritegfx.inc"
 .include "../sound.inc"
-.include "../spider.inc"
+.include "../game/game.inc"
 
 .segment "BSS"
 player_dead_flag: .res 1
@@ -19,23 +14,12 @@ centipede_dead_flag: .res 1
 .segment "CODE"
 
 .proc state_playing_logic
-    jsr player_move
-    jsr arrow_step
-    jsr player_setup_collision
-    jsr centipede_step
-    jsr centipede_draw
-    jsr player_draw
-    jsr arrow_draw
-    jsr statusbar_draw_lives
-    jsr sound_run_default
-    jsr spider_draw
-    jsr spider_step
+    jsr game_step
     rts
 .endproc
 
 .proc state_playing_bg
-    jsr board_update_background
-    jsr statusbar_draw_score
+    jsr game_bg
     rts
 .endproc
 

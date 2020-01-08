@@ -22,7 +22,9 @@ REFACTORING:
     * move a bunch of stuff to core, make a common header
     \ find a way to put all of the event stuff in the same file
     * find a way to make game state stuff easier, one macro to change game states
-    * clean up all the old stuff I didn't use
+    * clean up all the old stuff I didn't use (Move somewhere else, it can be useful)
+    * general organization
+        \ move strictly game related code to a file, make a common header
 
 DEVELOPMENT:
     \ move and properly draw multiple centipede segments

@@ -1,13 +1,10 @@
 .include "dead.inc"
-.include "../centipede.inc"
-.include "../player.inc"
+.include "../game/game.inc"
 .include "../spritegfx.inc"
 .include "playing.inc"
 .include "../gamestaterunner.inc"
-.include "../arrow.inc"
-.include "../statusbar.inc"
-.include "../spider.inc"
 .include "gameover.inc"
+.include "../core/macros.inc"
 
 .segment "BSS"
 dead_timer:     .byte $CF
@@ -96,10 +93,7 @@ dead_timer:     .byte $CF
         st_addr state_gameover_transition, gamestaterunner_transitionfn
         rts
     :
-    jsr player_init
-    jsr centipede_reset
-    jsr arrow_init
-    jsr spider_init
+    jsr game_level_reset
 
     st_addr state_playing_logic, gamestaterunner_logicfn
     st_addr state_playing_bg, gamestaterunner_bgfn

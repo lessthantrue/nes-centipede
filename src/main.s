@@ -55,8 +55,7 @@ nmis:                    .res 1
 
     ; While in forced blank we have full access to VRAM.
     ; Load the nametable (background map).
-    jsr board_init
-    jsr board_draw
+    jsr game_init_bg
 
     ; event initialization
     init player_dead
@@ -65,18 +64,15 @@ nmis:                    .res 1
     init centipede_kill
     init level_up
 
-    ; other setup
-    jsr player_init
-    jsr centipede_init
-    jsr arrow_init
-    jsr statusbar_init
-    jsr sound_init
+    ; set up most game logic
+    jsr game_init
 
+    ; set initial state
     st_addr state_menu_logic, gamestaterunner_logicfn
     st_addr state_menu_bg, gamestaterunner_bgfn
     st_addr state_menu_transition, gamestaterunner_transitionfn
 
-    ; set up events
+    ; set up core events
     subscribe player_dead, state_playing_player_dead_handler
     subscribe centipede_kill, state_playing_centipede_dead_handler
 
