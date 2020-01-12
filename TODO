@@ -77,10 +77,10 @@ DEVELOPMENT:
         \ base behavior
         \ spawn randomly
         \ destroy mushrooms
-        * jingle/music/sound/whatever
+        \ jingle/music/sound/whatever
         * proper scoring
     * particles when an enemy is shot
-    * other enemies (scorpion, flea, grasshopper?)
+    * other enemies (scorpion, flea)
     * player collision with mushrooms
     * poison mushrooms? it is possible
     * pause game

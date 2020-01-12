@@ -73,7 +73,6 @@ SPIDER_JINGLE_LEN = 10
         lda periodTableLo, x ; but I don't want to deal with indirect
         sta APU_SQ2_LOW
         lda #%00111000        
-        ; lda #%00100000
         ora periodTableHi, x
         sta APU_SQ2_HIG
         lda #%10011111
