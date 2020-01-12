@@ -194,12 +194,20 @@ DIR_DOWN =      %00000010
         jsr arrow_del
         ; notify people subscribed to the event
         notify segment_kill
-        ; place mushroom where segment was
+        ; place mushroom where segment was plus direction
         lda segment_ys, y
         pha
         lda segment_xs, y
         pha
         call_with_args_manual board_convert_sprite_xy, 2
+        lda segment_dirs, y
+        and #DIR_RIGHT
+        bne :+
+            ; was moving left
+            dec board_arg_x
+            dec board_arg_x
+        :
+        inc board_arg_x
         jsr board_xy_to_addr
         jsr board_xy_to_nametable
         call_with_args board_set_value, #$04

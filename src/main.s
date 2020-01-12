@@ -5,9 +5,7 @@
 .include "core/eventprocessor.inc"
 .include "spritegfx.inc"
 .include "gamestaterunner.inc"
-.include "gamestates/menu.inc"
-.include "gamestates/playing.inc"
-.include "gamestates/nextlevel.inc"
+.include "gamestates/gamestates.inc"
 .include "events/events.inc"
 .include "sound.inc"
 .include "random.inc"
@@ -68,9 +66,7 @@ nmis:                    .res 1
     jsr game_init
 
     ; set initial state
-    st_addr state_menu_logic, gamestaterunner_logicfn
-    st_addr state_menu_bg, gamestaterunner_bgfn
-    st_addr state_menu_transition, gamestaterunner_transitionfn
+    swap_state menu
 
     ; set up core events
     subscribe player_dead, state_playing_player_dead_handler

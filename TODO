@@ -79,6 +79,7 @@ DEVELOPMENT:
         * destroy mushrooms
         * jingle/music/sound/whatever
         * proper scoring
+    * particles when an enemy is shot
     * other enemies (scorpion, flea, grasshopper?)
     * player collision with mushrooms
     * poison mushrooms? it is possible
@@ -103,7 +104,7 @@ BUGS:
     \ previous segment head flag not always set on next segment death
         see "fix centipede splitting up unnecessarily"
     \ player can wrap around the screen to the left
-    * fix centipede splitting up unnecessarily when a middle segment is hit
+    \ fix centipede splitting up unnecessarily when a middle segment is hit
         Wait until diagonal movement, that might fix it. Update: did not fix it
     \ JSNES screen bounds don't match FCEUX screen bounds
     \ head is 100 points, other segments are only 10
