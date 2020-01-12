@@ -4,8 +4,6 @@ EVENT_MACROS_INC = 1
 .include "../core/macros.inc"
 .include "../core/6502.inc"
 
-.define MAKE_SYMBOL(format) .ident(.sprintf(format, .string(evt_name)))
-
 .macro make_event evt_name, max_subs
 
     .local subscribers
@@ -22,13 +20,13 @@ EVENT_MACROS_INC = 1
 
     .segment "CODE"
 
-    .proc MAKE_SYMBOL "%s_init"
+    .proc MAKE_IDENT "%s_init", evt_name
         lda #0
         sta sub_count
         rts
     .endproc
 
-    .proc MAKE_SYMBOL "%s_subscribe"
+    .proc MAKE_IDENT "%s_subscribe", evt_name
         ; look for the first zero address
         ldy sub_count
         .ifblank max_subs
@@ -49,7 +47,7 @@ EVENT_MACROS_INC = 1
         rts
     .endproc
 
-    .proc MAKE_SYMBOL "%s_notify"
+    .proc MAKE_IDENT "%s_notify", evt_name
         push_registers
         ldx #0
         LOOP_START:
@@ -81,9 +79,9 @@ EVENT_MACROS_INC = 1
 .endmacro
 
 .macro make_event_header evt_name
-    .global MAKE_SYMBOL "%s_init"
-    .global MAKE_SYMBOL "%s_subscribe"
-    .global MAKE_SYMBOL "%s_notify"
+    .global MAKE_IDENT "%s_init", evt_name
+    .global MAKE_IDENT "%s_subscribe", evt_name
+    .global MAKE_IDENT "%s_notify", evt_name
 .endmacro
 
 .endif

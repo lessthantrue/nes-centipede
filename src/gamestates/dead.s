@@ -1,4 +1,4 @@
-.include "dead.inc"
+.include "gamestates.inc"
 .include "../game/game.inc"
 .include "../spritegfx.inc"
 .include "playing.inc"
@@ -88,16 +88,10 @@ dead_timer:     .byte $CF
         ; out of lives, go to gameover screen
         lda #240
         sta state_gameover_delay
-        st_addr state_gameover_logic, gamestaterunner_logicfn
-        st_addr state_gameover_bg, gamestaterunner_bgfn
-        st_addr state_gameover_transition, gamestaterunner_transitionfn
+        swap_state gameover
         rts
     :
     jsr game_level_reset
-
-    st_addr state_playing_logic, gamestaterunner_logicfn
-    st_addr state_playing_bg, gamestaterunner_bgfn
-    st_addr state_playing_transition, gamestaterunner_transitionfn
-
+    swap_state playing
     rts
 .endproc

@@ -1,7 +1,5 @@
-.include "playing.inc"
+.include "gamestates.inc"
 .include "../nes.inc"
-.include "dead.inc"
-.include "nextlevel.inc"
 .include "../gamestaterunner.inc"
 .include "../spritegfx.inc"
 .include "../sound.inc"
@@ -27,9 +25,7 @@ centipede_dead_flag: .res 1
     lda player_dead_flag
     beq :+
         ; player died
-        st_addr state_dead_logic, gamestaterunner_logicfn
-        st_addr state_dead_bg, gamestaterunner_bgfn
-        st_addr state_dead_transition, gamestaterunner_transitionfn
+        swap_state dead
         lda #0
         sta player_dead_flag
         rts
@@ -38,9 +34,7 @@ centipede_dead_flag: .res 1
     lda centipede_dead_flag
     beq :+
         ; centipede died
-        st_addr state_nextlevel_logic, gamestaterunner_logicfn
-        st_addr state_nextlevel_bg, gamestaterunner_bgfn
-        st_addr state_nextlevel_transition, gamestaterunner_transitionfn
+        swap_state nextlevel
         lda #100
         sta state_nextlevel_delay
         lda #0

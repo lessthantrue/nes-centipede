@@ -66,7 +66,7 @@ DEVELOPMENT:
         and so on
     \ make centipede move diagonally, not just down on collision
     * make centipede move back upwards once reaching the bottom
-    * count and repair damaged mushrooms when death occurs
+    * repair damaged mushrooms when death occurs
     \ sound
         \ centipede walking around
         \ arrow shooting
@@ -82,6 +82,7 @@ DEVELOPMENT:
     * other enemies (scorpion, flea, grasshopper?)
     * player collision with mushrooms
     * poison mushrooms? it is possible
+    * pause game
     
 PROJECT MANAGEMENT:
     \ Update README
@@ -107,3 +108,4 @@ BUGS:
     \ JSNES screen bounds don't match FCEUX screen bounds
     \ head is 100 points, other segments are only 10
     * player dies on level load in JSNES
+        probably because variables in playing state aren't initialized properly

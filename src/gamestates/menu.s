@@ -1,11 +1,9 @@
-.include "menu.inc"
+.include "gamestates.inc"
 .include "../pads.inc"
-.include "playing.inc"
 .include "../nes.inc"
 .include "../gamestaterunner.inc"
 .include "../core/macros.inc"
 .include "../ppuclear.inc"
-.include "play_init.inc"
 .include "../game/game.inc"
 
 .segment "CODE"
@@ -93,9 +91,7 @@ menu_extralife_msg: .byte " BONUS EVERY 12000 "
     bit cur_keys
     beq :+
         jsr game_full_reset
-        st_addr state_play_init_logic, gamestaterunner_logicfn
-        st_addr state_play_init_bg, gamestaterunner_bgfn
-        st_addr state_play_init_transition, gamestaterunner_transitionfn
+        swap_state play_init
     :
     rts
 .endproc

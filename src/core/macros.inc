@@ -144,4 +144,6 @@ MACROS_INC = 1
     txs
 .endmacro
 
+.define MAKE_IDENT(format, symb) .ident(.sprintf(format, .string(symb)))
+
 .endif

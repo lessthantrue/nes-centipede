@@ -1,7 +1,6 @@
-.include "nextlevel.inc"
+.include "gamestates.inc"
 .include "../gamestaterunner.inc"
 .include "../nes.inc"
-.include "playing.inc"
 .include "../events/events.inc"
 .include "../ppuclear.inc"
 .include "../game/game.inc"
@@ -98,8 +97,6 @@ palette_set_2:
     ; transition to the next level, starting over
     notify level_up
     jsr game_level_reset
-    st_addr state_playing_logic, gamestaterunner_logicfn
-    st_addr state_playing_bg, gamestaterunner_bgfn
-    st_addr state_playing_transition, gamestaterunner_transitionfn
+    swap_state playing
     rts
 .endproc

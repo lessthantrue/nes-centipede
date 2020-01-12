@@ -1,7 +1,6 @@
+.include "gamestates.inc"
 .include "../gamestaterunner.inc"
-.include "playing.inc"
 .include "../core/macros.inc"
-.include "play_init.inc"
 .include "../nes.inc"
 .include "../ppuclear.inc"
 .include "../game/game.inc"
@@ -24,8 +23,6 @@
 .endproc
 
 .proc state_play_init_transition
-    st_addr state_playing_logic, gamestaterunner_logicfn
-    st_addr state_playing_bg, gamestaterunner_bgfn
-    st_addr state_playing_transition, gamestaterunner_transitionfn
+    swap_state playing
     rts
 .endproc

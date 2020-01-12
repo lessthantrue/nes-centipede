@@ -41,8 +41,8 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
 .endproc
 
 .proc arrow_step
-    jsr arrow_move
     jsr arrow_collide
+    jsr arrow_move
     rts
 .endproc
 
