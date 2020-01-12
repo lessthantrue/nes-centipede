@@ -2,12 +2,15 @@
 .include "nes.inc"
 .include "core/ntscperiods.s"
 .include "events/events.inc"
+.include "game/game.inc"
 
 .segment "ZEROPAGE"
 
 MARCH_SOUND_DELAY = 20 ; frames
 centipede_march_timer:  .res 1
-centipede_active:        .res 1
+centipede_active:       .res 1
+
+spider_jingle_counter:  .res 1
 
 .segment "CODE"
 
@@ -15,6 +18,12 @@ centipede_active:        .res 1
 ; shooting on sq1
 ; everything else on sq2
 ; player death / enemy kill on noise
+
+LOW = 38
+MID = 41
+HI = 47
+spider_jingle:  .byte LOW, MID, HI, 0, HI, MID, LOW, MID, HI
+SPIDER_JINGLE_LEN = 10
 
 .proc sound_init
     lda #$0F
@@ -25,6 +34,9 @@ centipede_active:        .res 1
     sta centipede_active
     lda #MARCH_SOUND_DELAY
     sta centipede_march_timer
+    lda #0
+    sta APU_SQ2_SWP
+    sta spider_jingle_counter
     subscribe segment_kill, segment_kill_handler
     subscribe arrow_shoot, arrow_shoot_handler
     subscribe player_dead, player_dead_handler
@@ -44,12 +56,36 @@ centipede_active:        .res 1
         lda periodTableLo+36
         asl
         sta APU_TRI_LOW ; note low bits
-        lda #%00111000 ; length bits: eigth note at 75bpm (first 5 bits)
+        lda #%00111000 ; length bits
         lsr
         ora periodTableHi+36 ; note high bits
         asl
         sta APU_TRI_HIG
     :
+    lda #SPIDER_FLAG_ALIVE
+    bit spider_f
+    beq :++ ; is spider alive
+    lda #APU_FLAG_SQ2
+    bit APUFLAGS
+    bne :++ ; sound is still being played
+        ldy spider_jingle_counter
+        ldx spider_jingle, y ; can probably do this with one register
+        lda periodTableLo, x ; but I don't want to deal with indirect
+        sta APU_SQ2_LOW
+        lda #%00111000        
+        ; lda #%00100000
+        ora periodTableHi, x
+        sta APU_SQ2_HIG
+        lda #%10011111
+        sta APU_SQ2_ENV
+        iny
+        cpy #SPIDER_JINGLE_LEN
+        bne :+
+            ldy #0
+        :
+        sty spider_jingle_counter
+    :
+
     rts
 .endproc
 
