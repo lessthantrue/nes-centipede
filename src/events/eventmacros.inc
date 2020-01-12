@@ -52,12 +52,14 @@ EVENT_MACROS_INC = 1
         ldx #0
         LOOP_START:
             cpx sub_count
-            beq LOOP_END
+            bne :+
+                jmp LOOP_END
+            :
             txa
             pha ; preserve x
             lda #>AFTER_CALL ; return to loop start after function call
             pha
-            lda #(<AFTER_CALL-1)
+            lda #(<AFTER_CALL)
             pha
             lda subscribers, x
             pha
@@ -67,6 +69,7 @@ EVENT_MACROS_INC = 1
             pha
             rts ; get to work
             AFTER_CALL:
+            nop ; fixes an edge case
             pla
             tax ; restore x
             inx

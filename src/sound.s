@@ -44,7 +44,7 @@ centipede_active:        .res 1
         lda periodTableLo+36
         asl
         sta APU_TRI_LOW ; note low bits
-        lda #%10000000 ; length bits: eigth note at 75bpm (first 5 bits)
+        lda #%00111000 ; length bits: eigth note at 75bpm (first 5 bits)
         lsr
         ora periodTableHi+36 ; note high bits
         asl

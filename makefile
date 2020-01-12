@@ -24,7 +24,7 @@ core/bin2dec core/ntscperiods
 
 AS65 = ca65
 LD65 = ld65
-CFLAGS65 = -g
+CFLAGS65 = 
 objdir = obj/nes
 srcdir = src
 imgdir = tilesets
@@ -83,10 +83,10 @@ zip.in:
 	echo zip.in >> $@
 
 clean:
-	-rm $(objdir)/*.o
-	-rm $(title).nes
-	-rm map.txt
-	-rm $(title).nes.deb
+	-rm -rf $(objdir)/*
+	-rm -f $(title).nes
+	-rm -f map.txt
+	-rm -f $(title).nes.deb
 
 # in case the object folder gets deleted
 $(objdir):

@@ -4,6 +4,7 @@
 .include "../random.inc"
 .include "player.inc"
 .include "arrow.inc"
+.include "board.inc"
 .include "statusbar.inc"
 .include "../collision.inc"
 .include "../events/events.inc"
@@ -22,8 +23,10 @@ spider_y:       .res 1
 spider_f:       .res 1 ; flags as defined below
 spider_anim:    .res 1 ; animation state (tile index)
 
+spider_respawn_timer:    .res 2
+
 SPIDER_INIT_X_LEFT = 8
-SPIDER_INIT_X_RIGHT = 248
+SPIDER_INIT_X_RIGHT = 239
 SPIDER_INIT_Y = 132
 
 SPIDER_FLAG_LEFT    = %00000001 ; set if the spider started on the left side and is going right
@@ -39,9 +42,16 @@ SPIDER_SPEED = 2
 .segment "CODE"
 
 .proc spider_init
-    ; jsr rand8
-    ; and #SPIDER_FLAG_LEFT ; this bit is randomly set
     lda #0
+    sta spider_f
+    jsr spider_set_respawn_time
+    rts
+.endproc
+
+; also spider reset
+.proc spider_reset
+    jsr rand8
+    and #SPIDER_FLAG_LEFT ; this bit is randomly set
     ora #SPIDER_FLAG_ALIVE|SPIDER_FLAG_HORIZ
     sta spider_f
     and #SPIDER_FLAG_LEFT
@@ -57,6 +67,17 @@ SPIDER_SPEED = 2
     sta spider_y
     lda #$30
     sta spider_anim
+    jsr spider_set_respawn_time
+    rts
+.endproc
+
+.proc spider_set_respawn_time
+    jsr rand8
+    and #$01
+    add #3 ; 8 to 12 seconds
+    sta spider_respawn_timer+1
+    lda #00
+    sta spider_respawn_timer
     rts
 .endproc
 
@@ -99,6 +120,29 @@ SPIDER_SPEED = 2
 .endproc
 
 .proc spider_collide_walls
+    lda #SPIDER_FLAG_HORIZ
+    bit spider_f
+    beq done
+        ; spider is moving horizontally
+        lda #SPIDER_FLAG_LEFT
+        bit spider_f
+        beq right
+            ; spider started left and is moving right
+            lda spider_x
+            cmp #SPIDER_INIT_X_RIGHT
+            bcc :+
+                jsr spider_init
+            :
+            jmp done
+        right:
+            ; spider started right and is moving left
+            lda spider_x
+            cmp #SPIDER_INIT_X_LEFT
+            bcs :+
+                jsr spider_init
+            :
+    done:
+
     lda spider_y
     cmp #SPIDER_BOUNDS_TOP
     bcs :+
@@ -134,6 +178,20 @@ SPIDER_SPEED = 2
     rts
 .endproc
 
+.proc spider_collide_board
+    call_with_args board_convert_sprite_xy, spider_x, spider_y
+    jsr board_xy_to_addr
+    jsr board_get_value
+    cmp #0
+    beq :+
+        lda #0
+        jsr board_xy_to_nametable
+        call_with_args board_set_value, #0
+    :
+    rts
+.endproc
+
+
 .proc spider_draw
     lda #SPIDER_FLAG_ALIVE
     bit spider_f
@@ -163,6 +221,8 @@ SPIDER_SPEED = 2
 
 .proc spider_collide_player
     lda spider_x
+    cmp #8
+    bcc :+
     sub #8
     sta collision_box1_l
     add #16
@@ -188,8 +248,7 @@ SPIDER_SPEED = 2
     beq :+
         statusbar_add_score SPIDER_NEAR_SCORE
         jsr arrow_del
-        lda #0
-        sta spider_f
+        jsr spider_init
     :
     rts
 .endproc
@@ -197,14 +256,31 @@ SPIDER_SPEED = 2
 .proc spider_step
     lda #SPIDER_FLAG_ALIVE
     bit spider_f
-    bne :+
+    bne :++
         ; spider not alive
+        lda spider_respawn_timer
+        sub #1
+        sta spider_respawn_timer
+        lda spider_respawn_timer+1
+        sbc #0
+        sta spider_respawn_timer+1
+        bne :+
+            jsr spider_reset
+        :
+        rts
+    :
+
+    jsr spider_collide_arrow
+    jsr spider_collide_walls
+
+    lda #SPIDER_FLAG_ALIVE
+    bit spider_f
+    bne :+
         rts
     :
 
     jsr spider_move
-    jsr spider_collide_walls
     jsr spider_collide_player
-    jsr spider_collide_arrow
+    jsr spider_collide_board
     rts
 .endproc
