@@ -79,7 +79,7 @@ DEVELOPMENT:
         \ destroy mushrooms
         \ jingle/music/sound/whatever
         * proper scoring
-    * particles when an enemy is shot
+    \ particles when an enemy is shot
     * other enemies (scorpion, flea)
     * player collision with mushrooms
     * poison mushrooms? it is possible
