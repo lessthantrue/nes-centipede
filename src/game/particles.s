@@ -48,7 +48,7 @@ particle_times: .res MAX_NUM_PARTICLES
     sta particle_xs
     lda STACK_TOP+2, x
     sta particle_ys
-    lda #20
+    lda #12
     sta particle_times
     rts
 .endproc
@@ -65,7 +65,7 @@ particle_times: .res MAX_NUM_PARTICLES
             jmp loop_cond
         :
         sub #1
-        sta particle_times, y
+        sta particle_times, y ; step time forwards
         ; arg 4: sprite x
         lda particle_xs, y
         pha
@@ -73,7 +73,10 @@ particle_times: .res MAX_NUM_PARTICLES
         lda #0
         pha
         ; arg 2: sprite tile index
-        lda #$38
+        lda particle_times, y
+        lsr ; shift for a transition every 2 frames
+        and #%00000111
+        add #$50
         pha
         ; arg 1: sprite y
         lda particle_ys, y

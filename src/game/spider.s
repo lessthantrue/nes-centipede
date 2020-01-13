@@ -6,6 +6,7 @@
 .include "arrow.inc"
 .include "board.inc"
 .include "statusbar.inc"
+.include "particles.inc"
 .include "../collision.inc"
 .include "../events/events.inc"
 
@@ -244,6 +245,7 @@ SPIDER_SPEED = 2
         statusbar_add_score SPIDER_NEAR_SCORE
         jsr arrow_del
         jsr spider_init
+        call_with_args particle_add, spider_x, spider_y
     :
     rts
 .endproc

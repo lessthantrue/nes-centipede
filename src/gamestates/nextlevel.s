@@ -40,11 +40,7 @@ palette_set_2:
     dec state_nextlevel_delay
     beq :+
         ; let the player keep going for a bit
-        jsr player_move
-        jsr arrow_step
-        jsr player_draw
-        jsr arrow_draw
-        jsr statusbar_draw_lives
+        jsr game_step
         rts
     :
 
