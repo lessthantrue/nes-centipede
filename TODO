@@ -108,7 +108,9 @@ BUGS:
         Wait until diagonal movement, that might fix it. Update: did not fix it
     \ JSNES screen bounds don't match FCEUX screen bounds
     \ head is 100 points, other segments are only 10
-    * sometimes player dies or level is instantly completed on game start
+    \ sometimes player dies or level is instantly completed on game start
         probably because variables in playing state aren't initialized properly
-    * reset color palettes on menu -> game over
+    \ reset color palettes on menu -> game over
     * centipede still doesn't quite move right when moving straight down
+    * spider sprite sometimes disappears
+    * centipede's hitbox is very messed up
