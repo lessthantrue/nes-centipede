@@ -14,7 +14,7 @@ collision_box2_r:     .res 1
 collision_box2_t:     .res 1
 collision_box2_b:     .res 1
 
-collision_ret:        .res 1
+collision_ret:        .res 1 ; 1 if there was a collision
 
 .segment "CODE"
 

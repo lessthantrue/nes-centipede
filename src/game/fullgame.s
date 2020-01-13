@@ -16,6 +16,7 @@
     jsr spider_draw
     jsr centipede_draw
     jsr statusbar_draw_lives
+    jsr particle_draw
 
     ; audio
     jsr sound_run_default
@@ -46,6 +47,7 @@
     jsr statusbar_init
     jsr sound_init
     jsr spider_init
+    jsr particles_init
     rts
 .endproc
 

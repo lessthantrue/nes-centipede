@@ -112,5 +112,7 @@ BUGS:
         probably because variables in playing state aren't initialized properly
     \ reset color palettes on menu -> game over
     * centipede still doesn't quite move right when moving straight down
-    * spider sprite sometimes disappears
-    * centipede's hitbox is very messed up
+        Not when moving straight down, but when running into 2 mushrooms
+        diagonal from each other
+    \ spider sprite sometimes disappears
+    \ centipede's hitbox is very messed up

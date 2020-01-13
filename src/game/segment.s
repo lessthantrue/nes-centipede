@@ -1,8 +1,8 @@
-
 .include "../core/eventprocessor.inc"
 .include "board.inc"
 .include "arrow.inc"
 .include "segment.inc"
+.include "particles.inc"
 .include "../spritegfx.inc"
 .include "centipede.inc"
 .include "../collision.inc"
@@ -185,7 +185,9 @@ DIR_DOWN =      %00000010
     sta collision_box1_b
     call_with_args collision_box1_contains, arrow_x, arrow_y
     lda collision_ret
-    beq no_collision
+    bne :+
+        jmp no_collision
+    :
         ; kill segment
         lda #SEGMENT_FLAG_ALIVE
         not
@@ -230,6 +232,12 @@ DIR_DOWN =      %00000010
         :
         pla
         tay ; restore y
+        ; add death particle
+        lda segment_ys, y
+        pha
+        lda segment_xs, y
+        pha
+        call_with_args_manual particle_add, 2
     no_collision:
     rts
 .endproc

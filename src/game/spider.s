@@ -265,6 +265,7 @@ SPIDER_SPEED = 2
         rts
     :
 
+    jsr spider_collide_player
     jsr spider_collide_arrow
     jsr spider_collide_walls
 
@@ -275,7 +276,6 @@ SPIDER_SPEED = 2
     :
 
     jsr spider_move
-    jsr spider_collide_player
     jsr spider_collide_board
     rts
 .endproc

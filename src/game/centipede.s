@@ -2,6 +2,7 @@
 .include "../core/eventprocessor.inc"
 .include "board.inc"
 .include "centipede.inc"
+.include "player.inc"
 .include "../collision.inc"
 .include "arrow.inc"
 .include "../spritegfx.inc"
@@ -37,7 +38,6 @@ segment_flags       :   .res CENTIPEDE_LEN
         lda #>after
         pha
         lda #<after
-        sub #1
         pha
         lda map_fn+1
         pha
@@ -46,6 +46,7 @@ segment_flags       :   .res CENTIPEDE_LEN
         pha 
         rts
         after:
+        nop
         pla
         tay
 
@@ -79,6 +80,7 @@ segment_flags       :   .res CENTIPEDE_LEN
 
 .proc centipede_draw
     st_addr segment_draw, map_fn
+    jsr player_setup_collision
     jsr map_segment
     rts
 .endproc
