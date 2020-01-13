@@ -30,6 +30,12 @@ palette_set_2:
 
 .segment "CODE"
 
+.proc state_nextlevel_load
+    lda #100
+    sta state_nextlevel_delay
+    rts
+.endproc
+
 .proc state_nextlevel_logic
     dec state_nextlevel_delay
     beq :+
@@ -96,7 +102,6 @@ palette_set_2:
     
     ; transition to the next level, starting over
     notify level_up
-    jsr game_level_reset
     swap_state playing
     rts
 .endproc

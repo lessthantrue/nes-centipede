@@ -111,3 +111,4 @@ BUGS:
     * sometimes player dies or level is instantly completed on game start
         probably because variables in playing state aren't initialized properly
     * reset color palettes on menu -> game over
+    * centipede still doesn't quite move right when moving straight down

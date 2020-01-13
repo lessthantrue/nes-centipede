@@ -14,6 +14,10 @@ menu_begin_msg: .byte " PRESS START "
 MENU_EXTRALIFE_MSG_LEN = 19
 menu_extralife_msg: .byte " BONUS EVERY 12000 "
 
+.proc state_menu_load
+    rts
+.endproc
+
 .proc state_menu_logic
     jsr menu_step
     rts
@@ -90,7 +94,6 @@ menu_extralife_msg: .byte " BONUS EVERY 12000 "
     lda #KEY_START
     bit cur_keys
     beq :+
-        jsr game_full_reset
         swap_state play_init
     :
     rts

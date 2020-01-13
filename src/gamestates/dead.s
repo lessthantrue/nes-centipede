@@ -7,9 +7,15 @@
 .include "../core/macros.inc"
 
 .segment "BSS"
-dead_timer:     .byte $CF
+dead_timer:     .res 1
 
 .segment "CODE"
+
+.proc state_dead_load
+    lda #$C7
+    sta dead_timer
+    rts
+.endproc
 
 .proc state_dead_logic
     dec dead_timer ; advance timer
@@ -18,7 +24,7 @@ dead_timer:     .byte $CF
     jsr centipede_draw
 
     ; don't draw if the timer is past a point, for a delay
-    lda #$C0
+    lda #($CF-72)
     cmp dead_timer
     bcc :+
         call_with_args spritegfx_load_oam, player_yhi, #$0, #0, player_xhi
@@ -36,7 +42,7 @@ dead_timer:     .byte $CF
     pha
 
     ; arg 2: sprite tile index
-    ; shifting left twice and cutting out the last bit gives the left sprite
+    ; shifting right twice and cutting out the last bit gives the left sprite
     ; of the current death animation
     lda dead_timer
     lsr
@@ -86,12 +92,9 @@ dead_timer:     .byte $CF
     jsr statusbar_dec_lives
     bne :+
         ; out of lives, go to gameover screen
-        lda #240
-        sta state_gameover_delay
         swap_state gameover
         rts
     :
-    jsr game_level_reset
     swap_state playing
     rts
 .endproc

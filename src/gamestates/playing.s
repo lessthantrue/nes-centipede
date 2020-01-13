@@ -4,12 +4,22 @@
 .include "../spritegfx.inc"
 .include "../sound.inc"
 .include "../game/game.inc"
+.include "../ppuclear.inc"
 
 .segment "BSS"
 player_dead_flag: .res 1
 centipede_dead_flag: .res 1
 
 .segment "CODE"
+
+.proc state_playing_load
+    lda #0
+    sta player_dead_flag
+    sta centipede_dead_flag
+    jsr game_level_reset
+    jsr ppu_clear_oam
+    rts
+.endproc
 
 .proc state_playing_logic
     jsr game_step
@@ -26,19 +36,12 @@ centipede_dead_flag: .res 1
     beq :+
         ; player died
         swap_state dead
-        lda #0
-        sta player_dead_flag
-        rts
     : ; player not dead
 
     lda centipede_dead_flag
     beq :+
         ; centipede died
         swap_state nextlevel
-        lda #100
-        sta state_nextlevel_delay
-        lda #0
-        sta centipede_dead_flag
     :
     rts 
 .endproc

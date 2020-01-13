@@ -12,6 +12,12 @@ state_gameover_delay:   .res 1
 GAMEOVER_MSG_LEN = 12
 gameover_msg: .byte " GAME  OVER "
 
+.proc state_gameover_load
+    lda #240
+    sta state_gameover_delay
+    rts
+.endproc
+
 .proc state_gameover_logic
     rts
 .endproc
