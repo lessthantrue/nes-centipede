@@ -6,17 +6,17 @@
 .include "../random.inc"
 
 .segment "ZEROPAGE"
-ntaddr:      .addr $0000
-board_arg_x: .byte $00
-board_arg_y: .byte $00
-boardaddr:   .addr $0000
+ntaddr:         .addr $0000
+board_arg_x:    .res 1
+board_arg_y:    .res 1
+boardaddr:      .res 2
 
-update_ntaddr: .addr $0000
-update_data: .byte $00 ; 3 bits for mushroom damage level, bit 4 is "update required" flag
+update_ntaddr:  .res 2
+update_data:    .res 1 ; 3 bits for mushroom damage level, bit 4 is "update required" flag
 BOARD_FLAG_REQ_UPDATE = %00010000
 
 .segment "BSS"
-; 32 spaces wide (32 - margins) by 28 spaces tall = 896 bytes
+; 32 spaces wide by 26 spaces tall = 832 bytes
 WIDTH = 32
 HEIGHT = 26
 board:      .res (WIDTH * HEIGHT)
@@ -164,8 +164,8 @@ board:      .res (WIDTH * HEIGHT)
     add #$70 ; convert to sprite index
     sta PPUDATA ; set background at ntaddr to that
     lda #0
-    sta ntaddr
-    sta ntaddr+1
+    sta update_ntaddr
+    sta update_ntaddr+1
     sta update_data ; clear data, most importantly update flag
 
     rts

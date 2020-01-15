@@ -40,16 +40,24 @@ SPIDER_JINGLE_LEN = 10
     subscribe segment_kill, segment_kill_handler
     subscribe arrow_shoot, arrow_shoot_handler
     subscribe player_dead, player_dead_handler
+    subscribe centipede_kill, centipede_kill_handler
+    rts
+.endproc
+
+.proc sound_reset
+    lda #1
+    sta centipede_active
     rts
 .endproc
 
 ; run this while the game is playing
 .proc sound_run_default
+    lda centipede_active
+    beq :+
     dec centipede_march_timer
     bne :+
         lda #MARCH_SOUND_DELAY ; play this 3 times a second
         sta centipede_march_timer
-
         ; set channel
         lda #$7F
         sta APU_TRI_ENV
@@ -84,7 +92,6 @@ SPIDER_JINGLE_LEN = 10
         :
         sty spider_jingle_counter
     :
-
     rts
 .endproc
 
@@ -118,5 +125,11 @@ SPIDER_JINGLE_LEN = 10
     sta APU_NSE_PRD
     lda #%11000000
     sta APU_NSE_LEN
+    rts
+.endproc
+
+.proc centipede_kill_handler
+    lda #0
+    sta centipede_active
     rts
 .endproc

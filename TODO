@@ -19,12 +19,13 @@ REFACTORING:
     \ start passing function parameters on the stack to save static memory
     \ figure out why the header guard for macros.inc isn't working
         instead of .define HEADER_INC, use HEADER_INC = 1
-    * move a bunch of stuff to core, make a common header
+    * move a bunch more stuff to core, make a common header
     \ find a way to put all of the event stuff in the same file
-    * find a way to make game state stuff easier, one macro to change game states
+    \ find a way to make game state stuff easier, one macro to change game states
     * clean up all the old stuff I didn't use (Move somewhere else, it can be useful)
     * general organization
         \ move strictly game related code to a file, make a common header
+    * export empty procedures that only exist to satisfy interfaces as the same 
 
 DEVELOPMENT:
     \ move and properly draw multiple centipede segments
@@ -48,7 +49,8 @@ DEVELOPMENT:
     \ keep track of score, lives, etc and display on a status bar
         \ score
         \ lives
-        * new lives after 12,000 points
+        * new lives every 12,000 points
+            * new life music jingle
     \ make centipede kill player
         \ player death animation
         \ level reset
@@ -111,8 +113,11 @@ BUGS:
     \ sometimes player dies or level is instantly completed on game start
         probably because variables in playing state aren't initialized properly
     \ reset color palettes on menu -> game over
-    * centipede still doesn't quite move right when moving straight down
+    x centipede still doesn't quite move right when moving straight down
         Not when moving straight down, but when running into 2 mushrooms
         diagonal from each other
+        Not worth it, works for everything but this corner case
     \ spider sprite sometimes disappears
     \ centipede's hitbox is very messed up
+    ? centipede sound continues even after it's dead
+    \ level transitions if and only if centipede is dead, should also include other enemies

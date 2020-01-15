@@ -7,6 +7,7 @@ GAMESTATES_INC = 1
 .include "nextlevel.inc"
 .include "play_init.inc"
 .include "playing.inc"
+.include "reset_mushrooms.inc"
 
 .include "../gamestaterunner.inc"
 

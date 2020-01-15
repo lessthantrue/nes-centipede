@@ -17,8 +17,8 @@ version = 0.1
 # PRG ROM.  If it gets too long for one line, you can add a backslash
 # (the \ character) at the end of the line and continue on the next.
 objlist = nrom init main collision gamestaterunner ppuclear sound spritegfx random pads \
-game/arrow game/board game/centipede game/segment game/spider game/statusbar game/player game/fullgame game/particles\
-gamestates/dead gamestates/gameover gamestates/menu gamestates/nextlevel gamestates/play_init gamestates/playing \
+game/arrow game/board game/centipede game/segment game/spider game/statusbar game/player game/fullgame game/particles \
+gamestates/dead gamestates/gameover gamestates/menu gamestates/nextlevel gamestates/play_init gamestates/playing gamestates/reset_mushrooms \
 events/events \
 core/bin2dec core/ntscperiods
 

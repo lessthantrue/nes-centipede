@@ -1,6 +1,6 @@
 .ifndef SOUND_INC
 .define SOUND_INC 1
 
-.global sound_init, sound_run_default
+.global sound_init, sound_run_default, sound_reset
 
 .endif

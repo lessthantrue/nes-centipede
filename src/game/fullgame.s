@@ -58,6 +58,7 @@
 .endproc
 
 .proc game_level_reset
+    jsr sound_reset
     jsr centipede_reset
     jsr spider_init
     rts

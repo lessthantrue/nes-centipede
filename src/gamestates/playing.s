@@ -40,7 +40,10 @@ centipede_dead_flag: .res 1
 
     lda centipede_dead_flag
     beq :+
-        ; centipede died
+    lda #SPIDER_FLAG_ALIVE
+    bit spider_f
+    bne :+
+        ; centipede and spider are dead
         swap_state nextlevel
     :
     rts 

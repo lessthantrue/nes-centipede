@@ -95,6 +95,6 @@ dead_timer:     .res 1
         swap_state gameover
         rts
     :
-    swap_state playing
+    swap_state reset_mushrooms
     rts
 .endproc
