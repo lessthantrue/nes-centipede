@@ -10,6 +10,6 @@
 
 .global oam_init, oam_alloc, oam_free
 SPRITE_VERT_OFFSET = 23
-OFFSCREEN = 217
+OFFSCREEN = 240
 
 .endif

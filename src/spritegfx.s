@@ -84,9 +84,7 @@ oams_reserved:  .res 8 ; 64 sprites, 1 bit each
         jmp START_SET_BIT
     :
     not
-    tsx
-    and STACK_TOP+1, x
-    sta STACK_TOP+1, x ; clear the bit that we got
+    pha ; save the bit mask that we just made
     
     tya
     lsr
@@ -94,8 +92,9 @@ oams_reserved:  .res 8 ; 64 sprites, 1 bit each
     lsr
     lsr
     lsr ; div by 8 more to get the allocating byte
-    tax
-    pla
-    sta oams_reserved, x ; set the corresponding byte again
+    tay
+    pla ; get the bit mask back
+    and oams_reserved, y ; clear the bit
+    sta oams_reserved, y ; save that change
     rts
 .endproc

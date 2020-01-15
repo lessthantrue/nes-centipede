@@ -1,15 +1,11 @@
 .include "spider.inc"
+.include "game.inc"
 .include "../spritegfx.inc"
 .include "../core/macros.inc"
 .include "../random.inc"
-.include "player.inc"
-.include "arrow.inc"
-.include "board.inc"
-.include "statusbar.inc"
-.include "particles.inc"
-.include "scoreparticle.inc"
 .include "../collision.inc"
 .include "../events/events.inc"
+.include "../nes.inc"
 
 ; Spider : These appear from the top left or right of the player 
 ; area. They will either bounce across the player's area at 
@@ -24,6 +20,8 @@ spider_x:       .res 1
 spider_y:       .res 1
 spider_f:       .res 1 ; flags as defined below
 spider_anim:    .res 1 ; animation state (tile index)
+oam_left:       .res 1 ; needs 2 sprites
+oam_right:      .res 1
 
 spider_respawn_timer:    .res 2
 
@@ -39,6 +37,10 @@ SPIDER_SPEED = 1
 .segment "CODE"
 
 .proc spider_init
+    ldy oam_left
+    jsr oam_free
+    ldy oam_right
+    jsr oam_free
     lda #0
     sta spider_f
     jsr spider_set_respawn_time
@@ -59,11 +61,25 @@ SPIDER_SPEED = 1
     start_right:
         lda #SPIDER_INIT_X_RIGHT
     done_init_lr:
+
+    ; set other spider initial conditions
     sta spider_x
     lda #SPIDER_INIT_Y
     sta spider_y
     lda #$30
     sta spider_anim
+
+    ; get sprite spaces
+    jsr oam_alloc
+    sty oam_left
+    lda #0
+    sta OAM+oam::flags, y
+    jsr oam_alloc
+    sty oam_right
+    lda #0
+    sta OAM+oam::flags, y
+
+    ; set a random respawn time
     jsr spider_set_respawn_time
     rts
 .endproc
@@ -193,18 +209,30 @@ SPIDER_SPEED = 1
     lda #SPIDER_FLAG_ALIVE
     bit spider_f
     bne :+
-        ; spider dead
-        ; call_with_args spritegfx_load_oam, #OFFSCREEN, #$20, #0, #0
-        ; call_with_args spritegfx_load_oam, #OFFSCREEN, #$20, #0, #0
         jsr score_particle_draw
         rts
     :
+    ldy oam_left
     lda spider_x
     sub #8
-    ; call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, a
+    sta OAM+oam::xcord, y
+    lda spider_anim
+    sta OAM+oam::tile, y
+    lda spider_y
+    add #SPRITE_VERT_OFFSET
+    sta OAM+oam::ycord, y
+
     inc spider_anim
-    ; call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, spider_x
-    
+
+    ldy oam_right
+    lda spider_x
+    sta OAM+oam::xcord, y
+    lda spider_anim
+    sta OAM+oam::tile, y
+    lda spider_y
+    add #SPRITE_VERT_OFFSET
+    sta OAM+oam::ycord, y
+
     inc spider_anim
     lda spider_anim
     cmp #$40

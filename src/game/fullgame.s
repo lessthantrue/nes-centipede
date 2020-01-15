@@ -12,8 +12,8 @@
 
     ; drawing
     jsr player_draw
-    ; jsr arrow_draw
-    ; jsr spider_draw
+    jsr arrow_draw
+    jsr spider_draw
     ; jsr centipede_draw
     ; jsr statusbar_draw_lives
     ; jsr particle_draw
@@ -49,12 +49,12 @@
 .endproc
 
 .proc game_init
+    jsr spider_init
     jsr player_init
     jsr centipede_init
     jsr arrow_init
     jsr statusbar_init
     jsr sound_init
-    jsr spider_init
     jsr particles_init
     jsr scorp_init
     rts

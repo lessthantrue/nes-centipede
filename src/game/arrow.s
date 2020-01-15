@@ -5,12 +5,15 @@
 .include "../spritegfx.inc"
 .include "statusbar.inc"
 .include "../events/events.inc"
+.include "../nes.inc"
 
 .segment "BSS"
 ; Game variables
 arrow_x:    .res 1
 arrow_y:    .res 1
 arrow_f:    .res 1
+
+oam_offset: .res 1
 
 SPEED = 5 ; velocity in px/frame (everything will work as long as this is less than 8)
 
@@ -27,14 +30,23 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     bit arrow_f
     bne :+
         notify arrow_shoot
+        jsr oam_alloc
+        sty oam_offset
         lda player_yhi
         sta arrow_y
+        add #SPRITE_VERT_OFFSET
+        sta OAM+oam::ycord, y
         lda player_xhi
         adc #2
         sta arrow_x
+        sta OAM+oam::xcord, y
         lda arrow_f
         ora #ARROW_FLAG_ACTIVE
         sta arrow_f
+        lda #$20
+        sta OAM+oam::tile, y
+        lda #0
+        sta OAM+oam::flags, y
     :
     ; arrow not active
     rts
@@ -51,6 +63,8 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
     not
     and arrow_f
     sta arrow_f
+    ldy oam_offset
+    jsr oam_free
     rts
 .endproc
 
@@ -97,13 +111,11 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
 .proc arrow_draw
     lda #ARROW_FLAG_ACTIVE
     bit arrow_f
-    bne :+
-        ; arrow inactive
-        ; call_with_args spritegfx_load_oam, #OFFSCREEN, #$20, #0, #0
-        jmp :++
-    :
-        ; arrow active
-        ; call_with_args spritegfx_load_oam, arrow_y, #$20, #0, arrow_x
+    beq :+
+        ldy oam_offset
+        lda arrow_y
+        add #SPRITE_VERT_OFFSET
+        sta OAM+oam::ycord, y
     :
     rts
 .endproc

@@ -10,6 +10,7 @@ GAME_INC = 1
 .include "statusbar.inc"
 .include "particles.inc"
 .include "scorpion.inc"
+.include "scoreparticle.inc"
 
 .global game_step, game_init, game_bg, game_level_reset, game_full_reset, menu_step, game_init_bg
 
