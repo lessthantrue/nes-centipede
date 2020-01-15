@@ -68,7 +68,7 @@ DEVELOPMENT:
         and so on
     \ make centipede move diagonally, not just down on collision
     * make centipede move back upwards once reaching the bottom
-    * repair damaged mushrooms when death occurs
+    \ repair damaged mushrooms when death occurs
     \ sound
         \ centipede walking around
         \ arrow shooting
@@ -85,7 +85,7 @@ DEVELOPMENT:
     * other enemies (scorpion, flea)
     * player collision with mushrooms
     * poison mushrooms? it is possible
-    * pause game
+    * pause game on select press
     
 PROJECT MANAGEMENT:
     \ Update README
@@ -119,5 +119,5 @@ BUGS:
         Not worth it, works for everything but this corner case
     \ spider sprite sometimes disappears
     \ centipede's hitbox is very messed up
-    ? centipede sound continues even after it's dead
-    \ level transitions if and only if centipede is dead, should also include other enemies
+    \ centipede sound continues even after it's dead
+    * level transitions if and only if centipede is dead, should also include other enemies
