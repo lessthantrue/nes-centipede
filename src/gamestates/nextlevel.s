@@ -4,6 +4,7 @@
 .include "../events/events.inc"
 .include "../ppuclear.inc"
 .include "../game/game.inc"
+.include "../sound.inc"
 
 .segment "BSS"
 state_nextlevel_delay   :   .res 1
@@ -40,7 +41,11 @@ palette_set_2:
     dec state_nextlevel_delay
     beq :+
         ; let the player keep going for a bit
-        jsr game_step
+        jsr player_move
+        jsr arrow_step
+        jsr player_draw
+        jsr arrow_draw
+        jsr sound_run_default
         rts
     :
 

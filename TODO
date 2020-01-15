@@ -120,4 +120,4 @@ BUGS:
     \ spider sprite sometimes disappears
     \ centipede's hitbox is very messed up
     \ centipede sound continues even after it's dead
-    * level transitions if and only if centipede is dead, should also include other enemies
+    \ level transitions if and only if centipede is dead, should also include other enemies
