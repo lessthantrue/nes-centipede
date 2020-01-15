@@ -80,12 +80,20 @@ DEVELOPMENT:
         \ spawn randomly
         \ destroy mushrooms
         \ jingle/music/sound/whatever
-        * proper scoring
+        * proper scoring (900 close, 600 mid, 300 far)
     \ particles when an enemy is shot
-    * other enemies (scorpion, flea)
+    * scorpion
+        * base behavior (move slowly across the screen)
+        * spawn randomly after wave 3
+        * poisons mushrooms
+            * centipede moves straight down after reaching a poison shroom
+    * flea
+        * base behavior (2 hits to destroy, moves straight down)
+        * creates mushrooms on the way down
+        * spawn randomly after wave 2 if less than 5 shrooms in player area
     * player collision with mushrooms
-    * poison mushrooms? it is possible
     * pause game on select press
+    * move faster with B (to replace track ball)
     
 PROJECT MANAGEMENT:
     \ Update README
