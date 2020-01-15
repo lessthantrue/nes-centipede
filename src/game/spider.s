@@ -241,12 +241,28 @@ SPIDER_SPEED = 2
     ; have to set up collision box again
     call_with_args collision_box1_contains, arrow_x, arrow_y
     lda collision_ret
-    beq :+
-        statusbar_add_score SPIDER_NEAR_SCORE
+    beq END_COLLISION
+        ; arrow hit, determine player distance to spider
+        lda player_yhi
+        sub spider_y
+        ; 0-16 px: near score
+        cmp #16
+        bcs :+
+            statusbar_add_score SPIDER_NEAR_SCORE
+            jmp END_SCORE
+        :
+        ; 16-32 px: mid score
+        cmp #32
+        bcs :+
+            statusbar_add_score SPIDER_MID_SCORE
+            jmp END_SCORE
+        :
+        statusbar_add_score SPIDER_FAR_SCORE
+        END_SCORE:
         jsr arrow_del
         jsr spider_init
         call_with_args particle_add, spider_x, spider_y
-    :
+    END_COLLISION:
     rts
 .endproc
 

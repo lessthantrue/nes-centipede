@@ -80,7 +80,8 @@ DEVELOPMENT:
         \ spawn randomly
         \ destroy mushrooms
         \ jingle/music/sound/whatever
-        * proper scoring (900 close, 600 mid, 300 far)
+        \ proper scoring (900 close, 600 mid, 300 far)
+            * scoring particle effect
     \ particles when an enemy is shot
     * scorpion
         * base behavior (move slowly across the screen)
