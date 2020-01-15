@@ -12,11 +12,11 @@
 
     ; drawing
     jsr player_draw
-    jsr arrow_draw
-    jsr spider_draw
-    jsr centipede_draw
-    jsr statusbar_draw_lives
-    jsr particle_draw
+    ; jsr arrow_draw
+    ; jsr spider_draw
+    ; jsr centipede_draw
+    ; jsr statusbar_draw_lives
+    ; jsr particle_draw
 
     ; scorpion only if level 3+
     lda statusbar_level

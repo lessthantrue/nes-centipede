@@ -32,16 +32,16 @@ y_pos:      .res 1
     dec y_pos
     lda lifetime
     bne :+
-        call_with_args spritegfx_load_oam, #OFFSCREEN, #0, #0, #0
-        call_with_args spritegfx_load_oam, #OFFSCREEN, #0, #0, #0
+        ; call_with_args spritegfx_load_oam, #OFFSCREEN, #0, #0, #0
+        ; call_with_args spritegfx_load_oam, #OFFSCREEN, #0, #0, #0
         rts
     :
     dec lifetime
-    call_with_args spritegfx_load_oam, y_pos, tile_index, #0, x_pos
+    ; call_with_args spritegfx_load_oam, y_pos, tile_index, #0, x_pos
     inc tile_index
     lda x_pos
     add #8
-    call_with_args spritegfx_load_oam, y_pos, tile_index, #0, a
+    ; call_with_args spritegfx_load_oam, y_pos, tile_index, #0, a
     dec tile_index
     rts
 .endproc

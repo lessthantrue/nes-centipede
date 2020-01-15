@@ -194,16 +194,16 @@ SPIDER_SPEED = 1
     bit spider_f
     bne :+
         ; spider dead
-        call_with_args spritegfx_load_oam, #OFFSCREEN, #$20, #0, #0
-        call_with_args spritegfx_load_oam, #OFFSCREEN, #$20, #0, #0
+        ; call_with_args spritegfx_load_oam, #OFFSCREEN, #$20, #0, #0
+        ; call_with_args spritegfx_load_oam, #OFFSCREEN, #$20, #0, #0
         jsr score_particle_draw
         rts
     :
     lda spider_x
     sub #8
-    call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, a
+    ; call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, a
     inc spider_anim
-    call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, spider_x
+    ; call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, spider_x
     
     inc spider_anim
     lda spider_anim

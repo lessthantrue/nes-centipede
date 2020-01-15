@@ -8,8 +8,7 @@
     xcord   .byte
 .endstruct
 
-.globalzp spritegfx_oam_arg
-.global spritegfx_load_oam, spritegfx_reset
+.global oam_init, oam_alloc, oam_free
 SPRITE_VERT_OFFSET = 23
 OFFSCREEN = 217
 

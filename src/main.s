@@ -62,6 +62,9 @@ nmis:                    .res 1
     init centipede_kill
     init level_up
 
+    ; OAM manager
+    jsr oam_init
+
     ; set up most game logic
     jsr game_init
 
@@ -80,7 +83,6 @@ forever:
 
     ; Game logic
     jsr gamestaterunner_transition
-    jsr spritegfx_reset
     jsr read_pads
     jsr gamestaterunner_logic
 

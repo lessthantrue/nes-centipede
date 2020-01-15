@@ -61,27 +61,27 @@ particle_times: .res MAX_NUM_PARTICLES
     loop_start:
         lda particle_times, y
         bne :+
-            call_with_args spritegfx_load_oam, #OFFSCREEN, #0, #0, #0
+            ; call_with_args spritegfx_load_oam, #OFFSCREEN, #0, #0, #0
             jmp loop_cond
         :
         sub #1
         sta particle_times, y ; step time forwards
         ; arg 4: sprite x
         lda particle_xs, y
-        pha
+        ; pha
         ; arg 3: sprite flags
         lda #0
-        pha
+        ; pha
         ; arg 2: sprite tile index
         lda particle_times, y
         lsr ; shift for a transition every 2 frames
         and #%00000111
         add #$50
-        pha
+        ; pha
         ; arg 1: sprite y
         lda particle_ys, y
-        pha
-        call_with_args_manual spritegfx_load_oam, 4
+        ; pha
+        ; call_with_args_manual spritegfx_load_oam, 4
     loop_cond:
         iny
         cpy #MAX_NUM_PARTICLES

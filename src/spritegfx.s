@@ -4,51 +4,98 @@
 .include "game/game.inc"
 
 .segment "ZEROPAGE"
-
-spritegfx_oam_arg :   .tag oam
-oam_used:   .res 1  ; starts at 0
-palette:    .res 1
+oams_reserved:  .res 8 ; 64 sprites, 1 bit each
 
 .segment "CODE"
 
-; resets internal sprite graphics variables.
-; call at the start of each frame.
-.proc spritegfx_reset
-    ; The first entry in OAM (indices 0-3) is "sprite 0".  In games
-    ; with a scrolling playfield and a still status bar, it's used to
-    ; help split the screen.  Not using this yet, but maybe someday.
-    ldx #4
-    stx oam_used
-    lda statusbar_level
-    and #%00000011
-    sta palette
+.proc oam_init
+    ; zero reservations
+    lda #0
+    .repeat 8, I
+    sta oams_reserved+I
+    .endrep
     rts
 .endproc
 
-; loads the argument object data into OAM memory
-; arg 1: sprite y
-; arg 2: sprite tile index
-; arg 3: sprite flags
-; arg 4: sprite x
-.proc spritegfx_load_oam
-    push_registers
-    ldy oam_used
-    lda STACK_TOP+1, x
-    add #SPRITE_VERT_OFFSET
-    sta OAM, y
-    iny
-    lda STACK_TOP+2, x
-    sta OAM, y
-    iny
-    lda STACK_TOP+3, x
-    and #%11111100
-    ora palette ; all sprites have the same palette
-    sta OAM, y
-    iny
-    lda STACK_TOP+4, x
-    sta OAM, y
-    iny
-    sty oam_used
-    pull_registers
+.proc oam_alloc
+    ldy #0 ; counter 1
+    START_SEARCH_BYTE: ; linear search for a zero bit
+        lda oams_reserved, y
+        cmp #$FF
+        bne :+
+            iny ; this byte is completely allocated
+            jmp START_SEARCH_BYTE
+        :
+    
+    pha ; use stack top as a local variable
+    tsx
+    tya
+    .repeat 3 ; shift by 8 because we moved 8 bits for each byte
+    asl
+    .endrep
+    tay
+    lda #1
+    START_SEARCH_BIT:
+        pha
+        and STACK_TOP+1, x ; check bit
+        beq :+
+            ; this bit is taken
+            pla
+            iny
+            asl ; check the next bit
+            jmp START_SEARCH_BIT
+        :
+        pla
+        ora STACK_TOP+1, x ; set that bit
+        sta STACK_TOP+1, x ; save new byte for later
+
+    tya
+    asl
+    asl ; shift left twice, 4 bytes per OAM entry
+    tay ; preserve in y
+
+    lsr
+    lsr ; div by 4 to get the OAM index
+    lsr
+    lsr
+    lsr ; div by 8 more to get the allocating byte
+    tax
+    pla
+    sta oams_reserved, x ; set that byte to new value
+    rts ; OAM offset in y
+.endproc
+
+; y: OAM offset to free
+.proc oam_free
+    lda #OFFSCREEN
+    sta OAM+oam::ycord, y ; move freed sprite off the screen
+
+    tya
+    and #%00011100 ; just the bit indexing bits of the offset
+    lsr
+    lsr ; div by 4 to get the bit offset
+    tax
+    lda #1
+    cpx #0
+    START_SET_BIT:
+        beq :+
+        asl
+        dex
+        jmp START_SET_BIT
+    :
+    not
+    tsx
+    and STACK_TOP+1, x
+    sta STACK_TOP+1, x ; clear the bit that we got
+    
+    tya
+    lsr
+    lsr ; div by 4 to get the OAM index
+    lsr
+    lsr
+    lsr ; div by 8 more to get the allocating byte
+    tax
+    pla
+    sta oams_reserved, x ; set the corresponding byte again
     rts
 .endproc

@@ -111,7 +111,7 @@ SCORP_INIT_X_RIGHT = 239
 
 .proc scorp_draw
     ; arg 4: sprite x
-    push scorp_xhi
+    ; push scorp_xhi
 
     ; arg 3: sprite flags
     lda scorp_f
@@ -119,7 +119,7 @@ SCORP_INIT_X_RIGHT = 239
     .repeat 5 ; horizontal flip is bit 7
         asl
     .endrep
-    pha
+    ; pha
 
     ; arg 2: tile index
     lda scorp_f
@@ -128,12 +128,12 @@ SCORP_INIT_X_RIGHT = 239
         lsr
     .endrep
     add #$70
-    pha
+    ; pha
 
     ; arg 1: sprite y
-    push scorp_y
+    ; push scorp_y
 
-    call_with_args_manual spritegfx_load_oam, 4
+    ; call_with_args_manual spritegfx_load_oam, 4
 
     lda #SCORP_FLAG_LEFT
     bit scorp_f
@@ -146,14 +146,14 @@ SCORP_INIT_X_RIGHT = 239
         lda scorp_xhi
         sub #8
     :
-    pha
+    ; pha
 
     lda scorp_f
     and #SCORP_FLAG_LEFT
     .repeat 5 ; horizontal flip is bit 7
         asl
     .endrep
-    pha
+    ; pha
 
     lda scorp_f
     and #SCORP_ANIM_MASK
@@ -161,11 +161,11 @@ SCORP_INIT_X_RIGHT = 239
         lsr
     .endrep
     add #$71
-    pha
+    ; pha
 
-    push scorp_y
+    ; push scorp_y
 
-    call_with_args_manual spritegfx_load_oam, 4
+    ; call_with_args_manual spritegfx_load_oam, 4
 
     rts
 .endproc

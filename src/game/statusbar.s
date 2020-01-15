@@ -84,11 +84,11 @@ statusbar_level:    .res 1 ; technically not status bar, but we keep track of it
     draw_loop:
         sub #8
         tay ; preserve A, we'll need it later
-        pha ; arg 4: sprite x
+        ; pha ; arg 4: sprite x
         lda #0
-        pha ; arg 3: attributes
+        ; pha ; arg 3: attributes
         lda #$21
-        pha ; arg 2: tile index
+        ; pha ; arg 2: tile index
         ldx lives_temp
         cpx lives
         bcc :+
@@ -97,8 +97,8 @@ statusbar_level:    .res 1 ; technically not status bar, but we keep track of it
         :
             lda #$F7
         :
-        pha ; arg 1: sprite y
-        call_with_args_manual spritegfx_load_oam, 4
+        ; pha ; arg 1: sprite y
+        ; call_with_args_manual spritegfx_load_oam, 4
         tya
         dec lives_temp
         bne draw_loop

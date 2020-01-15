@@ -14,6 +14,8 @@ player_xhi:             .res 1
 player_ylo:             .res 1
 player_yhi:             .res 1
 
+oam_offset:             .res 1
+
 ; speed in total is 1.5 px/frame
 SPEED_LO = 128 ; speed in 1/256 px/frame
 SPEED_HI = 1     ; speed in px/frame
@@ -30,12 +32,17 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     sta player_xhi
     lda #192
     sta player_yhi
+    jsr oam_alloc
+    sty oam_offset
+    lda #$21
+    sta OAM+oam::tile, y
+    lda #0
+    sta OAM+oam::flags, y
     rts
 .endproc
 
 ; Moves the player character in response to controller 1.
 .proc player_move
-
     ; right
     lda cur_keys
     and #KEY_RIGHT
@@ -129,7 +136,13 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
 .endproc
 
 .proc player_draw
-    call_with_args spritegfx_load_oam, player_yhi, #$21, #0, player_xhi
+    ; call_with_args spritegfx_load_oam, player_yhi, #$21, #0, player_xhi
+    ldy oam_offset
+    lda player_yhi
+    add #SPRITE_VERT_OFFSET
+    sta OAM+oam::ycord, y
+    lda player_xhi
+    sta OAM+oam::xcord, y
     rts
 .endproc
 

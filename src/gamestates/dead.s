@@ -27,19 +27,19 @@ dead_timer:     .res 1
     lda #($CF-72)
     cmp dead_timer
     bcc :+
-        call_with_args spritegfx_load_oam, player_yhi, #$0, #0, player_xhi
-        call_with_args spritegfx_load_oam, player_yhi, #$0, #0, player_xhi
+        ; call_with_args spritegfx_load_oam, player_yhi, #$0, #0, player_xhi
+        ; call_with_args spritegfx_load_oam, player_yhi, #$0, #0, player_xhi
         rts
     :
 
     ; arg 4: sprite x
     lda player_xhi
     sub #4
-    pha
+    ; pha
 
     ; arg 3: sprite flags
     lda #0
-    pha
+    ; pha
 
     ; arg 2: sprite tile index
     ; shifting right twice and cutting out the last bit gives the left sprite
@@ -49,31 +49,31 @@ dead_timer:     .res 1
     lsr
     and #%00001110 
     add #$40
-    pha
+    ; pha
 
     ; arg 1: sprite Y
     lda player_yhi
-    pha
-    call_with_args_manual spritegfx_load_oam, 4
+    ; pha
+    ; call_with_args_manual spritegfx_load_oam, 4
 
     ; do it again, but with the right sprite, shifted right a bit
     lda player_xhi
     add #4
-    pha
+    ; pha
     
     lda #0
-    pha
+    ; pha
 
     lda dead_timer
     lsr
     lsr
     and #%00001110
     add #$41
-    pha
+    ; pha
 
-    lda player_yhi
-    pha
-    call_with_args_manual spritegfx_load_oam, 4
+    ; lda player_yhi
+    ; pha
+    ; call_with_args_manual spritegfx_load_oam, 4
 
     rts
 .endproc

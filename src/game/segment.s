@@ -245,7 +245,7 @@ DIR_DOWN =      %00000010
 .proc segment_draw
     ; arg 4: sprite x
     lda segment_xs, y
-    pha
+    ; pha
 
     ; arg 3: sprite flags
     lda segment_dirs, y
@@ -256,7 +256,7 @@ DIR_DOWN =      %00000010
     asl a
     asl a
     asl a ; shift dir bits left 6 times, lines up perfectly with sprite mirroring
-    pha
+    ; pha
 
     ; arg 2: sprite tile index
     ; there is a LOT of bit arithmetic about to happen
@@ -267,14 +267,14 @@ DIR_DOWN =      %00000010
     lsr
     lsr
     add #$10
-    pha
+    ; pha
     lda segment_dirs, y
     and #DIR_DOWN
     beq :+
         ; dir down set
         pla
         add #DIR_DOWN
-        pha
+        ; pha
     :
 
     ; arg 1: sprite y
@@ -287,9 +287,9 @@ DIR_DOWN =      %00000010
     :
         lda segment_ys, y
     :
-    pha
+    ; pha
 
-    call_with_args_manual spritegfx_load_oam, 4
+    ; call_with_args_manual spritegfx_load_oam, 4
     rts
 .endproc
 
