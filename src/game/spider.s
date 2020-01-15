@@ -34,7 +34,7 @@ SPIDER_INIT_Y = 100
 SPIDER_BOUNDS_TOP = SPIDER_INIT_Y
 SPIDER_BOUNDS_BOT = 200
 
-SPIDER_SPEED = 2
+SPIDER_SPEED = 1
 
 .segment "CODE"
 
@@ -202,9 +202,8 @@ SPIDER_SPEED = 2
     lda spider_x
     sub #8
     call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, a
-    lda spider_x
     inc spider_anim
-    call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, a
+    call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, spider_x
     
     inc spider_anim
     lda spider_anim
