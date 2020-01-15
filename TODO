@@ -75,7 +75,7 @@ DEVELOPMENT:
         \ centipede getting hit
         \ player death
         problem: CAN'T FIND DETAILS ON WHAT SPIDER OR LEVEL UP JINGLE IS 
-    * spider
+    \ spider
         \ base behavior
         \ spawn randomly
         \ destroy mushrooms
@@ -84,14 +84,16 @@ DEVELOPMENT:
             \ scoring particle effect
     \ particles when an enemy is shot
     * scorpion
-        * base behavior (move slowly across the screen)
+        * base behavior (move slowly across the middle of the screen)
         * spawn randomly after wave 3
         * poisons mushrooms
             * centipede moves straight down after reaching a poison shroom
+        * sound
     * flea
         * base behavior (2 hits to destroy, moves straight down)
         * creates mushrooms on the way down
         * spawn randomly after wave 2 if less than 5 shrooms in player area
+        * sound
     * player collision with mushrooms
     * pause game on select press
     * move faster with B (to replace track ball)

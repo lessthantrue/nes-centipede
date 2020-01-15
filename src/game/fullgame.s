@@ -9,6 +9,7 @@
     jsr arrow_step
     jsr centipede_step
     jsr spider_step
+    jsr scorp_move
 
     ; drawing
     jsr player_draw
@@ -17,6 +18,7 @@
     jsr centipede_draw
     jsr statusbar_draw_lives
     jsr particle_draw
+    jsr scorp_draw
 
     ; audio
     jsr sound_run_default
@@ -48,6 +50,8 @@
     jsr sound_init
     jsr spider_init
     jsr particles_init
+    jsr scorp_init
+    jsr scorp_reset
     rts
 .endproc
 
