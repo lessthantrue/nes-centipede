@@ -7,6 +7,7 @@
 .include "board.inc"
 .include "statusbar.inc"
 .include "particles.inc"
+.include "scoreparticle.inc"
 .include "../collision.inc"
 .include "../events/events.inc"
 
@@ -195,6 +196,7 @@ SPIDER_SPEED = 2
         ; spider dead
         call_with_args spritegfx_load_oam, #OFFSCREEN, #$20, #0, #0
         call_with_args spritegfx_load_oam, #OFFSCREEN, #$20, #0, #0
+        jsr score_particle_draw
         rts
     :
     lda spider_x
@@ -239,26 +241,36 @@ SPIDER_SPEED = 2
 .proc spider_collide_arrow
     ; called immediately after collide player, so don't
     ; have to set up collision box again
+    lda #ARROW_FLAG_ACTIVE
+    bit arrow_f
+    bne :+
+        jmp END_COLLISION
+    :
     call_with_args collision_box1_contains, arrow_x, arrow_y
     lda collision_ret
     beq END_COLLISION
         ; arrow hit, determine player distance to spider
         lda player_yhi
         sub spider_y
-        ; 0-16 px: near score
-        cmp #16
+        ; 0-24 px: near score
+        cmp #24
         bcs :+
             statusbar_add_score SPIDER_NEAR_SCORE
+            lda #$64
             jmp END_SCORE
         :
-        ; 16-32 px: mid score
-        cmp #32
+        ; 24-40 px: mid score
+        cmp #40
         bcs :+
             statusbar_add_score SPIDER_MID_SCORE
+            lda #$62
             jmp END_SCORE
         :
+        ; 40+ px: far score
         statusbar_add_score SPIDER_FAR_SCORE
+        lda #$60
         END_SCORE:
+        call_with_args score_particle_init, spider_x, spider_y, a
         jsr arrow_del
         jsr spider_init
         call_with_args particle_add, spider_x, spider_y

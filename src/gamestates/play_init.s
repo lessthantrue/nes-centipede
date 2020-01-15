@@ -18,6 +18,8 @@
 .proc state_play_init_logic
     jsr statusbar_init
     jsr game_full_reset
+    ldx #0
+    jsr ppu_clear_oam
     rts
 .endproc
 

@@ -81,7 +81,7 @@ DEVELOPMENT:
         \ destroy mushrooms
         \ jingle/music/sound/whatever
         \ proper scoring (900 close, 600 mid, 300 far)
-            * scoring particle effect
+            \ scoring particle effect
     \ particles when an enemy is shot
     * scorpion
         * base behavior (move slowly across the screen)
@@ -130,3 +130,4 @@ BUGS:
     \ centipede's hitbox is very messed up
     \ centipede sound continues even after it's dead
     \ level transitions if and only if centipede is dead, should also include other enemies
+    * enemy death animation stays on screen if it's the last enemy to die

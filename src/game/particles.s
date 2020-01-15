@@ -45,11 +45,11 @@ particle_times: .res MAX_NUM_PARTICLES
 
     ; copy data
     lda STACK_TOP+1, x
-    sta particle_xs
+    sta particle_xs, y
     lda STACK_TOP+2, x
-    sta particle_ys
+    sta particle_ys, y
     lda #12
-    sta particle_times
+    sta particle_times, y
     rts
 .endproc
 
