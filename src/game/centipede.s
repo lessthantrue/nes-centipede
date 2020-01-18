@@ -22,6 +22,7 @@ segment_xs          :   .res CENTIPEDE_LEN
 segment_ys          :   .res CENTIPEDE_LEN
 segment_dirs        :   .res CENTIPEDE_LEN
 segment_flags       :   .res CENTIPEDE_LEN
+segment_oams        :   .res CENTIPEDE_LEN
 
 .segment "CODE"
 
@@ -42,7 +43,6 @@ segment_flags       :   .res CENTIPEDE_LEN
         lda map_fn+1
         pha
         lda map_fn
-        sub #1
         pha 
         rts
         after:
@@ -66,21 +66,42 @@ segment_flags       :   .res CENTIPEDE_LEN
 .endproc
 
 .proc centipede_reset
-    lda #0
-    sta centipede_segments
+    ; zero flags and free OAMs
+    ldx #CENTIPEDE_LEN
+    :
+        dex
+        lda segment_flags, x
+        and #SEGMENT_FLAG_ALIVE
+        beq NOT_ALIVE
+            ; is alive, so free OAM
+            ldy segment_oams, x
+            txa
+            pha
+            jsr oam_free
+            pla
+            tax
+        NOT_ALIVE:
+        lda #0
+        sta segment_flags, x
+        cpx #0
+        bne :-
+    ; 0 segments active, restart walk
+    stx centipede_segments
     jsr segment_init
     rts
 .endproc
 
 .proc centipede_step
     st_addr segment_step, map_fn
+    dec_16 map_fn
+    jsr player_setup_collision
     jsr map_segment
     rts
 .endproc
 
 .proc centipede_draw
     st_addr segment_draw, map_fn
-    jsr player_setup_collision
+    dec_16 map_fn
     jsr map_segment
     rts
 .endproc

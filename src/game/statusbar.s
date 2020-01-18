@@ -5,10 +5,13 @@
 .include "../spritegfx.inc"
 
 .segment "ZEROPAGE"
+MAX_LIVES = 6
+START_LIVES = 3
 score:              .res 2
 lives:              .res 1
 lives_temp:         .res 1 ; needed for draw lives
-statusbar_level:    .res 1 ; technically not status bar, but we keep track of it here
+statusbar_level:    .res 1 ; technically not on the status bar, but we keep track of it here
+oam_offsets:        .res MAX_LIVES-1
 
 .segment "CODE"
 
@@ -17,8 +20,12 @@ statusbar_level:    .res 1 ; technically not status bar, but we keep track of it
     sta score
     sta score+1
     sta statusbar_level
-    lda #3
+    lda #START_LIVES
     sta lives
+    .repeat 3, I
+        jsr oam_alloc
+        sty oam_offsets+I
+    .endrep
     rts
 .endproc
 
@@ -56,6 +63,10 @@ statusbar_level:    .res 1 ; technically not status bar, but we keep track of it
     beq :+
         dec lives
     :
+    ldy lives
+    lda oam_offsets, y
+    tay
+    jsr oam_free
     rts
 .endproc
 
@@ -77,30 +88,23 @@ statusbar_level:    .res 1 ; technically not status bar, but we keep track of it
 .endproc
 
 .proc statusbar_draw_lives
-    ldx #8
-    stx lives_temp
-    ; TODO: clear out old OAMs for removed lives, or something
-    lda #(112+40)
-    draw_loop:
+    rts
+    ldx #0
+    lda #140
+    :
+        ldy oam_offsets, x
         sub #8
-        tay ; preserve A, we'll need it later
-        ; pha ; arg 4: sprite x
+        sta OAM+oam::xcord, y
+        pha
+        lda #128
+        sta OAM+oam::ycord, y
         lda #0
-        ; pha ; arg 3: attributes
+        sta OAM+oam::flags, y
         lda #$21
-        ; pha ; arg 2: tile index
-        ldx lives_temp
+        sta OAM+oam::tile, y
+        pla
+        inx
         cpx lives
-        bcc :+
-            lda #$E7
-            jmp :++
-        :
-            lda #$F7
-        :
-        ; pha ; arg 1: sprite y
-        ; call_with_args_manual spritegfx_load_oam, 4
-        tya
-        dec lives_temp
-        bne draw_loop
+        beq :-
     rts
 .endproc

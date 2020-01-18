@@ -12,10 +12,9 @@
 
     ; drawing
     jsr player_draw
-    jsr arrow_draw
+    jsr centipede_draw
     jsr spider_draw
-    ; jsr centipede_draw
-    ; jsr statusbar_draw_lives
+    jsr arrow_draw
     ; jsr particle_draw
 
     ; scorpion only if level 3+
@@ -35,9 +34,11 @@
 .proc menu_step
     ; logic
     jsr centipede_step
+    jsr spider_step
 
     ; drawing
     jsr centipede_draw
+    jsr spider_draw
 
     rts
 .endproc
@@ -76,6 +77,7 @@
 .proc game_full_reset
     jsr centipede_reset
     jsr statusbar_init
+    jsr statusbar_draw_lives
     jsr player_init
     jsr arrow_init
     jsr spider_init

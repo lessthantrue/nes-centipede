@@ -18,6 +18,7 @@ dead_timer:     .res 1
 .endproc
 
 .proc state_dead_logic
+    rts
     dec dead_timer ; advance timer
     
     ; centipede needs to stay drawn

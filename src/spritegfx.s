@@ -18,7 +18,7 @@ oams_reserved:  .res 8 ; 64 sprites, 1 bit each
 .endproc
 
 .proc oam_alloc
-    ldy #0 ; counter 1
+    ldy #0 ; counter
     START_SEARCH_BYTE: ; linear search for a zero bit
         lda oams_reserved, y
         cmp #$FF
@@ -55,10 +55,10 @@ oams_reserved:  .res 8 ; 64 sprites, 1 bit each
     tay ; preserve in y
 
     lsr
-    lsr ; div by 4 to get the OAM index
     lsr
     lsr
-    lsr ; div by 8 more to get the allocating byte
+    lsr
+    lsr ; div by 8 to get the allocating byte
     tax
     pla
     sta oams_reserved, x ; set that byte to new value

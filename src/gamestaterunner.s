@@ -16,7 +16,6 @@ gamestaterunner_transitionfn    :   .addr $0000
     lda gamestaterunner_logicfn+1
     pha
     lda gamestaterunner_logicfn
-    sub #1
     pha 
     rts
 .endproc
@@ -27,7 +26,6 @@ gamestaterunner_transitionfn    :   .addr $0000
     lda gamestaterunner_bgfn+1
     pha
     lda gamestaterunner_bgfn
-    sub #1
     pha 
     rts
 .endproc
@@ -38,7 +36,6 @@ gamestaterunner_transitionfn    :   .addr $0000
     lda gamestaterunner_transitionfn+1
     pha
     lda gamestaterunner_transitionfn
-    sub #1
     pha 
     rts
 .endproc

@@ -32,6 +32,7 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
         notify arrow_shoot
         jsr oam_alloc
         sty oam_offset
+        
         lda player_yhi
         sta arrow_y
         add #SPRITE_VERT_OFFSET
@@ -40,13 +41,14 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
         adc #2
         sta arrow_x
         sta OAM+oam::xcord, y
-        lda arrow_f
-        ora #ARROW_FLAG_ACTIVE
-        sta arrow_f
         lda #$20
         sta OAM+oam::tile, y
         lda #0
         sta OAM+oam::flags, y
+
+        lda arrow_f
+        ora #ARROW_FLAG_ACTIVE
+        sta arrow_f
     :
     ; arrow not active
     rts

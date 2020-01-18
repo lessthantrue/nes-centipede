@@ -46,7 +46,6 @@ palette_set_2:
         jsr player_draw
         jsr arrow_draw
         jsr particle_draw
-        jsr statusbar_draw_lives
         jsr sound_run_default
         rts
     :

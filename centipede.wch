@@ -1,0 +1,23 @@
+
+21
+00000	0023	b	h	0	allocated OAMs
+00001	0024	b	h	0	
+00002	0025	b	h	0	
+00003	0026	b	h	0	
+00004	0027	b	h	0	
+00005	0028	b	h	0	
+00006	0029	b	h	0	
+00007	002A	b	h	0	
+00008	0680	b	h	0	Player OAM offset
+00009	0673	b	h	0	Spider OAM offset
+0000A	0672	b	h	0	Spider OAM offset
+0000B	0305	b	h	0	Arrow OAM offset
+0000C	0000	S	S	0	----------------------------
+0000D	0666	b	h	0	segment_OAMs start
+0000E	0667	b	h	0	
+0000F	0668	b	h	0	
+00010	0669	b	h	0	
+00011	066A	b	h	0	
+00012	066B	b	h	0	
+00013	066C	b	h	0	
+00014	066D	b	h	0	

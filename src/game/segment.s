@@ -8,6 +8,8 @@
 .include "../collision.inc"
 .include "statusbar.inc"
 .include "../events/events.inc"
+.include "../nes.inc"
+.include "../core/6502.inc"
 
 SEGMENT_SIZE = 8
 
@@ -39,14 +41,25 @@ DIR_DOWN =      %00000010
     sta segment_flags, x
     ; keep last 3 bits of segment counter for animation offset
     txa
+    .repeat 5
     asl
-    asl
-    asl
-    asl
-    asl
+    .endrep
     and #SEGMENT_MASK_ANIM_OFFSET
     ora segment_flags, x
     sta segment_flags, x
+
+    ; get an OAM from the manager
+    tya
+    pha
+    txa
+    pha ; preserve X and Y
+    jsr oam_alloc
+    pla
+    tax ; get X back so we can index into segment_oams
+    tya
+    sta segment_oams, x
+    pla
+    tay ; get Y back
     inc centipede_segments
     rts
 .endproc
@@ -88,7 +101,7 @@ DIR_DOWN =      %00000010
             lda segment_dirs, y
             and #%00000001 ; switch down bit off
             sta segment_dirs, y
-            ; jmp done_collision
+        rts
         not_down:
         ldx segment_xs, y
         lda segment_dirs, y
@@ -150,7 +163,7 @@ DIR_DOWN =      %00000010
     :
     lda segment_dirs, y
     and #DIR_RIGHT
-    php ; cUz LdA cHaNgEs SoMe PrOcEsSoR fLaGs
+    php
     lda segment_xs, y
     plp
     bne :+
@@ -188,12 +201,17 @@ DIR_DOWN =      %00000010
     bne :+
         jmp no_collision
     :
+        tya
+        pha ; save Y absolutely
         ; kill segment
         lda #SEGMENT_FLAG_ALIVE
         not
         and segment_flags, y
         sta segment_flags, y
         jsr arrow_del
+        pla
+        tay
+        pha ; get Y back, but don't remove from stack
         ; notify people subscribed to the event
         notify segment_kill
         ; place mushroom where segment was plus direction
@@ -219,9 +237,14 @@ DIR_DOWN =      %00000010
         ora #SEGMENT_FLAG_HEAD
         sta segment_flags, y
         dey
+        ; free allocated OAM
+        lda segment_oams, y
+        tay
+        jsr oam_free
+        pla
+        tay
+        pha ; get Y back, but don't remove from stack
         ; add score to game state
-        tya
-        pha ; preserve y
         lda #SEGMENT_FLAG_HEAD
         and segment_flags, y
         beq :+
@@ -231,32 +254,39 @@ DIR_DOWN =      %00000010
             statusbar_add_score SEGMENT_SCORE
         :
         pla
-        tay ; restore y
+        tay
+        pha ; get Y back, but don't remove from stack
         ; add death particle
         lda segment_ys, y
         pha
         lda segment_xs, y
         pha
         call_with_args_manual particle_add, 2
+        pla
+        tay ; get Y back, remove from stack
     no_collision:
     rts
 .endproc
 
 .proc segment_draw
-    ; arg 4: sprite x
+    ; skip everything if it isn't alive
+    lda #SEGMENT_FLAG_ALIVE
+    and segment_flags, y
+    bne :+
+        rts
+    :
+    
+    ldx segment_oams, y
     lda segment_xs, y
-    ; pha
+    sta OAM+oam::xcord, x
 
-    ; arg 3: sprite flags
+    ; sprite flags
     lda segment_dirs, y
     and #%00000001
-    asl a
-    asl a
-    asl a
-    asl a
-    asl a
-    asl a ; shift dir bits left 6 times, lines up perfectly with sprite mirroring
-    ; pha
+    .repeat 6
+    asl
+    .endrep ; shift dir bits left 6 times, lines up perfectly with sprite mirroring
+    sta OAM+oam::flags, x
 
     ; arg 2: sprite tile index
     ; there is a LOT of bit arithmetic about to happen
@@ -267,29 +297,20 @@ DIR_DOWN =      %00000010
     lsr
     lsr
     add #$10
-    ; pha
+    pha
     lda segment_dirs, y
     and #DIR_DOWN
-    beq :+
-        ; dir down set
-        pla
-        add #DIR_DOWN
-        ; pha
-    :
+    tsx
+    clc
+    adc STACK_TOP+1, x
+    ldx segment_oams, y
+    sta OAM+oam::tile, x
+    pla
 
-    ; arg 1: sprite y
-    lda #SEGMENT_FLAG_ALIVE
-    and segment_flags, y
-    bne :+
-        ; don't draw
-        lda #OFFSCREEN
-        jmp :++
-    :
-        lda segment_ys, y
-    :
-    ; pha
+    lda segment_ys, y
+    add #SPRITE_VERT_OFFSET
+    sta OAM+oam::ycord, x
 
-    ; call_with_args_manual spritegfx_load_oam, 4
     rts
 .endproc
 

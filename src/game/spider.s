@@ -37,17 +37,21 @@ SPIDER_SPEED = 1
 .segment "CODE"
 
 .proc spider_init
-    ldy oam_left
-    jsr oam_free
-    ldy oam_right
-    jsr oam_free
+    lda #SPIDER_FLAG_ALIVE
+    bit spider_f
+    beq :+
+        ; was alive, so free stuff
+        ldy oam_left
+        jsr oam_free
+        ldy oam_right
+        jsr oam_free
+    :
     lda #0
     sta spider_f
     jsr spider_set_respawn_time
     rts
 .endproc
 
-; also spider reset
 .proc spider_reset
     jsr rand8
     and #SPIDER_FLAG_LEFT ; this bit is randomly set

@@ -146,4 +146,14 @@ MACROS_INC = 1
 
 .define MAKE_IDENT(format, symb) .ident(.sprintf(format, .string(symb)))
 
+.macro dec_16 addr
+    .local no_dec
+    lda addr
+    bne no_dec
+        ; cover the case where low byte is zero
+        dec addr+1
+    no_dec:
+    dec addr
+.endmacro
+
 .endif
