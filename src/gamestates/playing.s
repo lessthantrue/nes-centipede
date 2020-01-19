@@ -17,7 +17,6 @@ centipede_dead_flag: .res 1
     sta player_dead_flag
     sta centipede_dead_flag
     jsr game_level_reset
-    jsr ppu_clear_oam
     rts
 .endproc
 

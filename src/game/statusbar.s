@@ -22,7 +22,7 @@ oam_offsets:        .res MAX_LIVES-1
     sta statusbar_level
     lda #START_LIVES
     sta lives
-    .repeat 3, I
+    .repeat 2, I
         jsr oam_alloc
         sty oam_offsets+I
     .endrep
@@ -62,11 +62,11 @@ oam_offsets:        .res MAX_LIVES-1
     lda lives
     beq :+
         dec lives
+        ldy lives
+        lda oam_offsets, y
+        tay
+        jsr oam_free
     :
-    ldy lives
-    lda oam_offsets, y
-    tay
-    jsr oam_free
     rts
 .endproc
 
@@ -88,15 +88,14 @@ oam_offsets:        .res MAX_LIVES-1
 .endproc
 
 .proc statusbar_draw_lives
-    rts
-    ldx #0
-    lda #140
+    ldx #1
+    lda #130
     :
-        ldy oam_offsets, x
+        ldy oam_offsets-1, x
         sub #8
         sta OAM+oam::xcord, y
         pha
-        lda #128
+        lda #14
         sta OAM+oam::ycord, y
         lda #0
         sta OAM+oam::flags, y
@@ -105,6 +104,6 @@ oam_offsets:        .res MAX_LIVES-1
         pla
         inx
         cpx lives
-        beq :-
+        bne :-
     rts
 .endproc

@@ -233,9 +233,13 @@ DIR_DOWN =      %00000010
         call_with_args board_set_value, #$04
         ; set next segment's head flag true
         iny
-        lda segment_flags, y
-        ora #SEGMENT_FLAG_HEAD
-        sta segment_flags, y
+        ; unless we're already at the last segment
+        cpy #CENTIPEDE_LEN
+        beq :+
+            lda segment_flags, y
+            ora #SEGMENT_FLAG_HEAD
+            sta segment_flags, y
+        :
         dey
         ; free allocated OAM
         lda segment_oams, y
@@ -275,7 +279,7 @@ DIR_DOWN =      %00000010
     bne :+
         rts
     :
-    
+
     ldx segment_oams, y
     lda segment_xs, y
     sta OAM+oam::xcord, x
