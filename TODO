@@ -28,6 +28,7 @@ REFACTORING:
     * export empty procedures that only exist to satisfy interfaces as the same address
     * redo how OAM organization is done
         improper allocation is probably causing the particle end of level issue
+        dear god no I tried this it's not happening in this game, maybe the next one
     * track status of all enemies in one spot, to simplify level advancement
 
 DEVELOPMENT:

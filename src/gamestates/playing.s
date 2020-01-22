@@ -5,12 +5,18 @@
 .include "../sound.inc"
 .include "../game/game.inc"
 .include "../ppuclear.inc"
+.include "../events/events.inc"
 
 .segment "BSS"
 player_dead_flag: .res 1
 centipede_dead_flag: .res 1
 
 .segment "CODE"
+
+.proc state_playing_init
+    subscribe player_dead, state_playing_player_dead_handler-1
+    subscribe centipede_kill, state_playing_centipede_dead_handler-1
+.endproc
 
 .proc state_playing_load
     lda #0

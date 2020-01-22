@@ -2,6 +2,7 @@
 .include "core/6502.inc"
 .include "spritegfx.inc"
 .include "game/game.inc"
+.include "ppuclear.inc"
 
 .segment "ZEROPAGE"
 

@@ -65,7 +65,6 @@ EVENT_MACROS_INC = 1
             pha
             inx
             lda subscribers, x
-            sub #1
             pha
             rts ; get to work
             AFTER_CALL:

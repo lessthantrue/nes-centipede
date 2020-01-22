@@ -62,21 +62,22 @@ nmis:                    .res 1
     init centipede_kill
     init level_up
 
+    ; this one game state that needs one-time initialization
+    jsr state_playing_init
+
     ; set up most game logic
     jsr game_init
 
     ; set initial state
     swap_state menu
 
-    ; set up core events
-    subscribe player_dead, state_playing_player_dead_handler
-    subscribe centipede_kill, state_playing_centipede_dead_handler
-
     ; turn on vblank NMIs
     lda #VBLANK_NMI|OBJ_1000|BG_0000
     sta PPUCTRL
 
 forever:
+    ldx #0
+    jsr ppu_clear_oam
 
     ; Game logic
     jsr gamestaterunner_transition

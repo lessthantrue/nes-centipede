@@ -9,8 +9,9 @@ make_event_header arrow_shoot
 make_event_header player_dead
 make_event_header segment_kill
 
+.FEATURE addrsize
 .macro subscribe event, handler
-    call_with_args .ident(.sprintf("%s_subscribe", .string(event))), #<handler, #>handler
+    call_with_args .ident(.sprintf("%s_subscribe", .string(event))), #.lobyte(handler), #.hibyte(handler)
 .endmacro
 
 .macro notify event

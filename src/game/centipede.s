@@ -57,8 +57,8 @@ segment_flags       :   .res CENTIPEDE_LEN
 .endproc
 
 .proc centipede_init
-    subscribe level_up, level_up_handler
-    subscribe segment_kill, segment_kill_handler
+    subscribe level_up, level_up_handler-1
+    subscribe segment_kill, segment_kill_handler-1
     lda #1
     sta centipede_speed
     jsr centipede_reset
@@ -74,13 +74,13 @@ segment_flags       :   .res CENTIPEDE_LEN
 
 .proc centipede_step
     st_addr segment_step, map_fn
+    jsr player_setup_collision
     jsr map_segment
     rts
 .endproc
 
 .proc centipede_draw
     st_addr segment_draw, map_fn
-    jsr player_setup_collision
     jsr map_segment
     rts
 .endproc

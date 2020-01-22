@@ -16,10 +16,10 @@ version = 0.1
 # Space-separated list of assembly language files that make up the
 # PRG ROM.  If it gets too long for one line, you can add a backslash
 # (the \ character) at the end of the line and continue on the next.
-objlist = nrom init main collision gamestaterunner ppuclear sound spritegfx random pads \
+objlist = events/events \
+nrom init main collision gamestaterunner ppuclear sound spritegfx random pads \
 game/arrow game/board game/centipede game/segment game/spider game/statusbar game/player game/fullgame game/particles game/scoreparticle game/scorpion\
 gamestates/dead gamestates/gameover gamestates/menu gamestates/nextlevel gamestates/play_init gamestates/playing gamestates/reset_mushrooms \
-events/events \
 core/bin2dec core/ntscperiods
 
 AS65 = ca65
@@ -99,7 +99,7 @@ objlistntsc = $(foreach o,$(objlist),$(objdir)/$(o).o)
 map.txt $(title).nes: nrom128.cfg $(objlistntsc)
 	$(LD65) -o $(title).nes -m map.txt -C $^
 
-$(objdir)/%.o: $(srcdir)/%.s $(srcdir)/nes.inc | $(objdir)
+$(objdir)/%.o: $(srcdir)/%.s | $(objdir)
 	mkdir -p $(@D)
 	$(AS65) $(CFLAGS65) $< -o $@
 

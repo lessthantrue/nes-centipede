@@ -25,25 +25,6 @@ HI = 47
 spider_jingle:  .byte LOW, MID, HI, 0, HI, MID, LOW, MID, HI
 SPIDER_JINGLE_LEN = 10
 
-.proc sound_init
-    lda #$0F
-    sta APUFLAGS
-    lda #0
-    sta $4011
-    lda #1
-    sta centipede_active
-    lda #MARCH_SOUND_DELAY
-    sta centipede_march_timer
-    lda #0
-    sta APU_SQ2_SWP
-    sta spider_jingle_counter
-    subscribe segment_kill, segment_kill_handler
-    subscribe arrow_shoot, arrow_shoot_handler
-    subscribe player_dead, player_dead_handler
-    subscribe centipede_kill, centipede_kill_handler
-    rts
-.endproc
-
 .proc sound_reset
     lda #1
     sta centipede_active
@@ -131,5 +112,24 @@ SPIDER_JINGLE_LEN = 10
 .proc centipede_kill_handler
     lda #0
     sta centipede_active
+    rts
+.endproc
+
+.proc sound_init
+    lda #$0F
+    sta APUFLAGS
+    lda #0
+    sta $4011
+    lda #1
+    sta centipede_active
+    lda #MARCH_SOUND_DELAY
+    sta centipede_march_timer
+    lda #0
+    sta APU_SQ2_SWP
+    sta spider_jingle_counter
+    subscribe segment_kill, segment_kill_handler-1
+    subscribe arrow_shoot, arrow_shoot_handler-1
+    subscribe player_dead, player_dead_handler-1
+    subscribe centipede_kill, centipede_kill_handler-1
     rts
 .endproc
