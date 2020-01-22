@@ -9,7 +9,6 @@ MAX_LIVES = 6
 START_LIVES = 3
 score:              .res 2
 lives:              .res 1
-lives_temp:         .res 1 ; needed for draw lives
 statusbar_level:    .res 1 ; technically not on the status bar, but we keep track of it here
 oam_offsets:        .res MAX_LIVES-1
 
@@ -26,6 +25,29 @@ oam_offsets:        .res MAX_LIVES-1
         jsr oam_alloc
         sty oam_offsets+I
     .endrep
+    rts
+.endproc
+
+.proc statusbar_reset
+    ; reset variables
+    lda #0
+    sta score
+    sta score+1
+    sta statusbar_level
+    ; free OAMs still allocated
+    ldx lives
+    beq :++
+    :
+        dex
+        beq :+
+        ldy oam_offsets, x
+        txa
+        pha
+        jsr oam_free
+        pla
+        tax
+        jmp :-
+    :
     rts
 .endproc
 

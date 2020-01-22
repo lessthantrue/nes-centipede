@@ -1,5 +1,6 @@
 .include "particles.inc"
 .include "../spritegfx.inc"
+.include "../nes.inc"
 .include "game.inc"
 .include "../core/6502.inc"
 
@@ -10,6 +11,7 @@ MAX_NUM_PARTICLES = 4
 particle_xs:    .res MAX_NUM_PARTICLES
 particle_ys:    .res MAX_NUM_PARTICLES
 particle_times: .res MAX_NUM_PARTICLES
+particle_oams:  .res MAX_NUM_PARTICLES
 
 .segment "CODE"
 
@@ -30,12 +32,14 @@ particle_times: .res MAX_NUM_PARTICLES
 ; arg 2: y
 .proc particle_add
     ; find the first open particle
-    ldy #0
+    txa
+    pha ; save parameter pointer
+    ldx #0
     loop_start:
         lda particle_times, y
         beq loop_end
-        iny
-        cpy MAX_NUM_PARTICLES
+        inx
+        cpx MAX_NUM_PARTICLES
         bne :+
             ; give up if we couldn't find one
             rts
@@ -44,12 +48,22 @@ particle_times: .res MAX_NUM_PARTICLES
     loop_end:
 
     ; copy data
-    lda STACK_TOP+1, x
-    sta particle_xs, y
-    lda STACK_TOP+2, x
-    sta particle_ys, y
+    txa
+    pha
+    jsr oam_alloc
+    pla
+    tax
+    tya
+    sta particle_oams, x
     lda #12
     sta particle_times, y
+    pla
+    tax ; restore stack pointer
+    lda STACK_TOP+1, x
+    sta OAM+oam::xcord, y
+    lda STACK_TOP+2, x
+    add #SPRITE_VERT_OFFSET
+    sta OAM+oam::ycord, y
     rts
 .endproc
 
@@ -57,34 +71,31 @@ particle_times: .res MAX_NUM_PARTICLES
 ; doing the loop boilerplate again
 .proc particle_draw
     push_registers
-    ldy #0
+    ldx #0
     loop_start:
-        lda particle_times, y
+        lda particle_times, x
+        beq loop_cond ; particle dead? don't bother
+        sub #1
+        sta particle_times, x
         bne :+
-            ; call_with_args spritegfx_load_oam, #OFFSCREEN, #0, #0, #0
+            ; remove particle
+            txa
+            pha
+            ldy particle_oams, x
+            jsr oam_free
+            pla
+            tax
             jmp loop_cond
         :
-        sub #1
-        sta particle_times, y ; step time forwards
-        ; arg 4: sprite x
-        lda particle_xs, y
-        ; pha
-        ; arg 3: sprite flags
-        lda #0
-        ; pha
-        ; arg 2: sprite tile index
-        lda particle_times, y
+        lda particle_times, x
         lsr ; shift for a transition every 2 frames
         and #%00000111
         add #$50
-        ; pha
-        ; arg 1: sprite y
-        lda particle_ys, y
-        ; pha
-        ; call_with_args_manual spritegfx_load_oam, 4
+        ldy particle_oams, x
+        sta OAM+oam::tile, y        
     loop_cond:
-        iny
-        cpy #MAX_NUM_PARTICLES
+        inx
+        cpx #MAX_NUM_PARTICLES
         beq loop_end
         jmp loop_start
     loop_end:

@@ -3,7 +3,7 @@
 
 .include "../core/macros.inc"
 
-.global statusbar_init, statusbar_addscore, statusbar_dec_lives
+.global statusbar_init, statusbar_addscore, statusbar_dec_lives, statusbar_reset
 .global statusbar_draw_score, statusbar_draw_lives
 .globalzp statusbar_level
 

@@ -15,7 +15,7 @@
     jsr centipede_draw
     jsr spider_draw
     jsr arrow_draw
-    ; jsr particle_draw
+    jsr particle_draw
 
     ; scorpion only if level 3+
     lda statusbar_level
@@ -76,7 +76,7 @@
 
 .proc game_full_reset
     jsr centipede_reset
-    jsr statusbar_init
+    jsr statusbar_reset
     jsr statusbar_draw_lives
     jsr player_init
     jsr arrow_init

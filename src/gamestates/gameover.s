@@ -76,7 +76,6 @@ gameover_msg: .byte " GAME  OVER "
 .proc state_gameover_transition
     dec state_gameover_delay
     bne :+
-        jsr statusbar_init
         swap_state menu
     :
     rts
