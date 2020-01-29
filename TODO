@@ -86,6 +86,8 @@ DEVELOPMENT:
         \ jingle/music/sound/whatever
         \ proper scoring (900 close, 600 mid, 300 far)
             \ scoring particle effect
+        * variable speed with points?
+        * better mushroom hitbox
     \ particles when an enemy is shot
     * scorpion
         \ base behavior (move slowly across the middle of the screen)
@@ -93,8 +95,9 @@ DEVELOPMENT:
         * poisons mushrooms
             * centipede moves straight down after reaching a poison shroom
         * sound
+        * variable speed with points?
     * flea
-        * base behavior (2 hits to destroy, moves straight down)
+        * base behavior (2 hits to destroy, moves straight down, moves faster once hit)
         * creates mushrooms on the way down
         * spawn randomly after wave 2 if less than 5 shrooms in player area
         * sound
@@ -109,6 +112,7 @@ PROJECT MANAGEMENT:
     \ Put on Github
     \ Double check and delete bg.s
     * set up releases with built .NES file
+        * 0.7 = scorpion, 0.8 = flea, 0.9 = level up, 1.0
     \ online demo with JSNES
 
 BUGS:
@@ -141,3 +145,6 @@ BUGS:
         just reset OAM DMA RAM every frame
     * background flickers for 1 frame in menu -> playing transition
     \ palettes get messed up on level up that requires palette color change
+        moved palette change to vblank
+    * can't make more than 1 board change per frame
+        set up an array of changes to be made, loop through them every time

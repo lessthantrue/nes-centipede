@@ -176,7 +176,31 @@ SPIDER_SPEED = 1
 .endproc
 
 .proc spider_collide_board
+    ; center hit 'box'
     call_with_args board_convert_sprite_xy, spider_x, spider_y
+    jsr board_xy_to_addr
+    jsr board_get_value
+    cmp #0
+    beq :+
+        lda #0
+        jsr board_xy_to_nametable
+        call_with_args board_set_value, #0
+    :
+
+    ; left
+    dec board_arg_x
+    jsr board_xy_to_addr
+    jsr board_get_value
+    cmp #0
+    beq :+
+        lda #0
+        jsr board_xy_to_nametable
+        call_with_args board_set_value, #0
+    :
+
+    ; right
+    inc board_arg_x
+    inc board_arg_x
     jsr board_xy_to_addr
     jsr board_get_value
     cmp #0

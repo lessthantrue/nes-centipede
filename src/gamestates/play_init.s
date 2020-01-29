@@ -37,7 +37,7 @@
     rts
 .endproc
 
-.export state_play_init_load := load-1
-.export state_play_init_logic := logic
+.export state_play_init_load := load
+.export state_play_init_logic := logic-1
 .export state_play_init_bg := bg-1
 .export state_play_init_transition := transition-1
