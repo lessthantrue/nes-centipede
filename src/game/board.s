@@ -11,9 +11,12 @@ board_arg_x:    .res 1
 board_arg_y:    .res 1
 boardaddr:      .res 2
 
-update_ntaddr:  .res 2
-update_data:    .res 1 ; 3 bits for mushroom damage level, bit 4 is "update required" flag
-BOARD_FLAG_REQ_UPDATE = %00010000
+MAX_UPDATES_PER_FRAME = 8 ; last update space is zero terminator
+updates_required:       .res 1
+update_ntaddr_lo:      .res MAX_UPDATES_PER_FRAME
+update_ntaddr_hi:      .res MAX_UPDATES_PER_FRAME
+ ; 3 bits for mushroom damage level, 4th bit for poison
+update_data:    .res MAX_UPDATES_PER_FRAME
 
 .segment "BSS"
 ; 32 spaces wide by 26 spaces tall = 832 bytes
@@ -134,44 +137,49 @@ board:      .res (WIDTH * HEIGHT)
 
 .proc board_request_update_background
     ; set update bit
-    ora #BOARD_FLAG_REQ_UPDATE
-    sta update_data
+    ldy updates_required
+    sta update_data, y
 
     ; preserve nametable address
     lda ntaddr
-    sta update_ntaddr
+    sta update_ntaddr_lo, y
     lda ntaddr+1
-    sta update_ntaddr+1
+    sta update_ntaddr_hi, y
+
+    inc updates_required
     rts
 .endproc
 
 ; updates the background at ntaddr with the value in boardaddr if requested in update_data
 .proc board_update_background
-    lda #BOARD_FLAG_REQ_UPDATE
-    bit update_data
-    bne :+
-        ; no update required
-        rts
-    :
-    
     lda PPUSTATUS
-    lda update_ntaddr+1
-    sta PPUADDR
-    lda update_ntaddr
-    sta PPUADDR ; MSB then LSB in PPUADDR
-    lda update_data ; byte at boardaddr in a
-    and #$07 ; get mushroom growth level
-    add #$70 ; convert to sprite index
-    sta PPUDATA ; set background at ntaddr to that
+    ldy updates_required
+    beq e
+    s:
+        dey
+           
+        lda update_ntaddr_hi, y
+        sta PPUADDR
+        lda update_ntaddr_lo, y
+        sta PPUADDR ; MSB then LSB in PPUADDR
+        lda update_data, y ; byte at boardaddr in a
+        and #$07 ; get mushroom growth level
+        add #$70 ; convert to sprite index
+        sta PPUDATA ; set background at ntaddr to that
+
+        cpy #0
+        bne s
+    e:
     lda #0
-    sta update_ntaddr
-    sta update_ntaddr+1
-    sta update_data ; clear data, most importantly update flag
+    sta updates_required
 
     rts
 .endproc
 
 .proc board_init
+    lda #0
+    sta updates_required ; no updates required yet
+
     ; zero board
     jsr reset_boardaddr
     ldy #HEIGHT
