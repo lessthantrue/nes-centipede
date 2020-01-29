@@ -79,15 +79,19 @@ SPEED = 5 ; velocity in px/frame (everything will work as long as this is less t
         jsr board_get_value
         cmp #0
         beq done_collision ; no mushroom -> no collision
-        ; collision -> "destroy" arrow, "reduce" mushroom
+        ; collision -> "destroy" arrow, "damage" mushroom
         sub #1
         pha ; manual argument 1: new mushroom growth level
+        and #$0F ; ignore poisoned bit for this next part
         bne :+ ; increment score if the mushroom was completely destroyed
-            php
             statusbar_add_score MUSHROOM_SCORE
-            plp
+            call_with_args board_set_value, #0
+            pla ; get rid of that extra variable we had
+            jmp :++
         :
-        call_with_args_manual board_set_value, 1
+            pla
+            call_with_args board_set_value, a
+        :
 
         jsr arrow_del
     done_collision:

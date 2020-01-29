@@ -163,8 +163,8 @@ board:      .res (WIDTH * HEIGHT)
         lda update_ntaddr_lo, y
         sta PPUADDR ; MSB then LSB in PPUADDR
         lda update_data, y ; byte at boardaddr in a
-        and #$07 ; get mushroom growth level
-        add #$70 ; convert to sprite index
+        ; and #$07 ; get mushroom growth level
+        add #$60 ; convert to sprite index
         sta PPUDATA ; set background at ntaddr to that
 
         cpy #0
@@ -252,7 +252,7 @@ board:      .res (WIDTH * HEIGHT)
             pha
             jsr board_get_value ; byte at x, y in a
             and #$07 ; get mushroom growth level
-            adc #$70 ; convert to number / sprite
+            adc #$60 ; convert to number / sprite
             sta PPUDATA ; set background at (x, y) to that
             pla
             tax ; fix registers

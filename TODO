@@ -73,6 +73,8 @@ DEVELOPMENT:
     \ make centipede move diagonally, not just down on collision
     * make centipede move back upwards once reaching the bottom
     \ repair damaged mushrooms when death occurs
+        * 5 points for each regenerated mushroom
+        * sound
     \ sound
         \ centipede walking around
         \ arrow shooting
@@ -92,7 +94,7 @@ DEVELOPMENT:
     * scorpion
         \ base behavior (move slowly across the middle of the screen)
         \ spawn randomly after wave 3
-        * poisons mushrooms
+        \ poisons mushrooms
             * centipede moves straight down after reaching a poison shroom
         * sound
         * variable speed with points?

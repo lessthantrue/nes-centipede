@@ -213,6 +213,27 @@ SCORP_INIT_X_RIGHT = 239
     rts
 .endproc
 
+.proc scorp_collide_board
+    lda scorp_xhi
+    and #$07
+    ; only do this every 8 pixels (1 grid space)
+    beq :+
+        rts
+    :
+
+    call_with_args board_convert_sprite_xy, scorp_xhi, scorp_y
+    jsr board_xy_to_addr
+    jsr board_get_value
+    cmp #0
+    beq :+
+        ; found a mushroom
+        ora #$10
+        jsr board_xy_to_nametable
+        call_with_args board_set_value, a
+    :
+    rts
+.endproc
+
 .proc scorp_step
     lda #SCORP_FLAG_ALIVE
     bit scorp_f
@@ -231,6 +252,7 @@ SCORP_INIT_X_RIGHT = 239
     :
 
     jsr scorp_move
+    jsr scorp_collide_board
     jsr scorp_collide_arrow
     rts
 .endproc
