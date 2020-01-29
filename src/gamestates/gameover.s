@@ -12,17 +12,17 @@ state_gameover_delay:   .res 1
 GAMEOVER_MSG_LEN = 12
 gameover_msg: .byte " GAME  OVER "
 
-.proc state_gameover_load
+.proc load
     lda #240
     sta state_gameover_delay
     rts
 .endproc
 
-.proc state_gameover_logic
+.proc logic
     rts
 .endproc
 
-.proc state_gameover_bg
+.proc bg
     ; top border
     lda #$21
     sta PPUADDR
@@ -73,7 +73,7 @@ gameover_msg: .byte " GAME  OVER "
     rts
 .endproc
 
-.proc state_gameover_transition
+.proc transition
     dec state_gameover_delay
     bne :+
         jsr statusbar_init
@@ -81,3 +81,8 @@ gameover_msg: .byte " GAME  OVER "
     :
     rts
 .endproc
+
+.export state_gameover_load := load
+.export state_gameover_transition := transition-1
+.export state_gameover_bg := bg-1
+.export state_gameover_logic := logic-1

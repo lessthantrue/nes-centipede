@@ -11,11 +11,11 @@
 
 .segment "CODE"
 
-.proc state_play_init_load
+.proc load
     rts
 .endproc
 
-.proc state_play_init_logic
+.proc logic
     jsr statusbar_init
     jsr game_full_reset
     ldx #0
@@ -23,16 +23,21 @@
     rts
 .endproc
 
-.proc state_play_init_bg
+.proc bg
     ; turn off background drawing for this
-    load_palette palette_set_0
+    load_palette palette_set_1
     lda #0
     sta PPUMASK
     jsr board_draw
     rts
 .endproc
 
-.proc state_play_init_transition
+.proc transition
     swap_state playing
     rts
 .endproc
+
+.export state_play_init_load := load-1
+.export state_play_init_logic := logic
+.export state_play_init_bg := bg-1
+.export state_play_init_transition := transition-1

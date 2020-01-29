@@ -18,7 +18,7 @@ centipede_dead_flag: .res 1
     subscribe centipede_kill, state_playing_centipede_dead_handler-1
 .endproc
 
-.proc state_playing_load
+.proc load
     lda #0
     sta player_dead_flag
     sta centipede_dead_flag
@@ -27,17 +27,17 @@ centipede_dead_flag: .res 1
     rts
 .endproc
 
-.proc state_playing_logic
+.proc logic
     jsr game_step
     rts
 .endproc
 
-.proc state_playing_bg
+.proc bg
     jsr game_bg
     rts
 .endproc
 
-.proc state_playing_transition
+.proc transition
     lda player_dead_flag
     beq :+
         ; player died
@@ -66,3 +66,8 @@ centipede_dead_flag: .res 1
     sta centipede_dead_flag
     rts
 .endproc
+
+.export state_playing_load := load
+.export state_playing_logic := logic-1
+.export state_playing_bg := bg-1
+.export state_playing_transition := transition-1

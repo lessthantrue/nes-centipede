@@ -11,13 +11,13 @@ dead_timer:     .res 1
 
 .segment "CODE"
 
-.proc state_dead_load
+.proc load
     lda #$C7
     sta dead_timer
     rts
 .endproc
 
-.proc state_dead_logic
+.proc logic
     dec dead_timer ; advance timer
     
     ; centipede needs to stay drawn
@@ -78,12 +78,12 @@ dead_timer:     .res 1
     rts
 .endproc
 
-.proc state_dead_bg
+.proc bg
     ; nothing to change in background
     rts
 .endproc
 
-.proc state_dead_transition
+.proc transition
     lda dead_timer
     beq :+
         rts ; timer not expired, stay in state
@@ -98,3 +98,8 @@ dead_timer:     .res 1
     swap_state reset_mushrooms
     rts
 .endproc
+
+.export state_dead_logic := logic-1
+.export state_dead_bg := bg-1
+.export state_dead_transition := transition-1
+.export state_dead_load := load

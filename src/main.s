@@ -48,7 +48,7 @@ nmis:                    .res 1
     ; Now the PPU has stabilized, and we're still in vblank.  Copy the
     ; palette right now because if you load a palette during forced
     ; blank (not vblank), it'll be visible as a rainbow streak.
-    load_palette palette_set_0
+    load_palette palette_set_1
     jsr random_init
 
     ; While in forced blank we have full access to VRAM.

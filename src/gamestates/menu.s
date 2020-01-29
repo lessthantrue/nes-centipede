@@ -14,16 +14,16 @@ menu_begin_msg: .byte " PRESS START "
 MENU_EXTRALIFE_MSG_LEN = 19
 menu_extralife_msg: .byte " BONUS EVERY 12000 "
 
-.proc state_menu_load
+.proc load
     rts
 .endproc
 
-.proc state_menu_logic
+.proc logic
     jsr menu_step
     rts
 .endproc
 
-.proc state_menu_bg
+.proc bg
     ; top border
     lda #$21
     sta PPUADDR
@@ -90,7 +90,7 @@ menu_extralife_msg: .byte " BONUS EVERY 12000 "
     rts
 .endproc
 
-.proc state_menu_transition
+.proc transition
     lda #KEY_START
     bit cur_keys
     beq :+
@@ -98,3 +98,8 @@ menu_extralife_msg: .byte " BONUS EVERY 12000 "
     :
     rts
 .endproc
+
+.export state_menu_logic := logic-1
+.export state_menu_bg := bg-1
+.export state_menu_load := load
+.export state_menu_transition := transition-1

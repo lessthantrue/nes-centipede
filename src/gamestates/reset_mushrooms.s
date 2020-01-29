@@ -12,7 +12,7 @@ RESET_MUSHROOM_DELAY = 10
 WIDTH = 32
 HEIGHT = 26
 
-.proc state_reset_mushrooms_load
+.proc load
     lda #0
     sta board_arg_x
     sta board_arg_y
@@ -21,7 +21,7 @@ HEIGHT = 26
     rts
 .endproc
 
-.proc state_reset_mushrooms_logic
+.proc logic
     lda reset_mushroom_delay
     bne END_DONE
     lda #RESET_MUSHROOM_DELAY
@@ -73,15 +73,20 @@ HEIGHT = 26
     rts
 .endproc
 
-.proc state_reset_mushrooms_bg
+.proc bg
     jsr board_update_background
     rts
 .endproc
 
-.proc state_reset_mushrooms_transition
+.proc transition
     lda reset_mushrooms_done
     beq :+
         swap_state playing
     :
     rts
 .endproc
+
+.export state_reset_mushrooms_logic := logic-1
+.export state_reset_mushrooms_bg := bg-1
+.export state_reset_mushrooms_transition := transition-1
+.export state_reset_mushrooms_load := load

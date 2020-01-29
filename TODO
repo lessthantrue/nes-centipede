@@ -25,10 +25,10 @@ REFACTORING:
         \ move strictly game related code to a folder, make a common header
         * clean up all the old stuff I didn't use (Move somewhere else, it can be useful)
         * move a bunch more stuff to core, make a common header
-    * export empty procedures that only exist to satisfy interfaces as the same address
-    * redo how OAM organization is done
+    * export empty procedures that only exist to satisfy interfaces as the same address to save code space
+    x redo how OAM organization is done
         improper allocation is probably causing the particle end of level issue
-        dear god no I tried this it's not happening in this game, maybe the next one
+        ^ dear god no I tried this it's not happening in this game, maybe the next one
     * track status of all enemies in one spot, to simplify level advancement
 
 DEVELOPMENT:
@@ -88,8 +88,8 @@ DEVELOPMENT:
             \ scoring particle effect
     \ particles when an enemy is shot
     * scorpion
-        * base behavior (move slowly across the middle of the screen)
-        * spawn randomly after wave 3
+        \ base behavior (move slowly across the middle of the screen)
+        \ spawn randomly after wave 3
         * poisons mushrooms
             * centipede moves straight down after reaching a poison shroom
         * sound
@@ -123,6 +123,7 @@ BUGS:
     \ player can wrap around the screen to the left
     \ fix centipede splitting up unnecessarily when a middle segment is hit
         Wait until diagonal movement, that might fix it. Update: did not fix it
+        Creating mushrooms one space ahead of where the segment was killed now
     \ JSNES screen bounds don't match FCEUX screen bounds
     \ head is 100 points, other segments are only 10
     \ sometimes player dies or level is instantly completed on game start
@@ -136,5 +137,7 @@ BUGS:
     \ centipede's hitbox is very messed up
     \ centipede sound continues even after it's dead
     \ level transitions if and only if centipede is dead, should also include other enemies
-    * enemy death particle stays on screen if it's the last enemy to die
-        see "redo how OAM organization is done"
+    \ enemy death particle stays on screen if it's the last enemy to die
+        just reset OAM DMA RAM every frame
+    * background flickers for 1 frame in menu -> playing transition
+    \ palettes get messed up on level up that requires palette color change
