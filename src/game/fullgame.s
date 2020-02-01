@@ -3,6 +3,9 @@
 
 .segment "CODE"
 
+; scorpion only if level 3+
+SCORPION_LEVEL_ENABLE = 0
+
 .proc game_step
     ; logic
     jsr player_move
@@ -10,25 +13,29 @@
     jsr centipede_step
     jsr spider_step
 
-    ; drawing
+    ; only step the scorpion if we're past a level count
+    lda statusbar_level
+    cmp #SCORPION_LEVEL_ENABLE
+    bcc :+
+        jsr scorp_step
+    :
+
+    jsr game_draw
+
+    ; audio
+    jsr sound_run_default
+
+    rts
+.endproc
+
+.proc game_draw
     jsr player_draw
     jsr arrow_draw
     jsr spider_draw
     jsr centipede_draw
     jsr statusbar_draw_lives
     jsr particle_draw
-
-    ; scorpion only if level 3+
-    lda statusbar_level
-    cmp #3
-    bcc :+
-        jsr scorp_step
-        jsr scorp_draw
-    :
-
-    ; audio
-    jsr sound_run_default
-
+    jsr scorp_draw
     rts
 .endproc
 

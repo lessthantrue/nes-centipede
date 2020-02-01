@@ -85,9 +85,13 @@ DIR_DOWN =      %00000010
         and #DIR_DOWN
         beq not_down
             ; need special logic when moving down that doesn't involve collisions
-            lda segment_dirs, y
-            and #%00000001 ; switch down bit off
-            sta segment_dirs, y
+            lda segment_flags, y
+            and #SEGMENT_FLAG_POISON
+            bne :+ ; skip not going down if the segment is poisoned
+                lda segment_dirs, y
+                and #%00000001 ; switch down bit off
+                sta segment_dirs, y
+            :
             ; jmp done_collision
         not_down:
         ldx segment_xs, y
@@ -118,6 +122,14 @@ DIR_DOWN =      %00000010
             inc board_arg_x ; check one space to the right
             jsr board_xy_to_addr
             jsr board_get_value
+            tax
+            and #MUSHROOM_POISON_FLAG ; if it's a poison mushroom,
+            beq :+
+                lda segment_flags, y ; set the poisoned flag for that segment
+                ora #SEGMENT_FLAG_POISON
+                sta segment_flags, y
+            :
+            txa
             beq done_collision ; no mushroom -> no collision
         lr_collision:
             ; set new direction to down + previous direction

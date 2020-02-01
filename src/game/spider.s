@@ -228,14 +228,6 @@ SPIDER_SPEED = 1
     call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, a
     inc spider_anim
     call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, spider_x
-    
-    inc spider_anim
-    lda spider_anim
-    cmp #$40
-    bne :+
-        lda #$30
-        sta spider_anim
-    :
 
     rts
 .endproc
@@ -316,6 +308,15 @@ SPIDER_SPEED = 1
             jsr spider_reset
         :
         rts
+    :
+
+    ; animation state
+    inc spider_anim
+    lda spider_anim
+    cmp #$40
+    bne :+
+        lda #$30
+        sta spider_anim
     :
 
     jsr spider_collide_player

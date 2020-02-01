@@ -20,8 +20,8 @@ dead_timer:     .res 1
 .proc logic
     dec dead_timer ; advance timer
     
-    ; centipede needs to stay drawn
-    jsr centipede_draw
+    ; game still needs to be drawn
+    jsr game_draw
 
     ; don't draw if the timer is past a point, for a delay
     lda #($CF-72)

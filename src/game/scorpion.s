@@ -227,7 +227,7 @@ SCORP_INIT_X_RIGHT = 239
     cmp #0
     beq :+
         ; found a mushroom
-        ora #$10
+        ora #MUSHROOM_POISON_FLAG
         jsr board_xy_to_nametable
         call_with_args board_set_value, a
     :
