@@ -7,22 +7,27 @@
 .segment "ZEROPAGE"
 
 MARCH_SOUND_DELAY = 20 ; frames
-centipede_march_timer:  .res 1
-centipede_active:       .res 1
+centipede_march_timer:      .res 1
+centipede_active:           .res 1
 
-spider_jingle_counter:  .res 1
+spider_jingle_counter:      .res 1
+scorpion_jingle_counter:    .res 1
 
 .segment "CODE"
 
-; centipede walking on triangle
-; shooting on sq1
-; everything else on sq2
+; centipede walking and flea on triangle
+; shooting and scorpion on sq1
+; spider on sq2
 ; player death / enemy kill on noise
 
 LOW = 38
 MID = 41
 HI = 47
 spider_jingle:  .byte LOW, MID, HI, 0, HI, MID, LOW, MID, HI
+LOW = 25
+MID = LOW + 3
+HI = MID + 6
+scorp_jingle:   .byte LOW, MID, HI, MID
 SPIDER_JINGLE_LEN = 10
 
 .proc sound_reset

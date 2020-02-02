@@ -180,22 +180,13 @@ SCORP_INIT_X_RIGHT = 239
     cmp #8
     bcc END_COLLISION
     lda #SCORP_FLAG_LEFT
-    bit scorp_f
-    bne :+
-        ; started right, going left. X is aligned with left edge
-        lda scorp_xhi
-        sta collision_box1_l
-        add #16
-        sta collision_box1_r
-        jmp :++
-    :
-        ; started left, going right. X+8 is aligned with right edge
-        lda scorp_xhi
-        add #8
-        sta collision_box1_l
-        sub #16
-        sta collision_box1_r
-    :
+    
+    lda scorp_xhi
+    sub #8
+    sta collision_box1_l
+    add #16
+    sta collision_box1_r
+
     lda scorp_y
     sta collision_box1_t
     add #8
