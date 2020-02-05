@@ -190,8 +190,16 @@ SCORP_INIT_X_RIGHT = 239
     bcc END_COLLISION
     lda #SCORP_FLAG_LEFT
     
-    lda scorp_xhi
-    sub #8
+    lda #SCORP_FLAG_LEFT
+    bit scorp_f
+    beq :+
+        ; started left, going right
+        lda scorp_xhi
+        sub #8
+        jmp :++
+    :
+        lda scorp_xhi
+    :
     sta collision_box1_l
     add #16
     sta collision_box1_r

@@ -29,7 +29,7 @@ REFACTORING:
     x redo how OAM organization is done
         improper allocation is probably causing the particle end of level issue
         ^ dear god no I tried this it's not happening in this game, maybe the next one
-    * track status of all enemies in one spot, to simplify level advancement
+    \ track status of all enemies in one spot, to simplify level advancement
 
 DEVELOPMENT:
     \ move and properly draw multiple centipede segments
@@ -89,7 +89,7 @@ DEVELOPMENT:
         \ proper scoring (900 close, 600 mid, 300 far)
             \ scoring particle effect
         * variable speed with points?
-        * better mushroom hitbox
+        \ better mushroom hitbox
     \ particles when an enemy is shot
     * scorpion
         \ base behavior (move slowly across the middle of the screen)
