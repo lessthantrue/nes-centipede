@@ -8,6 +8,7 @@
 .include "statusbar.inc"
 .include "particles.inc"
 .include "scoreparticle.inc"
+.include "game.inc"
 .include "../collision.inc"
 .include "../events/events.inc"
 
@@ -42,14 +43,18 @@ SPIDER_SPEED = 1
     lda #0
     sta spider_f
     jsr spider_set_respawn_time
+
+    ; set spider not alive at game level
+    clear game_enemy_statuses, #FLAG_ENEMY_SPIDER
+
     rts
 .endproc
 
-; also spider reset
+; aka spider spawn
 .proc spider_reset
     jsr rand8
     and #SPIDER_FLAG_LEFT ; this bit is randomly set
-    ora #SPIDER_FLAG_ALIVE|SPIDER_FLAG_HORIZ
+    ora #SPIDER_FLAG_ALIVE|SPIDER_FLAG_HORIZ ; spider alive and moving horizontally
     sta spider_f
     and #SPIDER_FLAG_LEFT
     beq start_right
@@ -59,11 +64,18 @@ SPIDER_SPEED = 1
     start_right:
         lda #SPIDER_INIT_X_RIGHT
     done_init_lr:
+
+    ; other static initialization stuff
     sta spider_x
     lda #SPIDER_INIT_Y
     sta spider_y
     lda #$30
     sta spider_anim
+
+    ; set spider alive bit at game level
+    set game_enemy_statuses, #FLAG_ENEMY_SPIDER
+
+    ; reset respawn time
     jsr spider_set_respawn_time
     rts
 .endproc

@@ -1,5 +1,5 @@
 .ifndef STATUSBAR_INC
-.define STATUSBAR_INC
+STATUSBAR_INC = 1
 
 .include "../core/macros.inc"
 

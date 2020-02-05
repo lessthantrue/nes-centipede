@@ -1,5 +1,5 @@
 .ifndef EVENTS_INC
-.define EVENTS_INC 1
+EVENTS_INC = 1
 
 .include "eventmacros.inc"
 

@@ -1,5 +1,5 @@
 .ifndef QUEUE_INC
-.define QUEUE_INC
+QUEUE_INC = 1
 
 .macro phq val
     lda val

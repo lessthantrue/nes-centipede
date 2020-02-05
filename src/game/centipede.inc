@@ -1,5 +1,5 @@
 .ifndef CENTIPEDE_INC
-.define CENTIPEDE_INC
+CENTIPEDE_INC = 1
 
 .global centipede_init, centipede_reset, centipede_step, centipede_draw
 .global segment_xs, segment_ys, segment_flags, segment_dirs

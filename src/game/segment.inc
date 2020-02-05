@@ -1,5 +1,5 @@
 .ifndef SEGMENT_INC
-.define SEGMENT_INC
+SEGMENT_INC = 1
 
 .struct segment
     xcord       .byte

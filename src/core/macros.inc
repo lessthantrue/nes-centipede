@@ -86,10 +86,16 @@ MACROS_INC = 1
 
 ; clear bits in a memory location that are set in an argument
 ; uses A
-.macro cla arg, bits
+.macro clear arg, bits
     lda bits
     not
     and arg
+    sta arg
+.endmacro
+
+.macro set arg, bits
+    lda bits
+    ora arg
     sta arg
 .endmacro
 

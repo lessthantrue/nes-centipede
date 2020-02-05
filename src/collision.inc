@@ -1,5 +1,5 @@
 .ifndef COLLISION_INC
-.define COLLISION_INC
+COLLISION_INC = 1
 
 .globalzp collision_box1_l, collision_box1_r, collision_box1_t, collision_box1_b
 .globalzp collision_box2_l, collision_box2_r, collision_box2_t, collision_box2_b

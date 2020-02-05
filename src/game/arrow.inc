@@ -1,5 +1,5 @@
 .ifndef ARROW_INC
-.define ARROW_INC
+ARROW_INC = 1
 
 .global arrow_init, arrow_launch, arrow_step, arrow_draw, arrow_del
 .global arrow_f, arrow_x, arrow_y

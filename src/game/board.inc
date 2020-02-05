@@ -1,5 +1,5 @@
 .ifndef BOARD_INC
-.define BOARD_INC
+BOARD_INC = 1
 
 MUSHROOM_POISON_FLAG = $10
 

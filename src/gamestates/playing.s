@@ -15,7 +15,7 @@ centipede_dead_flag: .res 1
 
 .proc state_playing_init
     subscribe player_dead, state_playing_player_dead_handler-1
-    subscribe centipede_kill, state_playing_centipede_dead_handler-1
+    rts
 .endproc
 
 .proc load
@@ -44,26 +44,19 @@ centipede_dead_flag: .res 1
         swap_state dead
     : ; player not dead
 
-    lda centipede_dead_flag
-    beq :+
-    lda #SPIDER_FLAG_ALIVE
-    bit spider_f
+    lda #FLAG_PLAYER
+    not
+    and game_enemy_statuses
     bne :+
-        ; centipede and spider are dead
         swap_state nextlevel
     :
+
     rts 
 .endproc
 
 .proc state_playing_player_dead_handler
     lda #1
     sta player_dead_flag
-    rts
-.endproc
-
-.proc state_playing_centipede_dead_handler
-    lda #1
-    sta centipede_dead_flag
     rts
 .endproc
 

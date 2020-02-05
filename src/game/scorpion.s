@@ -24,6 +24,7 @@ SCORP_INIT_X_RIGHT = 239
 
 .segment "CODE"
 
+; also scorp kill
 .proc scorp_init
     lda #0
     sta scorp_xlo
@@ -32,6 +33,10 @@ SCORP_INIT_X_RIGHT = 239
     jsr scorp_set_respawn_time
     lda #OFFSCREEN
     sta scorp_y
+
+    ; let full game know the scorp is dead
+    clear game_enemy_statuses, #FLAG_ENEMY_SCORPION
+
     rts
 .endproc
 
@@ -46,6 +51,7 @@ SCORP_INIT_X_RIGHT = 239
     rts
 .endproc
 
+; also scorp spawn
 .proc scorp_reset
     ; flags (left randomly, active always)
     jsr rand8
@@ -70,6 +76,9 @@ SCORP_INIT_X_RIGHT = 239
     asl
     asl ; shift 3 times to align to 8
     sta scorp_y
+
+    ; let game know that the scorpion is alive
+    set game_enemy_statuses, #FLAG_ENEMY_SCORPION
 
     jsr scorp_set_respawn_time
     rts

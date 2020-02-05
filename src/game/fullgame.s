@@ -1,5 +1,10 @@
 .include "game.inc"
 .include "../sound.inc"
+.include "../events/events.inc"
+
+.segment "ZEROPAGE"
+
+game_enemy_statuses:    .res 1
 
 .segment "CODE"
 
@@ -64,6 +69,7 @@ SCORPION_LEVEL_ENABLE = 0
     jsr spider_init
     jsr particles_init
     jsr scorp_init
+
     rts
 .endproc
 
@@ -77,14 +83,18 @@ SCORPION_LEVEL_ENABLE = 0
     jsr sound_reset
     jsr centipede_reset
     jsr spider_init
+
+    lda #FLAG_ENEMY_CENTIPEDE
+    ora #FLAG_PLAYER
+    sta game_enemy_statuses
+
     rts
 .endproc
 
 .proc game_full_reset
-    jsr centipede_reset
     jsr statusbar_init
     jsr player_init
     jsr arrow_init
-    jsr spider_init
+    jsr game_level_reset
     rts
 .endproc

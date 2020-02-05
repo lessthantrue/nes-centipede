@@ -1,5 +1,5 @@
 .ifndef SPRITEGFX_INC
-.define SPRITEGFX_INC
+SPRITEGFX_INC = 1
 
 .struct oam
     ycord   .byte

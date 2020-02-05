@@ -20,14 +20,17 @@ scorpion_jingle_counter:    .res 1
 ; spider on sq2
 ; player death / enemy kill on noise
 
+; spider
 LOW = 38
 MID = 41
 HI = 47
 spider_jingle:  .byte LOW, MID, HI, 0, HI, MID, LOW, MID, HI
-LOW = 25
-MID = LOW + 3
-HI = MID + 6
-scorp_jingle:   .byte LOW, MID, HI, MID
+
+; scorpion
+SCORP_LOW = 25
+SCORP_MID = SCORP_LOW + 3
+SCORP_HI = SCORP_MID + 6
+scorp_jingle:   .byte SCORP_LOW, SCORP_MID, SCORP_HI, SCORP_MID
 SPIDER_JINGLE_LEN = 10
 
 .proc sound_reset

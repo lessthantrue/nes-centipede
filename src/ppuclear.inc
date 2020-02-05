@@ -1,5 +1,5 @@
 .ifndef PPUCLEAR_INC
-.define PPUCLEAR_INC 2
+PPUCLEAR_INC = 1
 
 .include "nes.inc"
 

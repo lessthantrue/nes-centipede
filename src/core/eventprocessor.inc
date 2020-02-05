@@ -1,5 +1,5 @@
 .ifndef EVENT_PROCESSOR_INC
-.define EVENT_PROCESSOR_INC
+EVENT_PROCESSOR_INC = 1
 
 .global evtp_add, evtp_run
 

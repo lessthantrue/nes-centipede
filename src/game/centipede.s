@@ -3,6 +3,7 @@
 .include "board.inc"
 .include "centipede.inc"
 .include "player.inc"
+.include "game.inc"
 .include "../collision.inc"
 .include "arrow.inc"
 .include "../spritegfx.inc"
@@ -107,6 +108,7 @@ segment_flags       :   .res CENTIPEDE_LEN
     beq :+
         ; centipede is dead
         notify centipede_kill
+        clear game_enemy_statuses, #FLAG_ENEMY_CENTIPEDE
     :
     rts
 .endproc
