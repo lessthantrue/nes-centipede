@@ -27,8 +27,8 @@ dead_timer:     .res 1
     lda #($CF-72)
     cmp dead_timer
     bcc :+
-        call_with_args spritegfx_load_oam, player_yhi, #$0, #0, player_xhi
-        call_with_args spritegfx_load_oam, player_yhi, #$0, #0, player_xhi
+        call_with_args spritegfx_load_oam, #OFFSCREEN, #$0, #0, player_xhi
+        call_with_args spritegfx_load_oam, #OFFSCREEN, #$0, #0, player_xhi
         rts
     :
 
@@ -95,6 +95,7 @@ dead_timer:     .res 1
         swap_state gameover
         rts
     :
+    jsr player_init
     swap_state reset_mushrooms
     rts
 .endproc

@@ -2,9 +2,11 @@
 .include "../pads.inc"
 .include "arrow.inc"
 .include "player.inc"
+.include "../events/events.inc"
 .include "../spritegfx.inc"
 .include "../collision.inc"
 .include "statusbar.inc"
+.include "game.inc"
 .include "../events/events.inc"
 
 .segment "BSS"
@@ -129,7 +131,16 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
 .endproc
 
 .proc player_draw
-    call_with_args spritegfx_load_oam, player_yhi, #$21, #0, player_xhi
+    lda #FLAG_PLAYER
+    bit game_enemy_statuses
+    beq :+
+        ; player alive
+        call_with_args spritegfx_load_oam, player_yhi, #$21, #0, player_xhi
+        jmp :++
+    :
+        ; player dead
+        call_with_args spritegfx_load_oam, #OFFSCREEN, #0, #0, #0
+    :
     rts
 .endproc
 

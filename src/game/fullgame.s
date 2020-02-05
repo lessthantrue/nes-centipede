@@ -70,6 +70,8 @@ SCORPION_LEVEL_ENABLE = 0
     jsr particles_init
     jsr scorp_init
 
+    subscribe player_dead, game_player_dead_handler-1
+
     rts
 .endproc
 
@@ -96,5 +98,10 @@ SCORPION_LEVEL_ENABLE = 0
     jsr player_init
     jsr arrow_init
     jsr game_level_reset
+    rts
+.endproc
+
+.proc game_player_dead_handler
+    clear game_enemy_statuses, #FLAG_PLAYER
     rts
 .endproc
