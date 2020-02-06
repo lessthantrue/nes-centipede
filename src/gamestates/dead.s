@@ -85,18 +85,9 @@ dead_timer:     .res 1
 
 .proc transition
     lda dead_timer
-    beq :+
-        rts ; timer not expired, stay in state
-    :
-    ; transition to the same level, starting over
-    jsr statusbar_dec_lives
     bne :+
-        ; out of lives, go to gameover screen
-        swap_state gameover
-        rts
+        swap_state reset_mushrooms ; timer not expired, stay in state
     :
-    jsr player_init
-    swap_state reset_mushrooms
     rts
 .endproc
 

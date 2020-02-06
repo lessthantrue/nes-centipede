@@ -154,6 +154,6 @@ BUGS:
     \ player sprite doesn't disappear on death
     \ weird things happen to the spider when it collides with player
     \ scorpion doesn't reset on level restart
-    * regenerate mushrooms on game over
+    \ regenerate mushrooms on game over
     * centipede thinks it's poisoned after wrapping the screen
     * move shoot sound to noise? Would fix a lot of stuff

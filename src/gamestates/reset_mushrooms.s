@@ -83,7 +83,14 @@ HEIGHT = 26
 
 .proc transition
     lda reset_mushrooms_done
-    beq :+
+    beq :++    ; transition to the same level, starting over
+        jsr statusbar_dec_lives
+        bne :+
+            ; out of lives, go to gameover screen
+            swap_state gameover
+            rts
+        :
+        jsr player_init
         swap_state playing
     :
     rts

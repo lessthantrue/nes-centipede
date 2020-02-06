@@ -72,10 +72,11 @@ SCORP_JINGLE_LEN = 5
         ldx spider_jingle, y ; can probably do this with one register
         lda periodTableLo, x ; but I don't want to deal with indirect
         sta APU_SQ2_LOW
-        lda #%01110000 ; length
+        lda #%00111000 ; length
         ora periodTableHi, x
         sta APU_SQ2_HIG
         lda #%10011111
+        sta APU_SQ2_ENV
         iny
         cpy #SPIDER_JINGLE_LEN
         bne :+
