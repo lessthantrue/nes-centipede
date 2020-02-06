@@ -22,10 +22,11 @@
 ;  the area. They destroy mushrooms they cross over.
 
 .segment "BSS"
-spider_x:       .res 1
-spider_y:       .res 1
-spider_f:       .res 1 ; flags as defined below
-spider_anim:    .res 1 ; animation state (tile index)
+spider_x:           .res 1
+spider_y:           .res 1
+spider_f:           .res 1 ; flags as defined below
+spider_anim:        .res 1 ; animation state (tile index)
+spider_anim_low:    .res 1
 
 spider_respawn_timer:    .res 2
 
@@ -334,9 +335,14 @@ SPIDER_SPEED = 1
         rts
     :
 
-    ; animation sta
+    ; animation state
+    lda spider_anim_low
+    add #128
+    sta spider_anim_low
     lda spider_anim
-    add #2
+    bcc :+ ; carry set? increment animation state 2
+        adc #1
+    :
     cmp #$40
     bne :+
         lda #$30

@@ -91,7 +91,7 @@ DEVELOPMENT:
         * variable speed with points?
         \ better mushroom hitbox
     \ particles when an enemy is shot
-    * scorpion
+    \ scorpion
         \ base behavior (move slowly across the middle of the screen)
         \ spawn randomly after wave 3
         \ poisons mushrooms
