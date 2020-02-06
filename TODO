@@ -90,6 +90,7 @@ DEVELOPMENT:
             \ scoring particle effect
         * variable speed with points?
         \ better mushroom hitbox
+        * moves much more erratically (see video)
     \ particles when an enemy is shot
     \ scorpion
         \ base behavior (move slowly across the middle of the screen)

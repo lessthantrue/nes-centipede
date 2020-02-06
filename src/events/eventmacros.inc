@@ -49,32 +49,27 @@ EVENT_MACROS_INC = 1
 
     .proc MAKE_IDENT "%s_notify", evt_name
         push_registers
+        lda #>AFTER_CALLS ; return to end of function after handler calls
+        pha
+        lda #<AFTER_CALLS
+        pha
         ldx #0
         LOOP_START:
             cpx sub_count
             bne :+
                 jmp LOOP_END
             :
-            txa
-            pha ; preserve x
-            lda #>AFTER_CALL ; return to loop start after function call
-            pha
-            lda #(<AFTER_CALL)
-            pha
             lda subscribers, x
             pha
             inx
             lda subscribers, x
             pha
-            rts ; get to work
-            AFTER_CALL:
-            nop ; fixes an edge case
-            pla
-            tax ; restore x
             inx
-            inx ; move to next address
             jmp LOOP_START
         LOOP_END:
+        rts
+        AFTER_CALLS:
+        nop
         pull_registers
         rts
     .endproc
