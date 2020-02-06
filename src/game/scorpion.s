@@ -4,6 +4,7 @@
 .include "../spritegfx.inc"
 .include "../random.inc"
 .include "../collision.inc"
+.include "../nes.inc"
 
 .segment "BSS"
 scorp_xlo:      .res 1
@@ -217,6 +218,14 @@ SCORP_INIT_X_RIGHT = 239
         call_with_args particle_add, scorp_xhi, scorp_y
         jsr arrow_del
         jsr scorp_init
+
+        ; sound
+        lda #%00000100
+        sta APU_NSE_ENV
+        lda #$0D
+        sta APU_NSE_PRD
+        lda #%10010000
+        sta APU_NSE_LEN
     END_COLLISION:
     rts
 .endproc

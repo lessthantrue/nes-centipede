@@ -11,6 +11,7 @@
 .include "game.inc"
 .include "../collision.inc"
 .include "../events/events.inc"
+.include "../nes.inc"
 
 ; Spider : These appear from the top left or right of the player 
 ; area. They will either bounce across the player's area at 
@@ -276,7 +277,9 @@ SPIDER_SPEED = 1
     :
     call_with_args collision_box1_contains, arrow_x, arrow_y
     lda collision_ret
-    beq END_COLLISION
+    bne :+ 
+        jmp END_COLLISION
+    :
         ; arrow hit, determine player distance to spider
         lda player_yhi
         sub spider_y
@@ -302,6 +305,14 @@ SPIDER_SPEED = 1
         jsr arrow_del
         jsr spider_init
         call_with_args particle_add, spider_x, spider_y
+
+        ; sound
+        lda #%00000100
+        sta APU_NSE_ENV
+        lda #$0D
+        sta APU_NSE_PRD
+        lda #%10010000
+        sta APU_NSE_LEN
     END_COLLISION:
     rts
 .endproc
