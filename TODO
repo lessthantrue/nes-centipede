@@ -23,7 +23,7 @@ REFACTORING:
     \ find a way to make game state stuff easier, one macro to change game states
     * general organization
         \ move strictly game related code to a folder, make a common header
-        * clean up all the old stuff I didn't use (Move somewhere else, it can be useful)
+        \ clean up all the old stuff I didn't use (Move somewhere else, it can be useful)
         * move a bunch more stuff to core, make a common header
     * export empty procedures that only exist to satisfy interfaces as the same address to save code space
     x redo how OAM organization is done
