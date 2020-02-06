@@ -157,3 +157,4 @@ BUGS:
     \ regenerate mushrooms on game over
     * centipede thinks it's poisoned after wrapping the screen
     * move shoot sound to noise? Would fix a lot of stuff
+    * spider sometimes teleports...?
