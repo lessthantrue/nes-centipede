@@ -24,15 +24,15 @@ scorp_jingle_counter:    .res 1
 LOW = 38
 MID = 41
 HI = 47
-spider_jingle:  .byte LOW, MID, HI, 0, HI, MID, LOW, MID, HI
+spider_jingle:  .byte LOW, MID, HI, 0, HI, MID, LOW, MID, HI, 0
 SPIDER_JINGLE_LEN = 10
 
 ; scorpion
-SCORP_LOW = 25
+SCORP_LOW = 17
 SCORP_MID = SCORP_LOW + 3
 SCORP_HI = SCORP_MID + 6
-scorp_jingle:   .byte SCORP_LOW, SCORP_MID, SCORP_HI, SCORP_MID
-SCORP_JINGLE_LEN = 5
+scorp_jingle:   .byte SCORP_LOW, SCORP_MID, SCORP_LOW, SCORP_HI
+SCORP_JINGLE_LEN = 4
 
 .proc sound_reset
     lda #1
@@ -72,7 +72,7 @@ SCORP_JINGLE_LEN = 5
         ldx spider_jingle, y ; can probably do this with one register
         lda periodTableLo, x ; but I don't want to deal with indirect
         sta APU_SQ2_LOW
-        lda #%00111000 ; length
+        lda #($09<<3) ; length
         ora periodTableHi, x
         sta APU_SQ2_HIG
         lda #%10011111
@@ -96,7 +96,7 @@ SCORP_JINGLE_LEN = 5
         ldx scorp_jingle, y ; can probably do this with one register
         lda periodTableLo, x ; but I don't want to deal with indirect
         sta APU_SQ1_LOW
-        lda #%00111000        
+        lda #($0B<<3) ; length        
         ora periodTableHi, x
         sta APU_SQ1_HIG
         lda #%10011111

@@ -9,7 +9,7 @@ game_enemy_statuses:    .res 1
 .segment "CODE"
 
 ; scorpion only if level 3+
-SCORPION_LEVEL_ENABLE = 0
+SCORPION_LEVEL_ENABLE = 3
 
 .proc game_step
     ; logic
@@ -20,7 +20,7 @@ SCORPION_LEVEL_ENABLE = 0
 
     ; only step the scorpion if we're past a level count
     lda statusbar_level
-    cmp #SCORPION_LEVEL_ENABLE
+    cmp #SCORPION_LEVEL_ENABLE-1
     bcc :+
         jsr scorp_step
     :
