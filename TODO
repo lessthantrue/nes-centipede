@@ -73,7 +73,7 @@ DEVELOPMENT:
     \ make centipede move diagonally, not just down on collision
     * make centipede move back upwards once reaching the bottom
     \ repair damaged mushrooms when death occurs
-        * 5 points for each regenerated mushroom?
+        \ 5 points for each regenerated mushroom?
         * sound
     \ sound
         \ centipede walking around
@@ -152,5 +152,6 @@ BUGS:
         set up an array of changes to be made, loop through them every time
     \ scorpion hitbox
     \ player sprite doesn't disappear on death
-    * weird things happen to the spider when it collides with player
+    \ weird things happen to the spider when it collides with player
+    \ scorpion doesn't reset on level restart
     

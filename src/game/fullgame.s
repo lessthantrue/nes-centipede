@@ -85,6 +85,7 @@ SCORPION_LEVEL_ENABLE = 0
     jsr sound_reset
     jsr centipede_reset
     jsr spider_init
+    jsr scorp_init
 
     lda #FLAG_ENEMY_CENTIPEDE
     ora #FLAG_PLAYER

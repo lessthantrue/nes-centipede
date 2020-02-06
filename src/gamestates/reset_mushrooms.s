@@ -1,6 +1,6 @@
 .include "gamestates.inc"
 .include "../core/macros.inc"
-.include "../game/board.inc"
+.include "../game/game.inc"
 .include "../nes.inc"
 
 .segment "BSS"
@@ -22,6 +22,7 @@ HEIGHT = 26
 .endproc
 
 .proc logic
+    jsr game_draw
     lda reset_mushroom_delay
     bne END_DONE
     lda #RESET_MUSHROOM_DELAY
@@ -68,6 +69,7 @@ HEIGHT = 26
     sta APU_NSE_PRD
     lda #0
     sta APU_NSE_LEN
+    statusbar_add_score 5
     END_DONE:
     dec reset_mushroom_delay
     rts
@@ -75,6 +77,7 @@ HEIGHT = 26
 
 .proc bg
     jsr board_update_background
+    jsr statusbar_draw_score
     rts
 .endproc
 
