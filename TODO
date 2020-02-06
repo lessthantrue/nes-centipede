@@ -53,7 +53,7 @@ DEVELOPMENT:
     \ keep track of score, lives, etc and display on a status bar
         \ score
         \ lives
-        * new lives every 12,000 points
+        \ new lives every 12,000 points
             * new life music jingle
     \ make centipede kill player
         \ player death animation
@@ -74,7 +74,7 @@ DEVELOPMENT:
     * make centipede move back upwards once reaching the bottom
     \ repair damaged mushrooms when death occurs
         \ 5 points for each regenerated mushroom?
-        * sound
+        \ sound
     \ sound
         \ centipede walking around
         \ arrow shooting
@@ -154,4 +154,5 @@ BUGS:
     \ player sprite doesn't disappear on death
     \ weird things happen to the spider when it collides with player
     \ scorpion doesn't reset on level restart
-    
+    * regenerate mushrooms on game over
+    * centipede thinks it's poisoned after wrapping the screen

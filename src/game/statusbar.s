@@ -4,11 +4,15 @@
 .include "../core/bin2dec.inc"
 .include "../spritegfx.inc"
 
+; EXTRALIFE_AMT = 1200 ; debug
+EXTRALIFE_AMT = 12000
+
 .segment "ZEROPAGE"
-score:              .res 2
+score:              .res 3 ; 3b encapsulates the highest recorded score on arcade centipede
 lives:              .res 1
 lives_temp:         .res 1 ; needed for draw lives
 statusbar_level:    .res 1 ; technically not status bar, but we keep track of it here
+extralife_thresh:   .res 3 ; threshold to reach extra life
 
 .segment "CODE"
 
@@ -16,9 +20,15 @@ statusbar_level:    .res 1 ; technically not status bar, but we keep track of it
     lda #0
     sta score
     sta score+1
+    sta score+2
+    sta extralife_thresh+2
     sta statusbar_level
     lda #3
     sta lives
+    lda #.lobyte(EXTRALIFE_AMT)
+    sta extralife_thresh
+    lda #.hibyte(EXTRALIFE_AMT)
+    sta extralife_thresh+1
     rts
 .endproc
 
@@ -35,6 +45,31 @@ statusbar_level:    .res 1 ; technically not status bar, but we keep track of it
     adc STACK_TOP+2, x
     sta score+1
     sta binary+1
+    lda score+2
+    adc #0
+    sta score+2
+    sta binary+2
+
+    ; check for extra life 
+    lda score+2
+    cmp extralife_thresh+2
+    beq :+          ; extralife_thresh = score at this byte, check next byte    
+        bcc NO_EXTRA    ; extralife_thresh > score at this byte
+        jmp EXTRA   ; extralife_thresh !>= score? must be less at this byte.
+    :
+    lda score+1     ; repeat for smaller bytes
+    cmp extralife_thresh+1
+    beq :+
+        bcc NO_EXTRA
+        jmp EXTRA
+    :
+    lda score
+    cmp extralife_thresh
+    bcc NO_EXTRA
+    EXTRA:
+        jsr statusbar_inc_lives
+    NO_EXTRA:
+
     jsr clear_output
     jsr bin2dec_16bit
     rts
@@ -56,6 +91,25 @@ statusbar_level:    .res 1 ; technically not status bar, but we keep track of it
     beq :+
         dec lives
     :
+    rts
+.endproc
+
+.proc statusbar_inc_lives
+    inc lives
+
+    ; increase extra life threshold
+    lda extralife_thresh
+    add #.lobyte(EXTRALIFE_AMT)
+    sta extralife_thresh
+    lda extralife_thresh+1
+    adc #.hibyte(EXTRALIFE_AMT)
+    sta extralife_thresh+1
+    lda extralife_thresh+2
+    adc #0
+    sta extralife_thresh+2
+
+    ; start extra life jingle or something
+
     rts
 .endproc
 
