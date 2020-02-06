@@ -96,7 +96,7 @@ DEVELOPMENT:
         \ spawn randomly after wave 3
         \ poisons mushrooms
             \ centipede moves straight down after reaching a poison shroom
-        * sound
+        \ sound
         * variable speed with points?
     * flea
         * base behavior (2 hits to destroy, moves straight down, moves faster once hit)
@@ -156,3 +156,4 @@ BUGS:
     \ scorpion doesn't reset on level restart
     * regenerate mushrooms on game over
     * centipede thinks it's poisoned after wrapping the screen
+    * move shoot sound to noise? Would fix a lot of stuff

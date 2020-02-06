@@ -11,7 +11,7 @@ centipede_march_timer:      .res 1
 centipede_active:           .res 1
 
 spider_jingle_counter:      .res 1
-scorpion_jingle_counter:    .res 1
+scorp_jingle_counter:    .res 1
 
 .segment "CODE"
 
@@ -25,13 +25,14 @@ LOW = 38
 MID = 41
 HI = 47
 spider_jingle:  .byte LOW, MID, HI, 0, HI, MID, LOW, MID, HI
+SPIDER_JINGLE_LEN = 10
 
 ; scorpion
 SCORP_LOW = 25
 SCORP_MID = SCORP_LOW + 3
 SCORP_HI = SCORP_MID + 6
 scorp_jingle:   .byte SCORP_LOW, SCORP_MID, SCORP_HI, SCORP_MID
-SPIDER_JINGLE_LEN = 10
+SCORP_JINGLE_LEN = 5
 
 .proc sound_reset
     lda #1
@@ -59,6 +60,8 @@ SPIDER_JINGLE_LEN = 10
         asl
         sta APU_TRI_HIG
     :
+
+    ; spider
     lda #SPIDER_FLAG_ALIVE
     bit spider_f
     beq :++ ; is spider alive
@@ -69,11 +72,10 @@ SPIDER_JINGLE_LEN = 10
         ldx spider_jingle, y ; can probably do this with one register
         lda periodTableLo, x ; but I don't want to deal with indirect
         sta APU_SQ2_LOW
-        lda #%00111000        
+        lda #%01110000 ; length
         ora periodTableHi, x
         sta APU_SQ2_HIG
         lda #%10011111
-        sta APU_SQ2_ENV
         iny
         cpy #SPIDER_JINGLE_LEN
         bne :+
@@ -81,6 +83,33 @@ SPIDER_JINGLE_LEN = 10
         :
         sty spider_jingle_counter
     :
+
+    ; scorpion
+    lda game_enemy_statuses
+    and #FLAG_ENEMY_SCORPION
+    beq :++
+    lda #APU_FLAG_SQ1
+    bit APUFLAGS
+    bne :++ ; sound is still being played
+        ldy scorp_jingle_counter
+        ldx scorp_jingle, y ; can probably do this with one register
+        lda periodTableLo, x ; but I don't want to deal with indirect
+        sta APU_SQ1_LOW
+        lda #%00111000        
+        ora periodTableHi, x
+        sta APU_SQ1_HIG
+        lda #%10011111
+        sta APU_SQ1_ENV
+        lda #0
+        sta APU_SQ1_SWP ; shooting changes this
+        iny
+        cpy #SCORP_JINGLE_LEN
+        bne :+
+            ldy #0
+        :
+        sty scorp_jingle_counter
+    :
+
     rts
 .endproc
 
