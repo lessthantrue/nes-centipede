@@ -3,6 +3,7 @@
 .include "menu.inc"
 .include "../nes.inc"
 .include "../core/macros.inc"
+.include "../core/common.inc"
 .include "../game/statusbar.inc"
 
 .segment "BSS"
@@ -15,10 +16,6 @@ gameover_msg: .byte " GAME  OVER "
 .proc load
     lda #240
     sta state_gameover_delay
-    rts
-.endproc
-
-.proc logic
     rts
 .endproc
 
@@ -85,4 +82,4 @@ gameover_msg: .byte " GAME  OVER "
 .export state_gameover_load := load
 .export state_gameover_transition := transition-1
 .export state_gameover_bg := bg-1
-.export state_gameover_logic := logic-1
+.export state_gameover_logic := empty-1

@@ -3,6 +3,7 @@
 .include "../nes.inc"
 .include "../gamestaterunner.inc"
 .include "../core/macros.inc"
+.include "../core/common.inc"
 .include "../ppuclear.inc"
 .include "../game/game.inc"
 
@@ -13,15 +14,6 @@ menu_begin_msg: .byte " PRESS START "
 
 MENU_EXTRALIFE_MSG_LEN = 19
 menu_extralife_msg: .byte " BONUS EVERY 12000 "
-
-.proc load
-    rts
-.endproc
-
-.proc logic
-    jsr menu_step
-    rts
-.endproc
 
 .proc bg
     ; top border
@@ -99,7 +91,7 @@ menu_extralife_msg: .byte " BONUS EVERY 12000 "
     rts
 .endproc
 
-.export state_menu_logic := logic-1
+.export state_menu_logic := menu_step-1
 .export state_menu_bg := bg-1
-.export state_menu_load := load
+.export state_menu_load := empty
 .export state_menu_transition := transition-1

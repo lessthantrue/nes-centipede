@@ -1,6 +1,7 @@
 .include "gamestates.inc"
 .include "../gamestaterunner.inc"
 .include "../core/macros.inc"
+.include "../core/common.inc"
 .include "../nes.inc"
 .include "../ppuclear.inc"
 .include "../game/game.inc"
@@ -10,10 +11,6 @@
 ; before moving from main menu to playing
 
 .segment "CODE"
-
-.proc load
-    rts
-.endproc
 
 .proc logic
     jsr statusbar_init
@@ -35,7 +32,7 @@
     rts
 .endproc
 
-.export state_play_init_load := load
+.export state_play_init_load := empty
 .export state_play_init_logic := logic-1
 .export state_play_init_bg := bg-1
 .export state_play_init_transition := transition-1

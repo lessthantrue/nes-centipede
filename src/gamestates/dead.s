@@ -5,6 +5,7 @@
 .include "../gamestaterunner.inc"
 .include "gameover.inc"
 .include "../core/macros.inc"
+.include "../core/common.inc"
 
 .segment "BSS"
 dead_timer:     .res 1
@@ -78,11 +79,6 @@ dead_timer:     .res 1
     rts
 .endproc
 
-.proc bg
-    ; nothing to change in background
-    rts
-.endproc
-
 .proc transition
     lda dead_timer
     bne :+
@@ -92,6 +88,6 @@ dead_timer:     .res 1
 .endproc
 
 .export state_dead_logic := logic-1
-.export state_dead_bg := bg-1
+.export state_dead_bg := empty-1
 .export state_dead_transition := transition-1
 .export state_dead_load := load

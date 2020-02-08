@@ -21,15 +21,17 @@ REFACTORING:
         instead of .define HEADER_INC, use HEADER_INC = 1
     \ find a way to put all of the event stuff in the same file
     \ find a way to make game state stuff easier, one macro to change game states
-    * general organization
+    \ general organization
         \ move strictly game related code to a folder, make a common header
         \ clean up all the old stuff I didn't use (Move somewhere else, it can be useful)
-        * move a bunch more stuff to core, make a common header
-    * export empty procedures that only exist to satisfy interfaces as the same address to save code space
+        x move a bunch more stuff to core, make a common header
+            nah, maybe make a NES folder and header that includes a bunch of stuff?
+    \ export empty procedures that only exist to satisfy interfaces as the same address to save code space
     x redo how OAM organization is done
         improper allocation is probably causing the particle end of level issue
         ^ dear god no I tried this it's not happening in this game, maybe the next one
     \ track status of all enemies in one spot, to simplify level advancement
+    * move shoot sound to noise? Would fix a lot of stuff
 
 DEVELOPMENT:
     \ move and properly draw multiple centipede segments
@@ -65,6 +67,7 @@ DEVELOPMENT:
     \ game over after all lives are expired
         \ return to menu screen, reset score
     \ change centipede speed with levels
+        * move centipede faster when only head is left
     * change centipede waves with levels
         level 1 has 1 centipede of length 8
         level 2 has 1 centipede of length 7 and 1 severed head
@@ -80,7 +83,7 @@ DEVELOPMENT:
         \ arrow shooting
         \ centipede getting hit
         \ player death
-        problem: CAN'T FIND DETAILS ON WHAT SPIDER OR LEVEL UP JINGLE IS 
+        problem: CAN'T FIND DETAILS ON WHAT SPIDER OR EXTRA LIFE JINGLE IS 
     \ spider
         \ base behavior
         \ spawn randomly
@@ -105,7 +108,7 @@ DEVELOPMENT:
         * spawn randomly after wave 2 if less than 5 shrooms in player area
         * sound
     * player collision with mushrooms
-    * pause game on select press
+    * pause game on start press
     * move faster with B (to replace track ball)
     
 PROJECT MANAGEMENT:
@@ -115,7 +118,7 @@ PROJECT MANAGEMENT:
     \ Put on Github
     \ Double check and delete bg.s
     \ set up releases with built .NES file
-        \ 0.7 = scorpion, 0.8 = flea, 0.9 = level up, 1.0
+        \ 0.7 = scorpion, 0.8 = flea, 0.9 = misc cleanup, 1.0
     \ online demo with JSNES
 
 BUGS:
@@ -157,5 +160,4 @@ BUGS:
     \ scorpion doesn't reset on level restart
     \ regenerate mushrooms on game over
     * centipede thinks it's poisoned after wrapping the screen
-    * move shoot sound to noise? Would fix a lot of stuff
     * spider sometimes teleports...?

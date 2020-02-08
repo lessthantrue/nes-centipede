@@ -26,16 +26,6 @@ centipede_dead_flag: .res 1
     rts
 .endproc
 
-.proc logic
-    jsr game_step
-    rts
-.endproc
-
-.proc bg
-    jsr game_bg
-    rts
-.endproc
-
 .proc transition
     lda player_dead_flag
     beq :+
@@ -60,6 +50,6 @@ centipede_dead_flag: .res 1
 .endproc
 
 .export state_playing_load := load
-.export state_playing_logic := logic-1
-.export state_playing_bg := bg-1
+.export state_playing_logic := game_step-1
+.export state_playing_bg := game_bg-1
 .export state_playing_transition := transition-1
