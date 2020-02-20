@@ -203,7 +203,7 @@ board:      .res (WIDTH * HEIGHT)
         bne y_loop_2
     
     ; place pseudo-random mushrooms
-    ldy #50 ; number of mushrooms
+    ldy #70 ; number of mushrooms
     add_loop:
         jsr rand8
         and #%00011111 ; clamp random value to 31

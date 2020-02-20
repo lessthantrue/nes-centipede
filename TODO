@@ -67,7 +67,7 @@ DEVELOPMENT:
     \ game over after all lives are expired
         \ return to menu screen, reset score
     \ change centipede speed with levels
-        * move centipede faster when only head is left
+        * move segment faster when only head is left
     * change centipede waves with levels
         level 1 has 1 centipede of length 8
         level 2 has 1 centipede of length 7 and 1 severed head
@@ -93,7 +93,7 @@ DEVELOPMENT:
             \ scoring particle effect
         * variable speed with points?
         \ better mushroom hitbox
-        * moves much more erratically (see video)
+        \ moves much more erratically (see video)
     \ particles when an enemy is shot
     \ scorpion
         \ base behavior (move slowly across the middle of the screen)

@@ -189,6 +189,31 @@ SPIDER_SPEED = 1
     rts
 .endproc
 
+.proc spider_collide_random
+    jsr rand8
+    and #%10111010
+    bne NO_CHANGE
+        ; randomly assign horizontal bit
+        jsr rand8
+        and #1
+        beq :+
+            ; flip horizontal bit
+            lda spider_f
+            eor #SPIDER_FLAG_HORIZ
+            sta spider_f
+        :
+        ; randomly assign vertical bit
+        jsr rand8
+        and #1
+        beq :+
+            lda spider_f
+            eor #SPIDER_FLAG_VERT
+            sta spider_f
+        :
+    NO_CHANGE:
+    rts
+.endproc
+
 .proc spider_collide_board
     ; center hit 'box'
     call_with_args board_convert_sprite_xy, spider_x, spider_y
@@ -352,6 +377,7 @@ SPIDER_SPEED = 1
     jsr spider_collide_player
     jsr spider_collide_arrow
     jsr spider_collide_walls
+    jsr spider_collide_random
 
     lda #SPIDER_FLAG_ALIVE
     bit spider_f
