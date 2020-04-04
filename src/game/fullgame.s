@@ -86,7 +86,6 @@ FLEA_LEVEL_ENABLE = 2
 .endproc
 
 .proc game_level_reset
-    jsr sound_reset
     jsr centipede_reset
     jsr spider_init
     jsr scorp_init

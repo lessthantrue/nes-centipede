@@ -7,11 +7,11 @@
 .segment "ZEROPAGE"
 
 MARCH_SOUND_DELAY = 20 ; frames
-centipede_march_timer:      .res 1
-centipede_active:           .res 1
+centipede_march_timer:   .res 1
 
-spider_jingle_counter:      .res 1
+spider_jingle_counter:   .res 1
 scorp_jingle_counter:    .res 1
+flea_counter:            .res 1
 
 .segment "CODE"
 
@@ -34,16 +34,19 @@ SCORP_HI = SCORP_MID + 6
 scorp_jingle:   .byte SCORP_LOW, SCORP_MID, SCORP_LOW, SCORP_HI
 SCORP_JINGLE_LEN = 4
 
-.proc sound_reset
-    lda #1
-    sta centipede_active
-    rts
-.endproc
+; flea
+FLEA_START = 20
+FLEA_STEP = 1
+FLEA_LEN = 100
 
 ; run this while the game is playing
 .proc sound_run_default
-    lda centipede_active
+    lda #FLAG_ENEMY_CENTIPEDE
+    bit game_enemy_statuses
     beq :+
+    lda #FLAG_ENEMY_FLEA
+    bit game_enemy_statuses
+    bne :+ ; don't play when flea is active
     dec centipede_march_timer
     bne :+
         lda #MARCH_SOUND_DELAY ; play this 3 times a second
@@ -111,6 +114,33 @@ SCORP_JINGLE_LEN = 4
         sty scorp_jingle_counter
     :
 
+    ; flea
+    lda game_enemy_statuses
+    and #FLAG_ENEMY_FLEA
+    bne :+
+        ; flea is dead
+        lda #FLEA_LEN
+        sta flea_counter
+        jmp end_flea
+    :
+        ; flea is alive
+        lda flea_counter
+        beq :+
+            dec flea_counter ; limit at zero
+        :
+        lsr
+        lsr ; crude divide
+        add #FLEA_START ; frequency offset
+        tay
+        lda periodTableLo, y
+        sta APU_TRI_LOW
+        lda periodTableHi, y
+        ora #($07<<3) ; timer
+        sta APU_TRI_HIG
+        sta APU_TRI_ENV
+
+    end_flea:
+
     rts
 .endproc
 
@@ -147,19 +177,11 @@ SCORP_JINGLE_LEN = 4
     rts
 .endproc
 
-.proc centipede_kill_handler
-    lda #0
-    sta centipede_active
-    rts
-.endproc
-
 .proc sound_init
     lda #$0F
     sta APUFLAGS
     lda #0
     sta $4011
-    lda #1
-    sta centipede_active
     lda #MARCH_SOUND_DELAY
     sta centipede_march_timer
     lda #0
@@ -168,6 +190,5 @@ SCORP_JINGLE_LEN = 4
     subscribe segment_kill, segment_kill_handler-1
     subscribe arrow_shoot, arrow_shoot_handler-1
     subscribe player_dead, player_dead_handler-1
-    subscribe centipede_kill, centipede_kill_handler-1
     rts
 .endproc

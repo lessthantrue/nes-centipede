@@ -17,7 +17,7 @@ flea_anim: .res 1
 flea_timer:.res 2
 
 FLEA_SPEED_SLOW = 2
-FLEA_SPEED_HIGH = 4
+FLEA_SPEED_HIGH = 3
 
 BOUNDS_BOT = 200
 
@@ -216,6 +216,10 @@ BOUNDS_BOT = 200
     bit game_enemy_statuses
     bne :++
         ; flea not alive
+        lda board_count_player_area
+        cmp #5
+        bge :+ ; only count down if 5 or less shrooms
+
         lda flea_timer
         sub #1
         sta flea_timer
