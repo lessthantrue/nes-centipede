@@ -106,7 +106,7 @@ DEVELOPMENT:
         \ base behavior (2 hits to destroy, moves straight down, moves faster once hit)
         \ creates mushrooms on the way down
         \ spawn randomly after wave 2 if less than 5 shrooms in player area
-        * sound
+        \ sound
     * player collision with mushrooms
     \ pause game on start press
     * move faster with B (to replace track ball)
