@@ -91,7 +91,7 @@ HEIGHT = 26
             rts
         :
         jsr player_init
-        swap_state playing
+        swap_state level_reset
     :
     rts
 .endproc

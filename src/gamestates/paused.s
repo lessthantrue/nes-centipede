@@ -37,7 +37,7 @@ pause_msg:  .byte " PAUSED "
     ; top border
     lda #$21
     sta PPUADDR
-    lda #$C0-(PAUSE_MSG_LEN/2)
+    lda #$B0-(PAUSE_MSG_LEN/2)
     sta PPUADDR
     lda #0
     ldy #0
@@ -52,7 +52,7 @@ pause_msg:  .byte " PAUSED "
     ; message
     lda #$21
     sta PPUADDR
-    lda #$E0-(PAUSE_MSG_LEN/2)
+    lda #$D0-(PAUSE_MSG_LEN/2)
     sta PPUADDR
     lda #0
     ldy #0
@@ -66,9 +66,9 @@ pause_msg:  .byte " PAUSED "
     :
 
     ; bottom border
-    lda #$22
+    lda #$21
     sta PPUADDR
-    lda #$10-(PAUSE_MSG_LEN/2)
+    lda #$F0-(PAUSE_MSG_LEN/2)
     sta PPUADDR
     lda #0
     ldy #0

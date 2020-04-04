@@ -16,9 +16,10 @@
 
 .proc transition
     swap_state playing
+    rts
 .endproc
 
-.export state_level_reset_load := load-1
+.export state_level_reset_load := load
 .export state_level_reset_logic := empty
 .export state_level_reset_bg := empty
 .export state_level_reset_transition = transition-1
