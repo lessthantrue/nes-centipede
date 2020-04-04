@@ -18,13 +18,17 @@ FLEA_LEVEL_ENABLE = 2
     jsr arrow_step
     jsr centipede_step
     jsr spider_step
-    jsr flea_step
 
-    ; only step the scorpion if we're past a level count
+    ; only step the scorpion/flea if we're past a minimum level
     lda statusbar_level
     cmp #SCORPION_LEVEL_ENABLE-1
-    bcc :+
+    bls :+
         jsr scorp_step
+    :
+    lda statusbar_level
+    cmp #FLEA_LEVEL_ENABLE-1
+    bls :+
+        jsr flea_step
     :
 
     jsr game_draw
