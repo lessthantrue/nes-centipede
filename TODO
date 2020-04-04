@@ -103,8 +103,8 @@ DEVELOPMENT:
         \ sound
         * variable speed with points?
     * flea
-        * base behavior (2 hits to destroy, moves straight down, moves faster once hit)
-        * creates mushrooms on the way down
+        \ base behavior (2 hits to destroy, moves straight down, moves faster once hit)
+        \ creates mushrooms on the way down
         * spawn randomly after wave 2 if less than 5 shrooms in player area
         * sound
     * player collision with mushrooms
@@ -170,3 +170,13 @@ QOL TODO BEFORE NEXT PROJECT:
     * Macros to automate game state boilerplate
     * Generally more robust PPU management (see end of https://wiki.nesdev.com/w/index.php/The_frame_and_NMIs#VBlank.2C_Rendering_Time.2C_and_NMIs)
     * Some kind of sound engine
+
+THINGS I SHOULD HAVE DONE:
+    * Write better middle-level abstractions to avoid writing basically the same procedures many times
+        Examples: 
+        collisions between enemies and player/arrow
+        drawing dynamic sprites
+        collisions with the board
+    * don't put RTS in the middle of procedures
+        Makes reading debugger difficult
+    * better split game state and drawing

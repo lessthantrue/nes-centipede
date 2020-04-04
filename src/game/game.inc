@@ -11,6 +11,7 @@ GAME_INC = 1
 .include "particles.inc"
 .include "scorpion.inc"
 .include "scoreparticle.inc"
+.include "flea.inc"
 
 .global game_step, game_init, game_bg, game_level_reset
 .global game_full_reset, menu_step, game_init_bg, game_draw

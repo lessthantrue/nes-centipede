@@ -10,6 +10,7 @@ game_enemy_statuses:    .res 1
 
 ; scorpion only if level 3+
 SCORPION_LEVEL_ENABLE = 3
+FLEA_LEVEL_ENABLE = 2
 
 .proc game_step
     ; logic
@@ -17,6 +18,7 @@ SCORPION_LEVEL_ENABLE = 3
     jsr arrow_step
     jsr centipede_step
     jsr spider_step
+    jsr flea_step
 
     ; only step the scorpion if we're past a level count
     lda statusbar_level
@@ -41,6 +43,7 @@ SCORPION_LEVEL_ENABLE = 3
     jsr statusbar_draw_lives
     jsr particle_draw
     jsr scorp_draw
+    jsr flea_draw
     rts
 .endproc
 
@@ -69,6 +72,7 @@ SCORPION_LEVEL_ENABLE = 3
     jsr spider_init
     jsr particles_init
     jsr scorp_init
+    jsr flea_init
 
     subscribe player_dead, game_player_dead_handler-1
 

@@ -251,7 +251,6 @@ SPIDER_SPEED = 1
     rts
 .endproc
 
-
 .proc spider_draw
     lda #SPIDER_FLAG_ALIVE
     bit spider_f
