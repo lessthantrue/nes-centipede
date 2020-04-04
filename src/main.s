@@ -73,6 +73,8 @@ nmis:                    .res 1
     ; turn on vblank NMIs
     lda #VBLANK_NMI|OBJ_1000|BG_0000
     sta PPUCTRL
+    lda #BG_ON|OBJ_ON
+    sta PPUMASK
 
 forever:
     ldx #0

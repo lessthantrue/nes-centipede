@@ -89,7 +89,7 @@ pause_msg:  .byte " PAUSED "
     lda #KEY_START
     bit cur_keys
     beq :+
-        swap_state playing
+        swap_state redraw_board
     :
     rts
 .endproc

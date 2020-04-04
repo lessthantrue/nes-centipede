@@ -82,11 +82,11 @@ loop:
     stx PPUSCROLL
     ora PPUCTRL
     sta PPUCTRL
-    lda #BG_ON
-    bcc :+
-    lda #BG_ON|OBJ_ON
-:
-    sta PPUMASK
+    ; lda #BG_ON
+    ; bcc :+
+    ; lda #BG_ON|OBJ_ON
+; :
+    ; sta PPUMASK
     rts
 .endproc
 

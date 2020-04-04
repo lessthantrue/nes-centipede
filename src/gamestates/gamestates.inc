@@ -5,7 +5,7 @@ GAMESTATES_INC = 1
 .include "gameover.inc"
 .include "menu.inc"
 .include "nextlevel.inc"
-.include "play_init.inc"
+.include "redraw_board.inc"
 .include "playing.inc"
 .include "reset_mushrooms.inc"
 .include "paused.inc"

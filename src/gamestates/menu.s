@@ -86,7 +86,9 @@ menu_extralife_msg: .byte " BONUS EVERY 12000 "
     lda #KEY_START
     bit cur_keys
     beq :+
-        swap_state play_init
+        jsr statusbar_init
+        jsr game_full_reset
+        swap_state redraw_board
     :
     rts
 .endproc

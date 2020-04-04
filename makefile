@@ -19,7 +19,7 @@ version = 0.1
 objlist = events/events \
 nrom init main collision gamestaterunner ppuclear sound spritegfx random pads \
 game/arrow game/board game/centipede game/segment game/spider game/statusbar game/player game/fullgame game/particles game/scoreparticle game/scorpion game/flea\
-gamestates/dead gamestates/gameover gamestates/menu gamestates/nextlevel gamestates/play_init gamestates/playing gamestates/reset_mushrooms gamestates/paused gamestates/level_reset\
+gamestates/dead gamestates/gameover gamestates/menu gamestates/nextlevel gamestates/redraw_board gamestates/playing gamestates/reset_mushrooms gamestates/paused gamestates/level_reset\
 core/bin2dec core/ntscperiods core/common
 
 AS65 = ca65
