@@ -8,6 +8,8 @@ GAMESTATES_INC = 1
 .include "play_init.inc"
 .include "playing.inc"
 .include "reset_mushrooms.inc"
+.include "paused.inc"
+.include "level_reset.inc"
 
 .include "../gamestaterunner.inc"
 

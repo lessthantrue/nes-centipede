@@ -1,4 +1,3 @@
-.include "../core/eventprocessor.inc"
 .include "board.inc"
 .include "arrow.inc"
 .include "segment.inc"

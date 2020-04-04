@@ -6,13 +6,13 @@
 .include "../random.inc"
 
 .segment "ZEROPAGE"
-ntaddr:         .addr $0000
+ntaddr:         .res 2
 board_arg_x:    .res 1
 board_arg_y:    .res 1
 boardaddr:      .res 2
 
 MAX_UPDATES_PER_FRAME = 8 ; last update space is zero terminator
-updates_required:       .res 1
+updates_required:      .res 1
 update_ntaddr_lo:      .res MAX_UPDATES_PER_FRAME
 update_ntaddr_hi:      .res MAX_UPDATES_PER_FRAME
  ; 3 bits for mushroom damage level, 4th bit for poison
@@ -22,7 +22,10 @@ update_data:    .res MAX_UPDATES_PER_FRAME
 ; 32 spaces wide by 26 spaces tall = 832 bytes
 WIDTH = 32
 HEIGHT = 26
-board:      .res (WIDTH * HEIGHT)
+PLAYER_REGION_TOP = 21 ; top of where player can move
+board:                      .res (WIDTH * HEIGHT)
+board_count_player_area:    .res 1
+PLAYER_REGION_ADDR_START = board + (PLAYER_REGION_TOP * WIDTH)
 
 .segment "CODE"
 
@@ -66,6 +69,32 @@ board:      .res (WIDTH * HEIGHT)
     pla
     rts
 .endproc
+
+; checks if boardaddr is in the area that the player can move in
+; A = 1 if boardaddr in player area, 0 otherwise
+.proc boardaddr_in_player_area
+    lda boardaddr+1
+    cmp #.hibyte(PLAYER_REGION_ADDR_START)
+    bls NOT_IN
+    beq CMP_NEXT
+    jmp IN
+
+    CMP_NEXT:
+    lda boardaddr
+    cmp #.lobyte(PLAYER_REGION_ADDR_START)
+    bls NOT_IN
+
+    IN:
+    lda #1
+    jmp DONE
+
+    NOT_IN:
+    lda #0
+    
+    DONE:
+    rts
+.endproc
+    
 
 ; converts sprite coordinates (used by arrow, centipede, player) to background coordinates
 ; arg 1: x board index
@@ -125,6 +154,30 @@ board:      .res (WIDTH * HEIGHT)
     tya ; preserve y
     pha
 
+    jsr boardaddr_in_player_area
+    cmp #0
+    beq NO_PLAYER_AREA_CHANGE
+        ldy #0
+        lda (boardaddr), y
+        cmp STACK_TOP+1, x
+        beq NO_PLAYER_AREA_CHANGE ; no difference
+            ; there was a change
+            cmp #0
+            beq :+
+            lda STACK_TOP+1, x
+            cmp #0
+            bne NO_PLAYER_AREA_CHANGE
+                ; new value = 0, decrement
+                lda #0
+                cmp board_count_player_area
+                beq NO_PLAYER_AREA_CHANGE ; count is off sometimes, so fix here
+                dec board_count_player_area
+                jmp NO_PLAYER_AREA_CHANGE
+            :
+                ; old value = 0, increment
+                inc board_count_player_area
+    NO_PLAYER_AREA_CHANGE:
+
     ldy #0
     lda STACK_TOP+1, x
     sta (boardaddr), y
@@ -163,7 +216,6 @@ board:      .res (WIDTH * HEIGHT)
         lda update_ntaddr_lo, y
         sta PPUADDR ; MSB then LSB in PPUADDR
         lda update_data, y ; byte at boardaddr in a
-        ; and #$07 ; get mushroom growth level
         add #$60 ; convert to sprite index
         sta PPUDATA ; set background at ntaddr to that
 
@@ -203,6 +255,8 @@ board:      .res (WIDTH * HEIGHT)
         bne y_loop_2
     
     ; place pseudo-random mushrooms
+    lda #0
+    sta board_count_player_area ; reset number of shrooms in player area
     ldy #70 ; number of mushrooms
     add_loop:
         jsr rand8
@@ -215,7 +269,8 @@ board:      .res (WIDTH * HEIGHT)
         sta board_arg_y
         ; repeat for x
         jsr rand8
-        and #%00011111 ; clamp random value to 31
+        and #%00011111 
+        ; clamp random value to 31
         cmp #WIDTH - 2
         bmi :+
             sec ; same clamping method for WIDTH
@@ -229,6 +284,12 @@ board:      .res (WIDTH * HEIGHT)
         ldy #0 ; needed for indirect mode
         lda #4
         sta (boardaddr), y
+        jsr boardaddr_in_player_area
+        cmp #1
+        bne :+
+            ; mushroom in player area
+            inc board_count_player_area
+        :
         pla
         tay
         dey

@@ -152,4 +152,7 @@ MACROS_INC = 1
 
 .define MAKE_IDENT(format, symb) .ident(.sprintf(format, .string(symb)))
 
+.define bls bcc ; branch if register less than value
+.define bge bcs ; branch if register greater or equal to value
+
 .endif

@@ -32,6 +32,7 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     sta player_xhi
     lda #192
     sta player_yhi
+    set game_enemy_statuses, #FLAG_PLAYER
     rts
 .endproc
 

@@ -128,7 +128,7 @@ palette_set_3:
     
     ; transition to the next level, starting over
     notify level_up
-    swap_state playing
+    swap_state level_reset
     rts
 .endproc
 

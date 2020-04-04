@@ -2,7 +2,6 @@
 .include "ppuclear.inc"
 .include "nes.inc"
 .include "pads.inc"
-.include "core/eventprocessor.inc"
 .include "spritegfx.inc"
 .include "gamestaterunner.inc"
 .include "gamestates/gamestates.inc"

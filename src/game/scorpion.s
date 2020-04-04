@@ -45,7 +45,7 @@ SCORP_INIT_X_RIGHT = 239
 .proc scorp_set_respawn_time
     jsr rand8
     and #$01
-    add #3 ; 8 to 12 seconds
+    add #2 ; 8 to 12 seconds
     sta scorp_respawn_timer+1
     lda #00
     sta scorp_respawn_timer
@@ -111,7 +111,6 @@ SCORP_INIT_X_RIGHT = 239
         :
     DONE_MOVE:
     sta scorp_xhi
-
 
     lda scorp_f
     add #SCORP_ANIM_STEP

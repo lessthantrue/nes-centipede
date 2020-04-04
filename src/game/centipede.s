@@ -1,5 +1,4 @@
 .include "../core/macros.inc"
-.include "../core/eventprocessor.inc"
 .include "board.inc"
 .include "centipede.inc"
 .include "player.inc"

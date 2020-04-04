@@ -108,7 +108,7 @@ DEVELOPMENT:
         * spawn randomly after wave 2 if less than 5 shrooms in player area
         * sound
     * player collision with mushrooms
-    * pause game on start press
+    \ pause game on start press
     * move faster with B (to replace track ball)
     
 PROJECT MANAGEMENT:
@@ -159,5 +159,13 @@ BUGS:
     \ weird things happen to the spider when it collides with player
     \ scorpion doesn't reset on level restart
     \ regenerate mushrooms on game over
-    * centipede thinks it's poisoned after wrapping the screen
+    * centipede goes straight down after hitting the bottom of the screen
     * spider sometimes teleports...?
+
+QOL TODO BEFORE NEXT PROJECT:
+    * Some macro/proc to set the PPU nametable address to a tile x/y on screen
+    * OAM allocation that didn't work the first time
+    * Some proper organization for commonly used code (NES specific, macros, boilerplate)
+    * Look at modules again, might be useful
+    * Macros to automate game state boilerplate
+    * Better PPU nametable management in general
