@@ -326,7 +326,7 @@ SPIDER_SPEED = 1
         statusbar_add_score SPIDER_FAR_SCORE
         lda #$60
         END_SCORE:
-        call_with_args score_particle_init, spider_x, spider_y, a
+        call_with_args score_particle_add, spider_x, spider_y, a
         jsr arrow_del
         jsr spider_init
         call_with_args particle_add, spider_x, spider_y

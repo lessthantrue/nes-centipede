@@ -77,6 +77,7 @@ FLEA_LEVEL_ENABLE = 2
     jsr particles_init
     jsr scorp_init
     jsr flea_init
+    jsr score_particle_init
 
     subscribe player_dead, game_player_dead_handler-1
 

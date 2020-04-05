@@ -16,9 +16,15 @@ player_xhi:             .res 1
 player_ylo:             .res 1
 player_yhi:             .res 1
 
+player_speed_lo:        .res 1
+player_speed_hi:        .res 1
+
 ; speed in total is 1.5 px/frame
 SPEED_LO = 128 ; speed in 1/256 px/frame
 SPEED_HI = 1     ; speed in px/frame
+
+SPEED_LO_FAST = 0
+SPEED_HI_FAST = 3
 
 TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
 
@@ -28,6 +34,8 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     lda #0
     sta player_xlo
     sta player_ylo
+    sta player_speed_lo
+    sta player_speed_hi
     lda #128
     sta player_xhi
     lda #192
@@ -39,18 +47,34 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
 ; Moves the player character in response to controller 1.
 .proc player_move
 
+    ; get current speed and save it
+    lda cur_keys
+    and #KEY_B
+    beq not_fast
+        lda #SPEED_HI_FAST
+        sta player_speed_hi
+        lda #SPEED_LO_FAST
+        sta player_speed_lo
+        jmp end_speed
+    not_fast:
+        lda #SPEED_LO
+        sta player_speed_lo
+        lda #SPEED_HI
+        sta player_speed_hi
+    end_speed:
+
     ; right
     lda cur_keys
     and #KEY_RIGHT
     beq notRight
         ; Right is pressed. Add to position.
         lda player_xlo
-        add #SPEED_LO
+        add player_speed_lo
         sta player_xlo
         lda player_xhi
-        adc #SPEED_HI
+        adc player_speed_hi
         cmp #(256-16)
-        bcc :+
+        bcc :+ ; right wall collision
             lda #(256-16)
         :
         sta player_xhi
@@ -62,10 +86,10 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     beq notLeft
         ; Left is pressed. Subtract from position.
         lda player_xlo
-        sub #SPEED_LO
+        sub player_speed_lo
         sta player_xlo
         lda player_xhi
-        sbc #SPEED_HI
+        sbc player_speed_hi
         cmp #8
         bcs :+ ; left wall collision
             lda #8
@@ -79,12 +103,12 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     beq notUp
         ; Up is pressed. Subtract from position.
         lda player_ylo
-        sub #SPEED_LO
+        sub player_speed_lo
         sta player_ylo
         lda player_yhi
-        sbc #SPEED_HI
+        sbc player_speed_hi
         cmp #TOP_WALL
-        bcs :+
+        bcs :+ ; top wall collision
             lda #TOP_WALL
         :
         sta player_yhi
@@ -96,10 +120,10 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     beq notDown
         ; Down is pressed. Add to position.
         lda player_ylo
-        add #SPEED_LO
+        add player_speed_lo
         sta player_ylo
         lda player_yhi
-        adc #SPEED_HI
+        adc player_speed_hi
         cmp #(240-40) ; I don't know why this is the right value
         bcc :+
             lda #(240-40)
@@ -113,13 +137,6 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     beq notA
         jsr arrow_launch
     notA:
-
-    ; b: debug death
-    lda cur_keys
-    and #KEY_B
-    beq notB
-        ; notify player_dead
-    notB:
 
     ; select: debug next level
     lda cur_keys

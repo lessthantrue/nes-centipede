@@ -12,10 +12,19 @@ y_pos:      .res 1
 
 .segment "CODE"
 
+.proc score_particle_init
+    lda #0
+    sta lifetime
+    sta tile_index
+    sta x_pos
+    sta y_pos
+    rts
+.endproc
+
 ; arg 1: particle x
 ; arg 2: particle y
 ; arg 3: particle tile index
-.proc score_particle_init
+.proc score_particle_add
     lda #60
     sta lifetime
     lda STACK_TOP+1, x
