@@ -14,7 +14,7 @@ FLEA_LEVEL_ENABLE = 2
 
 .proc game_step
     ; logic
-    jsr player_move
+    jsr player_step
     jsr arrow_step
     jsr centipede_step
     jsr spider_step

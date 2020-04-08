@@ -1,11 +1,9 @@
 .include "../nes.inc"
 .include "../pads.inc"
-.include "arrow.inc"
 .include "player.inc"
 .include "../events/events.inc"
 .include "../spritegfx.inc"
 .include "../collision.inc"
-.include "statusbar.inc"
 .include "game.inc"
 .include "../events/events.inc"
 
@@ -18,6 +16,11 @@ player_yhi:             .res 1
 
 player_speed_lo:        .res 1
 player_speed_hi:        .res 1
+
+player_vel_xlo:         .res 1
+player_vel_xhi:         .res 1
+player_vel_ylo:         .res 1
+player_vel_yhi:         .res 1
 
 ; speed in total is 1.5 px/frame
 SPEED_LO = 128 ; speed in 1/256 px/frame
@@ -44,9 +47,16 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     rts
 .endproc
 
-; Moves the player character in response to controller 1.
-.proc player_move
+.proc player_step
+    jsr player_control
+    jsr player_move
+    jsr player_collide_board
+    jsr player_collide_wall
+    rts
+.endproc
 
+; read controller 1 and set some state variables
+.proc player_control    
     ; get current speed and save it
     lda cur_keys
     and #KEY_B
@@ -63,88 +73,68 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
         sta player_speed_hi
     end_speed:
 
-    ; right
+    lda #0
+    sta player_vel_xlo
+    sta player_vel_xhi
+    sta player_vel_ylo
+    sta player_vel_yhi
+
     lda cur_keys
     and #KEY_RIGHT
-    beq notRight
-        ; Right is pressed. Add to position.
-        lda player_xlo
-        add player_speed_lo
-        sta player_xlo
-        lda player_xhi
-        adc player_speed_hi
-        cmp #(256-16)
-        bcc :+ ; right wall collision
-            lda #(256-16)
-        :
-        sta player_xhi
-    notRight:
+    beq not_right
+        lda player_speed_hi
+        sta player_vel_xhi
+        lda player_speed_lo
+        sta player_vel_xlo
+    not_right:
 
-    ; left
     lda cur_keys
     and #KEY_LEFT
-    beq notLeft
-        ; Left is pressed. Subtract from position.
-        lda player_xlo
-        sub player_speed_lo
-        sta player_xlo
-        lda player_xhi
-        sbc player_speed_hi
-        cmp #8
-        bcs :+ ; left wall collision
-            lda #8
-        :
-        sta player_xhi
-    notLeft:
+    beq not_left
+        lda player_speed_lo ; twos complement for negative
+        not
+        add #1
+        sta player_vel_xlo
+        lda player_speed_hi
+        not 
+        adc #0              
+        sta player_vel_xhi
+    not_left:
 
-    ; up
     lda cur_keys
     and #KEY_UP
-    beq notUp
-        ; Up is pressed. Subtract from position.
-        lda player_ylo
-        sub player_speed_lo
-        sta player_ylo
-        lda player_yhi
-        sbc player_speed_hi
-        cmp #TOP_WALL
-        bcs :+ ; top wall collision
-            lda #TOP_WALL
-        :
-        sta player_yhi
-    notUp:
+    beq not_up
+        lda player_speed_lo
+        not
+        add #1
+        sta player_vel_ylo
+        lda player_speed_hi
+        not
+        adc #0
+        sta player_vel_yhi
+    not_up:
 
-    ; down
     lda cur_keys
     and #KEY_DOWN
-    beq notDown
-        ; Down is pressed. Add to position.
-        lda player_ylo
-        add player_speed_lo
-        sta player_ylo
-        lda player_yhi
-        adc player_speed_hi
-        cmp #(240-40) ; I don't know why this is the right value
-        bcc :+
-            lda #(240-40)
-        :
-        sta player_yhi
-    notDown:
+    beq not_down
+        lda player_speed_hi
+        sta player_vel_yhi
+        lda player_speed_lo
+        sta player_vel_ylo
+    not_down:
 
-    ; a
     lda cur_keys
     and #KEY_A
     beq notA
         jsr arrow_launch
     notA:
 
-    ; select: debug next level
-    lda cur_keys
-    and #KEY_SELECT
-    beq notSelect
-        notify centipede_kill
-    notSelect:
+    rts
+.endproc
 
+.proc player_move
+    adw player_xlo, player_vel_xlo
+    adw player_ylo, player_vel_ylo
     rts
 .endproc
 
@@ -159,6 +149,96 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
         ; player dead
         call_with_args spritegfx_load_oam, #OFFSCREEN, #0, #0, #0
     :
+    rts
+.endproc
+
+; A = 1 if center of player is in a tile with a mushroom
+.proc player_in_mushroom
+    lda player_yhi
+    add #3
+    pha
+
+    lda player_xhi
+    add #3
+    pha
+
+    call_with_args_manual board_convert_sprite_xy, 2
+
+    jsr board_xy_to_addr
+    jsr board_get_value
+    cmp #0
+    beq not_inside
+        lda #1
+        rts
+    not_inside:
+    lda #0
+    rts
+.endproc
+
+.proc player_collide_wall
+    lda player_xhi
+    cmp #(256-16)
+    bge right 
+    cmp #16
+    bls left
+    jmp end_lr
+    right:
+        ; right wall collision
+        lda #(256-16)
+        sta player_xhi
+        jmp end_lr
+    left:
+        ; left wall collision
+        lda #16
+        sta player_xhi
+    end_lr:
+
+    lda player_yhi
+    cmp #TOP_WALL
+    bls top
+    cmp #(240-40)
+    bge bot
+    jmp end_ud
+    top:
+        lda #TOP_WALL
+        sta player_yhi
+        jmp end_ud
+    bot:
+        lda #(240-40)
+        sta player_yhi
+    end_ud:
+    
+    rts
+.endproc
+
+; if the player moved to a mushroom, invert movement that was made
+; this frame in each direction until out of the mushroom tile
+.proc player_collide_board
+    jsr player_in_mushroom
+    cmp #0
+    beq done_collision
+        ; try undoing X
+        sbw player_xlo, player_vel_xlo
+
+        jsr player_in_mushroom
+        cmp #0
+        beq done_collision ; check if out of mushroom
+
+        ; undoing X didn't change anything, so put it back
+        adw player_xlo, player_vel_xlo
+
+        ; try undoing Y
+        sbw player_ylo, player_vel_ylo
+
+        jsr player_in_mushroom
+        cmp #0
+        beq done_collision ; check if out of mushroom AGAIN
+
+        ; only possible solution now is to undo both X and Y movement
+        sbw player_xlo, player_vel_xlo
+        ; Y already undone from earlier
+
+    done_collision:
     rts
 .endproc
 

@@ -155,4 +155,43 @@ MACROS_INC = 1
 .define bls bcc ; branch if register less than value
 .define bge bcs ; branch if register greater or equal to value
 
+; m1 <- m1 + m2
+; m1, m2 are little-endian words
+.macro adw m1, m2
+    lda m1
+    add m2
+    sta m1
+    lda m1+1
+    adc m2+1
+    sta m1+1
+.endmacro
+
+; m1 <- m1 - m2
+; m1, m2 are little-endian words
+.macro sbw m1, m2
+    lda m1
+    sub m2
+    sta m1
+    lda m1+1
+    sbc m2+1
+    sta m1+1
+.endmacro
+
+; twos complement for negative
+.macro neg
+    not
+    add #1
+.endmacro
+
+; m <- -m
+.macro ngw m
+    lda m
+    neg
+    sta m
+    lda m+1
+    not
+    adc #0 ; this has to be different because reasons
+    sta m
+.endmacro
+
 .endif
