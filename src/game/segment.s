@@ -11,7 +11,8 @@
 SEGMENT_SIZE = 8
 
 DIR_RIGHT =     %00000001 ; left = not right
-DIR_DOWN =      %00000010
+DIR_DOWN  =     %00000010 
+DIR_UP    =     %00000100 ; straight = not up or down
 
 .segment "CODE"
 
@@ -32,9 +33,16 @@ DIR_DOWN =      %00000010
     ; setting flags is a bit more involved
     lda #SEGMENT_FLAG_ALIVE
     cpx #0
-    bne :+
+    beq set_head
+    cpx #(SEGMENT_SIZE-1)
+    beq set_tail
+    jmp end_flags
+    set_tail:
+        ora #SEGMENT_FLAG_TAIL
+        jmp end_flags
+    set_head:
         ora #SEGMENT_FLAG_HEAD
-    :
+    end_flags:
     sta segment_flags, x
     ; keep last 3 bits of segment counter for animation offset
     txa
@@ -50,91 +58,89 @@ DIR_DOWN =      %00000010
     rts
 .endproc
 
-.proc segment_collide_board
-    ; only check collisions on pixel multiples of 8
-    lda segment_xs, y
-    and #$07
-    beq :+
-        rts
-    :
-    lda segment_ys, y
-    and #$07
-    beq :+
-        rts
-    : ; else
-        ; ############################ segment init
-        ; first, check if we need to init another centipede segment
-        lda #SEGMENT_FLAG_INIT
-        and segment_flags, y
-        bne :+ ; bit is set
-        lda segment_xs, y
-        cmp #CENTIPEDE_INIT_X + 8
-        bne :+ ; correct X position
-        lda segment_ys, y
-        cmp #CENTIPEDE_INIT_Y
-        bne :+ ; correct Y position
-        ; set init bit
-        lda segment_flags, y
-        ora #SEGMENT_FLAG_INIT
-        sta segment_flags, y
-        jsr segment_init
-        :
-        ; ############################# collision checks
+.proc segment_collide_walls
+    ldx segment_xs, y
+    lda segment_dirs, y
+    and #DIR_RIGHT
+    bne right_collision
+        ; check for left collision
+        cpx #16
+        bge no_collision ; no wall collision here
+        jmp lr_collision
+    right_collision:
+        ; check for right collision
+        cpx #240
+        bls no_collision ; no wall collision here
+    
+    lr_collision:
         lda segment_dirs, y
-        and #DIR_DOWN
-        beq not_down
-            ; need special logic when moving down that doesn't involve collisions
-            lda segment_flags, y
-            and #SEGMENT_FLAG_POISON
-            bne :+ ; skip not going down if the segment is poisoned
-                lda segment_dirs, y
-                and #%00000001 ; switch down bit off
-                sta segment_dirs, y
-            :
-            ; jmp done_collision
-        not_down:
-        ldx segment_xs, y
+        ora #DIR_DOWN
+        sta segment_dirs, y
+    no_collision:
+    rts
+.endproc
+
+.proc segment_collide_board
+    ; ############################ segment init
+    ; first, check if we need to init another centipede segment
+    lda #SEGMENT_FLAG_INIT
+    and segment_flags, y
+    bne :+ ; bit is set
+    lda segment_xs, y
+    cmp #CENTIPEDE_INIT_X + 8
+    bne :+ ; correct X position
+    lda segment_ys, y
+    cmp #CENTIPEDE_INIT_Y
+    bne :+ ; correct Y position
+    ; set init bit
+    lda segment_flags, y
+    ora #SEGMENT_FLAG_INIT
+    sta segment_flags, y
+    jsr segment_init
+    :
+    ; ############################# collision checks
+    lda segment_dirs, y
+    and #DIR_DOWN
+    beq not_down
+        ; need special logic when moving down that doesn't involve collisions
+        lda segment_flags, y
+        and #SEGMENT_FLAG_POISON
+        bne :+ ; skip not going down if the segment is poisoned
+            lda segment_dirs, y
+            and #%00000001 ; switch down bit off
+            sta segment_dirs, y
+        :
+        ; jmp done_collision
+    not_down:
+    ; check mushroom collisions
+        lda segment_ys, y
+        pha
+        lda segment_xs, y
+        pha
+        call_with_args_manual board_convert_sprite_xy, 2
         lda segment_dirs, y
         and #DIR_RIGHT
-        bne right_collision
-            ; check for left collision
-            cpx #16
-            bcs mushroom_collision ; no wall collision here
-            jmp lr_collision
-        right_collision:
-            ; check for right collision
-            cpx #240
-            bcc mushroom_collision ; no wall collision here
-            jmp lr_collision
-        mushroom_collision:
-            lda segment_ys, y
-            pha
-            lda segment_xs, y
-            pha
-            call_with_args_manual board_convert_sprite_xy, 2
-            lda segment_dirs, y
-            and #DIR_RIGHT
-            bne :+
-                dec board_arg_x
-                dec board_arg_x ; check one space to the left
-            :
-            inc board_arg_x ; check one space to the right
-            jsr board_xy_to_addr
-            jsr board_get_value
-            tax
-            and #MUSHROOM_POISON_FLAG ; if it's a poison mushroom,
-            beq :+
-                lda segment_flags, y ; set the poisoned flag for that segment
-                ora #SEGMENT_FLAG_POISON
-                sta segment_flags, y
-            :
-            txa
-            beq done_collision ; no mushroom -> no collision
-        lr_collision:
-            ; set new direction to down + previous direction
-            lda segment_dirs, y
-            ora #DIR_DOWN
-            sta segment_dirs, y
+        bne :+
+            dec board_arg_x
+            dec board_arg_x ; check one space to the left
+        :
+        inc board_arg_x ; check one space to the right
+        jsr board_xy_to_addr
+        jsr board_get_value
+        tax
+        and #MUSHROOM_POISON_FLAG ; if it's a poison mushroom,
+        beq :+
+            lda segment_flags, y ; set the poisoned flag for that segment
+            ora #SEGMENT_FLAG_POISON
+            sta segment_flags, y
+        :
+        txa
+        beq done_collision ; no mushroom -> no collision
+    lr_collision:
+        ; set new direction to down + previous direction
+        lda segment_dirs, y
+        ora #DIR_DOWN
+        sta segment_dirs, y
     done_collision:
     rts
 .endproc
@@ -161,7 +167,7 @@ DIR_DOWN =      %00000010
     :
     lda segment_dirs, y
     and #DIR_RIGHT
-    php ; cUz LdA cHaNgEs SoMe PrOcEsSoR fLaGs
+    php ; because lda changes zero flag
     lda segment_xs, y
     plp
     bne :+
@@ -226,10 +232,22 @@ DIR_DOWN =      %00000010
         call_with_args board_set_value, #$04
         ; set next segment's head flag true
         iny
-        lda segment_flags, y
-        ora #SEGMENT_FLAG_HEAD
-        sta segment_flags, y
+        cpy #CENTIPEDE_LEN
+        beq :+ ; skip if next segment is past last segment
+            lda segment_flags, y
+            ora #SEGMENT_FLAG_HEAD
+            sta segment_flags, y
+        :
         dey
+        ; set the previous segment's tail flag to true
+        dey
+        cpy #$FF ; skip if prev segment is before 0th segment
+        beq :+
+            lda segment_flags, y
+            ora #SEGMENT_FLAG_TAIL
+            sta segment_flags, y
+        :
+        iny
         ; add score to game state
         tya
         pha ; preserve y
@@ -347,8 +365,19 @@ DIR_DOWN =      %00000010
         rts
     :
 
+    ; only do some things once per tile length (8 pixels)
+    lda segment_xs, y
+    and #$07
+    bne not_tile
+    lda segment_ys, y
+    and #$07
+    bne not_tile
+        ; on a tile-aligned spot
+        jsr segment_collide_board
+        jsr segment_collide_walls
+    not_tile:
+
     jsr segment_step_animation
-    jsr segment_collide_board
     jsr segment_move
     jsr segment_collide_arrow
     jsr segment_collide_player
