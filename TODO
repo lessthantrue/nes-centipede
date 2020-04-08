@@ -107,9 +107,9 @@ DEVELOPMENT:
         \ creates mushrooms on the way down
         \ spawn randomly after wave 2 if less than 5 shrooms in player area
         \ sound
-    * player collision with mushrooms
+    \ player collision with mushrooms
     \ pause game on start press
-    * move faster with B (to replace track ball)
+    \ move faster with B (to replace track ball)
     
 PROJECT MANAGEMENT:
     \ Update README
