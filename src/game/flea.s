@@ -197,10 +197,11 @@ BOUNDS_BOT = 200
     ; 50% chance of place for every board space at normal speed
     ; normal speed: 2 px per frame
     ; 4 frames spent in each possible mushroom space
-    ; 7/8^4 = 0.58 ~= 0.5, therefore 1/8 to place is close enough
+    ; 27/32^4 = 0.506 ~= 0.5, therefore 5/32 to place is close enough
     jsr rand8
-    and #%00000111
-    bne no_place
+    and #%00011111
+    cmp #5
+    bge no_place
 
     call_with_args board_convert_sprite_xy, flea_x, flea_y
     jsr board_xy_to_addr
