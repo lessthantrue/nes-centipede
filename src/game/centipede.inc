@@ -2,7 +2,7 @@
 CENTIPEDE_INC = 1
 
 .global centipede_init, centipede_reset, centipede_step, centipede_draw
-.global segment_xs, segment_ys, segment_flags, segment_dirs
+.global segment_xs, segment_ys, segment_flags, segment_dirs, segment_anims
 .globalzp centipede_segments, centipede_speed
 
 CENTIPEDE_LEN = 8

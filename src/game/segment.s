@@ -29,6 +29,7 @@ DIR_UP    =     %00000100 ; straight = not up or down
     sta segment_ys, x
     lda #DIR_RIGHT
     sta segment_dirs, x
+    lda #0
 
     ; setting flags is a bit more involved
     lda #SEGMENT_FLAG_ALIVE
@@ -52,8 +53,7 @@ DIR_UP    =     %00000100 ; straight = not up or down
     asl
     asl
     and #SEGMENT_MASK_ANIM_OFFSET
-    ora segment_flags, x
-    sta segment_flags, x
+    sta segment_anims, X
     inc centipede_segments
     rts
 .endproc
@@ -73,60 +73,105 @@ DIR_UP    =     %00000100 ; straight = not up or down
         bls no_collision ; no wall collision here
     
     lr_collision:
-        lda segment_dirs, y
-        ora #DIR_DOWN
-        sta segment_dirs, y
+        ; set collision flag
+        lda segment_flags, y
+        ora #SEGMENT_FLAG_COLLIDE
+        sta segment_flags, y
     no_collision:
     rts
 .endproc
 
-.proc segment_collide_board
-    ; ############################ segment init
-    ; first, check if we need to init another centipede segment
+; what to do after a collision
+.proc segment_turn
+    ; first special logic for the moving-down turnaround
+    lda segment_dirs, y
+    and #DIR_DOWN
+    beq :+
+    lda segment_flags, y
+    and #SEGMENT_FLAG_POISON
+    bne :+ ; skip not going down if the segment is poisoned
+        lda segment_dirs, y
+        and #($FF-DIR_DOWN) ; switch down bit off
+        sta segment_dirs, y
+        jmp done_turn
+    :
+
+    lda segment_flags, y
+    and #SEGMENT_FLAG_COLLIDE ; collision flag set
+    beq no_collide
+        lda segment_dirs, y
+        ora #DIR_DOWN
+        sta segment_dirs, y
+        ; set prev collision flag
+        lda segment_flags, y
+        ora #SEGMENT_FLAG_COLLIDE_PREV
+        sta segment_flags, y
+        jmp done_turn
+    no_collide:
+        ; clear prev collision flag
+        lda segment_flags, y
+        and #($FF-SEGMENT_FLAG_COLLIDE_PREV)
+        sta segment_flags, y
+    done_turn:
+
+    ; clear collision flag
+    lda segment_flags, y
+    and #($FF-SEGMENT_FLAG_COLLIDE)
+    sta segment_flags, y
+
+    ; if not head, move collision status of prev segment to this one
+    lda segment_flags, y
+    and #SEGMENT_FLAG_HEAD
+    bne :+
+        ; first one is always head, so don't need to check for y=0
+        dey
+        lda segment_flags, y
+        and #SEGMENT_FLAG_COLLIDE_PREV
+        lsr a
+        iny
+        ora segment_flags, y
+        sta segment_flags, y
+    :
+    rts
+.endproc
+
+.proc segment_init_next
     lda #SEGMENT_FLAG_INIT
     and segment_flags, y
-    bne :+ ; bit is set
+    bne :+ ; init bit is clear
     lda segment_xs, y
     cmp #CENTIPEDE_INIT_X + 8
     bne :+ ; correct X position
     lda segment_ys, y
     cmp #CENTIPEDE_INIT_Y
     bne :+ ; correct Y position
-    ; set init bit
-    lda segment_flags, y
-    ora #SEGMENT_FLAG_INIT
-    sta segment_flags, y
-    jsr segment_init
-    :
-    ; ############################# collision checks
-    lda segment_dirs, y
-    and #DIR_DOWN
-    beq not_down
-        ; need special logic when moving down that doesn't involve collisions
+        ; set init bit
         lda segment_flags, y
-        and #SEGMENT_FLAG_POISON
-        bne :+ ; skip not going down if the segment is poisoned
-            lda segment_dirs, y
-            and #%00000001 ; switch down bit off
-            sta segment_dirs, y
-        :
-        ; jmp done_collision
-    not_down:
+        ora #SEGMENT_FLAG_INIT
+        sta segment_flags, y
+        jsr segment_init ; create next segment
+    :
+    rts
+.endproc
+
+.proc segment_collide_board
     ; check mushroom collisions
-        lda segment_ys, y
-        pha
-        lda segment_xs, y
-        pha
-        call_with_args_manual board_convert_sprite_xy, 2
-        lda segment_dirs, y
-        and #DIR_RIGHT
-        bne :+
-            dec board_arg_x
-            dec board_arg_x ; check one space to the left
-        :
-        inc board_arg_x ; check one space to the right
-        jsr board_xy_to_addr
-        jsr board_get_value
+    lda segment_ys, y
+    pha
+    lda segment_xs, y
+    pha
+    call_with_args_manual board_convert_sprite_xy, 2
+    lda segment_dirs, y
+    and #DIR_RIGHT
+    bne :+
+        dec board_arg_x
+        dec board_arg_x ; check one space to the left
+    :
+    inc board_arg_x ; check one space to the right
+    jsr board_xy_to_addr
+    jsr board_get_value
+    cmp #0
+    beq done_collision; no mushroom -> no collision
         tax
         and #MUSHROOM_POISON_FLAG ; if it's a poison mushroom,
         beq :+
@@ -135,12 +180,10 @@ DIR_UP    =     %00000100 ; straight = not up or down
             sta segment_flags, y
         :
         txa
-        beq done_collision ; no mushroom -> no collision
-    lr_collision:
-        ; set new direction to down + previous direction
-        lda segment_dirs, y
-        ora #DIR_DOWN
-        sta segment_dirs, y
+        ; set collide flag
+        lda segment_flags, y
+        ora #SEGMENT_FLAG_COLLIDE
+        sta segment_flags, y
     done_collision:
     rts
 .endproc
@@ -290,7 +333,9 @@ DIR_UP    =     %00000100 ; straight = not up or down
     ; arg 2: sprite tile index
     ; there is a LOT of bit arithmetic about to happen
     lda segment_flags, y
-    and #SEGMENT_MASK_ANIM_OFFSET|SEGMENT_FLAG_HEAD
+    and #SEGMENT_FLAG_HEAD
+    ora segment_anims, y
+    and #(SEGMENT_FLAG_HEAD|SEGMENT_MASK_ANIM_OFFSET)
     lsr
     lsr
     lsr
@@ -350,9 +395,9 @@ DIR_UP    =     %00000100 ; straight = not up or down
     jmp :++
     :
         ; 2 or 6 above a multiple of 8
-        lda segment_flags, y
+        lda segment_anims, y
         add #%00100000
-        sta segment_flags, y
+        sta segment_anims, y
     :
     rts
 .endproc
@@ -373,8 +418,15 @@ DIR_UP    =     %00000100 ; straight = not up or down
     and #$07
     bne not_tile
         ; on a tile-aligned spot
-        jsr segment_collide_board
-        jsr segment_collide_walls
+        lda segment_flags, y
+        and #SEGMENT_FLAG_HEAD
+        beq :+
+            ; do these if head
+            jsr segment_collide_board   ; collide with mushrooms
+            jsr segment_collide_walls   ; collide with walls
+        :
+        jsr segment_turn                ; resolve collisions
+        jsr segment_init_next           ; init next segment if necessary
     not_tile:
 
     jsr segment_step_animation

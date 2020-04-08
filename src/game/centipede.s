@@ -22,6 +22,7 @@ segment_xs          :   .res CENTIPEDE_LEN
 segment_ys          :   .res CENTIPEDE_LEN
 segment_dirs        :   .res CENTIPEDE_LEN
 segment_flags       :   .res CENTIPEDE_LEN
+segment_anims       :   .res CENTIPEDE_LEN
 
 .segment "CODE"
 
