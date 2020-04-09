@@ -5,8 +5,8 @@
 .include "../spritegfx.inc"
 .include "../events/events.inc"
 
-EXTRALIFE_AMT = 100 ; debug
-; EXTRALIFE_AMT = 12000
+; EXTRALIFE_AMT = 100 ; debug
+EXTRALIFE_AMT = 12000
 
 .segment "ZEROPAGE"
 score:              .res 3 ; 3b encapsulates the highest recorded score on arcade centipede

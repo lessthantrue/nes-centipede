@@ -2,6 +2,22 @@
 ; 80 entries
 ; higher entries are higher frequencies
 ; .export periodTableLo, periodTableHis
+; lowest entry is lowest A on a piano
+; octaves every 12 entries (every line)
+
+NOTE_A   = 0
+NOTE_AS  = 1
+NOTE_B   = 2
+NOTE_C   = 3
+NOTE_CS  = 4
+NOTE_D   = 5
+NOTE_DS  = 6
+NOTE_E   = 7
+NOTE_F   = 8
+NOTE_FS  = 9
+NOTE_G   = 10
+NOTE_GS  = 11
+
 .segment "RODATA"
 periodTableLo:
     .byt $f1,$7f,$13,$ad,$4d,$f3,$9d,$4c,$00,$b8,$74,$34

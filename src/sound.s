@@ -22,11 +22,12 @@ extra_counter:        .res 1
 ; player death and enemy kill on noise
 
 ; spider
-LOW = 38
-MID = 41
-HI = 47
-spider_jingle:  .byte LOW, MID, HI, 0, HI, MID, LOW, MID, HI, 0
-SPIDER_JINGLE_LEN = 10
+LOW = 12 * 3 + NOTE_B
+MID = 12 * 3 + NOTE_E
+HI = 12 * 4 + NOTE_A
+spider_jingle:  .byte LOW, 0, MID, 0, HI, 0, 0, 0, HI, 0, MID, 0, LOW, 0, MID, 0, HI, 0, 0, 0
+SPIDER_JINGLE_LEN = 20
+
 
 ; scorpion
 SCORP_LOW = 17
@@ -43,13 +44,6 @@ FLEA_LEN = 100
 ; extra life
 EXTRA_DIFF_LOW = 2
 EXTRA_DIFF_HI = 6
-
-; EXTRA_LOWEST  = 25
-; EXTRA_LOWER   = EXTRA_LOWEST + EXTRA_DIFF_LOW
-; EXTRA_LOW     = EXTRA_LOWER + EXTRA_DIFF_LOW
-; EXTRA_HIGH    = EXTRA_LOWER + EXTRA_DIFF_LOW
-; EXTRA_HIGHER  = EXTRA_HIGH + EXTRA_DIFF_LOW * 4
-; EXTRA_HIGHEST = EXTRA_HIGHER + 8
 
 EXTRA_LOWEST = 22
 EXTRA_LOWER = 26
@@ -106,10 +100,10 @@ EXTRA_LEN = 11
         ldx spider_jingle, y ; can probably do this with one register
         lda periodTableLo, x ; but I don't want to deal with indirect
         sta APU_SQ2_LOW
-        lda #($09<<3) ; length
+        lda #($05<<3) ; length
         ora periodTableHi, x
         sta APU_SQ2_HIG
-        lda #%10011111
+        lda #%10001111
         sta APU_SQ2_ENV
         iny
         cpy #SPIDER_JINGLE_LEN
