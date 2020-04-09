@@ -6,7 +6,7 @@
 .segment "BSS"
 reset_mushrooms_done:   .res 1
 reset_mushroom_delay:   .res 1
-RESET_MUSHROOM_DELAY = 10
+RESET_MUSHROOM_DELAY = 7
 
 .segment "CODE"
 WIDTH = 32
@@ -54,9 +54,25 @@ HEIGHT = 26
         beq :+
         cmp #0
         beq :+
-            ; mushroom is borken
+            ; mushroom is borken, so fix it
             jsr board_xy_to_nametable
             call_with_args board_set_value, #4
+            
+            ; add a particle
+            lda board_arg_y
+            asl a
+            asl a
+            asl a
+            pha
+
+            lda board_arg_x
+            asl a
+            asl a
+            asl a
+            pha
+
+            call_with_args_manual particle_add, 2
+
             jmp END_FOUND ; end this loop for now
         :
         ; Not a damaged mushroom? continue

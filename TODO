@@ -32,6 +32,11 @@ REFACTORING:
         ^ dear god no I tried this it's not happening in this game, maybe the next one
     \ track status of all enemies in one spot, to simplify level advancement
     * move shoot sound to noise? Would fix a lot of stuff
+    * high score
+        * show high score while playing
+        * show high score list on menu
+        * input high score name
+        * save to cartridge
 
 DEVELOPMENT:
     \ move and properly draw multiple centipede segments
@@ -176,7 +181,7 @@ THINGS I SHOULD HAVE DONE:
     * Write better middle-level abstractions to avoid writing basically the same procedures many times
         TL; DR sometimes call_with_args doesn't cut it
         Examples: 
-        collisions between enemies and player/arrow
+        moving, colliding entities in general (player, arrow, centipede, etc)
         drawing dynamic sprites
         collisions with the board
         particles

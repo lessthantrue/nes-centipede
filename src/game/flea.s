@@ -39,11 +39,11 @@ BOUNDS_BOT = 200
 
 ; same thing as everything else
 .proc flea_set_respawn_time
-    ; jsr rand8
-    ; and #$01 ; 0 to 5 seconds
-    lda #1
+    jsr rand8
+    and #$03
     sta flea_timer+1
     jsr rand8
+    ora #%10000000
     sta flea_timer
     rts
 .endproc
@@ -194,13 +194,13 @@ BOUNDS_BOT = 200
 .endproc
 
 .proc flea_place_shroom
-    ; 50% chance of place for every board space at normal speed
+    ; 30% chance of place for every board space at normal speed
     ; normal speed: 2 px per frame
     ; 4 frames spent in each possible mushroom space
-    ; 27/32^4 = 0.506 ~= 0.5, therefore 5/32 to place is close enough
+    ; 30/32^4 = 0.77 ~= 1 - 0.3, therefore 1/16 to place is close enough
     jsr rand8
     and #%00011111
-    cmp #5
+    cmp #2
     bge no_place
 
     call_with_args board_convert_sprite_xy, flea_x, flea_y
@@ -227,6 +227,10 @@ BOUNDS_BOT = 200
         lda flea_timer+1
         sbc #0
         sta flea_timer+1
+        
+        lda flea_timer
+        bne :+
+        lda flea_timer+1
         bne :+
             jsr flea_reset
         :

@@ -12,7 +12,7 @@ arrow_x:    .res 1
 arrow_y:    .res 1
 arrow_f:    .res 1
 
-SPEED = 5 ; velocity in px/frame (everything will work as long as this is less than 8)
+SPEED = 6 ; velocity in px/frame (everything will work as long as this is less than 8)
 
 .segment "CODE"
 

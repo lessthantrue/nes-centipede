@@ -84,10 +84,10 @@ SPIDER_SPEED = 1
 
 .proc spider_set_respawn_time
     jsr rand8
-    and #$01
-    add #3 ; 8 to 12 seconds
+    and #$03
     sta spider_respawn_timer+1
-    lda #00
+    jsr rand8
+    ora #%10000000
     sta spider_respawn_timer
     rts
 .endproc
@@ -353,6 +353,10 @@ SPIDER_SPEED = 1
         lda spider_respawn_timer+1
         sbc #0
         sta spider_respawn_timer+1
+
+        lda spider_respawn_timer
+        bne :+
+        lda spider_respawn_timer+1
         bne :+
             jsr spider_reset
         :
@@ -361,7 +365,7 @@ SPIDER_SPEED = 1
 
     ; animation state
     lda spider_anim_low
-    add #128
+    add #64
     sta spider_anim_low
     lda spider_anim
     bcc :+ ; carry set? increment animation state 2

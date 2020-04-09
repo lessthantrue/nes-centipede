@@ -44,10 +44,10 @@ SCORP_INIT_X_RIGHT = 239
 ; same thing as spider
 .proc scorp_set_respawn_time
     jsr rand8
-    and #$01
-    add #2 ; 8 to 12 seconds
+    and #$03 ; 2 to 14 seconds
     sta scorp_respawn_timer+1
-    lda #00
+    jsr rand8
+    ora #%10000000
     sta scorp_respawn_timer
     rts
 .endproc
@@ -261,6 +261,10 @@ SCORP_INIT_X_RIGHT = 239
         lda scorp_respawn_timer+1
         sbc #0
         sta scorp_respawn_timer+1
+
+        lda scorp_respawn_timer
+        bne :+
+        lda scorp_respawn_timer+1
         bne :+
             jsr scorp_reset
         :

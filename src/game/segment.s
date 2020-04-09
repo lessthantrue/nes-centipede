@@ -131,6 +131,14 @@ DIR_UP    =     %00000100 ; straight = not up or down
         iny
         ora segment_flags, y
         sta segment_flags, y
+
+        ; also copy poison flag
+        dey
+        lda segment_flags, y
+        and #SEGMENT_FLAG_POISON
+        iny
+        ora segment_flags, y
+        sta segment_flags, y
     :
     rts
 .endproc
