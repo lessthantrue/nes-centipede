@@ -5,7 +5,7 @@
 .include "../spritegfx.inc"
 .include "../events/events.inc"
 
-EXTRALIFE_AMT = 500 ; debug
+EXTRALIFE_AMT = 100 ; debug
 ; EXTRALIFE_AMT = 12000
 
 .segment "ZEROPAGE"

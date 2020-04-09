@@ -14,9 +14,16 @@ DIR_RIGHT =     %00000001 ; left = not right
 DIR_DOWN  =     %00000010 
 DIR_UP    =     %00000100 ; straight = not up or down
 
+.segment "BSS"
+
+centipede_speed_temp: .res 1
+
 .segment "CODE"
 
 .proc segment_init
+    lda centipede_speed
+    sta centipede_speed_temp ; terrible temp solution
+
     ldx centipede_segments
     cpx #CENTIPEDE_LEN
     bne init_segment
@@ -197,6 +204,23 @@ DIR_UP    =     %00000100 ; straight = not up or down
 .endproc
 
 .proc segment_move
+    ; if speed is 2 but centipede is on an odd tile, only move 1
+    lda segment_xs, y
+    and #1
+    bne :+
+    lda segment_ys, y
+    and #1
+    bne :+
+        ; on an even tile
+        lda centipede_speed
+        sta centipede_speed_temp
+        jmp :++
+    :
+        ; still on an odd tile
+        lda #1
+        sta centipede_speed_temp
+    :
+
     lda segment_dirs, y
     and #DIR_DOWN
     beq :++
@@ -213,7 +237,7 @@ DIR_UP    =     %00000100 ; straight = not up or down
 
         ; finish moving down
         lda segment_ys, y
-        add centipede_speed
+        add centipede_speed_temp
         sta segment_ys, y
     :
     lda segment_dirs, y
@@ -223,11 +247,11 @@ DIR_UP    =     %00000100 ; straight = not up or down
     plp
     bne :+
     ; move left
-        sub centipede_speed
-        sub centipede_speed
+        sub centipede_speed_temp
+        sub centipede_speed_temp
     :
         ; move right
-        add centipede_speed
+        add centipede_speed_temp
     sta segment_xs, y
     rts
 .endproc

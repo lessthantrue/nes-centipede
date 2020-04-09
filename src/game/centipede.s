@@ -24,6 +24,8 @@ segment_dirs        :   .res CENTIPEDE_LEN
 segment_flags       :   .res CENTIPEDE_LEN
 segment_anims       :   .res CENTIPEDE_LEN
 
+centipede_segments_alive:   .res 1
+
 .segment "CODE"
 
 .proc map_segment
@@ -69,6 +71,8 @@ segment_anims       :   .res CENTIPEDE_LEN
 .proc centipede_reset
     lda #0
     sta centipede_segments
+    lda #CENTIPEDE_LEN
+    sta centipede_segments_alive
     jsr segment_init
     rts
 .endproc
@@ -103,18 +107,23 @@ segment_anims       :   .res CENTIPEDE_LEN
 .endproc
 
 .proc segment_kill_handler
-    jsr centipede_is_dead
-    cmp #0
-    beq :+
+    dec centipede_segments_alive
+    bne :+
         ; centipede is dead
         notify centipede_kill
         clear game_enemy_statuses, #FLAG_ENEMY_CENTIPEDE
+    :
+    lda centipede_segments_alive
+    cmp #1
+    bne :+
+        lda #2
+        sta centipede_speed
     :
     rts
 .endproc
 
 .proc level_up_handler
-    lda centipede_speed
+    lda statusbar_level
     and #%00000001
     add #1
     sta centipede_speed
