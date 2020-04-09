@@ -72,7 +72,7 @@ DEVELOPMENT:
     \ game over after all lives are expired
         \ return to menu screen, reset score
     \ change centipede speed with levels
-        * move segment faster when only head is left
+        * move segment faster when only one segment is left
     * change centipede waves with levels
         level 1 has 1 centipede of length 8
         level 2 has 1 centipede of length 7 and 1 severed head
@@ -115,7 +115,8 @@ DEVELOPMENT:
     \ player collision with mushrooms
     \ pause game on start press
     \ move faster with B (to replace track ball)
-    
+    * start centipede moving down in the middle of the screen
+
 PROJECT MANAGEMENT:
     \ Update README
         \ Document change in graphics tools

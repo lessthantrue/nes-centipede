@@ -60,6 +60,7 @@ nmis:                    .res 1
     init arrow_shoot
     init centipede_kill
     init level_up
+    init extra_life
 
     ; this one game state that needs one-time initialization
     jsr state_playing_init

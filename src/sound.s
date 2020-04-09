@@ -12,13 +12,14 @@ centipede_march_timer:   .res 1
 spider_jingle_counter:   .res 1
 scorp_jingle_counter:    .res 1
 flea_counter:            .res 1
+extra_counter:        .res 1
 
 .segment "CODE"
 
 ; centipede walking and flea on triangle
 ; shooting and scorpion on sq1
-; spider on sq2
-; player death / enemy kill on noise
+; spider and extra life on sq2
+; player death and enemy kill on noise
 
 ; spider
 LOW = 38
@@ -38,6 +39,26 @@ SCORP_JINGLE_LEN = 4
 FLEA_START = 20
 FLEA_STEP = 1
 FLEA_LEN = 100
+
+; extra life
+EXTRA_DIFF_LOW = 2
+EXTRA_DIFF_HI = 6
+; LOW PART LOCKED IN
+EXTRA_LOWEST  = 25
+EXTRA_LOWER   = EXTRA_LOWEST + EXTRA_DIFF_LOW
+EXTRA_LOW     = EXTRA_LOWER + EXTRA_DIFF_LOW * 2
+EXTRA_HIGH    = EXTRA_LOWER + EXTRA_DIFF_LOW
+EXTRA_HIGHER  = EXTRA_HIGH + EXTRA_DIFF_LOW * 4
+EXTRA_HIGHEST = EXTRA_HIGHER + 7
+
+; note lengths
+SHORT_LEN = $0C
+MID_LEN = $1E
+
+extra_jingle: .byte EXTRA_LOWER, EXTRA_LOWEST, EXTRA_LOWER, EXTRA_LOW, EXTRA_LOWER, EXTRA_LOW
+                 .byte EXTRA_HIGH, EXTRA_HIGHER, EXTRA_HIGHEST, EXTRA_HIGHER, EXTRA_HIGHEST
+extra_lens:   .byte SHORT_LEN, SHORT_LEN, SHORT_LEN, MID_LEN, SHORT_LEN, MID_LEN, SHORT_LEN, SHORT_LEN, MID_LEN, SHORT_LEN, MID_LEN
+EXTRA_LEN = 11
 
 ; run this while the game is playing
 .proc sound_run_default
@@ -65,6 +86,9 @@ FLEA_LEN = 100
     :
 
     ; spider
+    lda #EXTRA_LEN
+    cmp extra_counter
+    bpl :++ ; new life counter still going (counter <= len)
     lda #SPIDER_FLAG_ALIVE
     bit spider_f
     beq :++ ; is spider alive
@@ -113,6 +137,33 @@ FLEA_LEN = 100
         :
         sty scorp_jingle_counter
     :
+
+    ; extra life
+    lda #EXTRA_LEN
+    cmp extra_counter
+    bge :+
+        jmp end_extra_life
+    :
+    lda #APU_FLAG_SQ2
+    bit APUFLAGS
+    bne end_extra_life
+        ldy extra_counter
+        ldx extra_jingle, y
+        lda periodTableLo, x
+        sta APU_SQ2_LOW
+        ; get length from a table
+        lda extra_lens, y
+        asl a
+        asl a
+        asl a
+        ora periodTableHi, x
+        sta APU_SQ2_HIG
+        lda #%10011111
+        sta APU_SQ2_ENV
+        lda #0
+        sta APU_SQ2_SWP
+        inc extra_counter
+    end_extra_life:
 
     ; flea
     lda game_enemy_statuses
@@ -177,6 +228,12 @@ FLEA_LEN = 100
     rts
 .endproc
 
+.proc extra_life_handler
+    lda #0
+    sta extra_counter
+    rts
+.endproc
+
 .proc sound_init
     lda #$0F
     sta APUFLAGS
@@ -187,8 +244,12 @@ FLEA_LEN = 100
     lda #0
     sta APU_SQ2_SWP
     sta spider_jingle_counter
+    sta scorp_jingle_counter
+    lda #EXTRA_LEN+1
+    sta extra_counter
     subscribe segment_kill, segment_kill_handler-1
     subscribe arrow_shoot, arrow_shoot_handler-1
     subscribe player_dead, player_dead_handler-1
+    subscribe extra_life, extra_life_handler-1
     rts
 .endproc

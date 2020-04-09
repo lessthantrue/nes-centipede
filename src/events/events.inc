@@ -8,6 +8,7 @@ make_event_header level_up
 make_event_header arrow_shoot
 make_event_header player_dead
 make_event_header segment_kill
+make_event_header extra_life
 
 .FEATURE addrsize
 .macro subscribe event, handler
