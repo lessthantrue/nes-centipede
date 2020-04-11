@@ -42,12 +42,7 @@ centipede_speed_temp: .res 1
     lda #SEGMENT_FLAG_ALIVE
     cpx #0
     beq set_head
-    cpx #(SEGMENT_SIZE-1)
-    beq set_tail
     jmp end_flags
-    set_tail:
-        ora #SEGMENT_FLAG_TAIL
-        jmp end_flags
     set_head:
         ora #SEGMENT_FLAG_HEAD
     end_flags:
@@ -94,13 +89,10 @@ centipede_speed_temp: .res 1
     lda segment_dirs, y
     and #DIR_DOWN
     beq :+
-    lda segment_flags, y
-    and #SEGMENT_FLAG_POISON
-    bne :+ ; skip not going down if the segment is poisoned
         lda segment_dirs, y
         and #($FF-DIR_DOWN) ; switch down bit off
         sta segment_dirs, y
-        jmp done_turn
+        ; jmp done_turn
     :
 
     lda segment_flags, y
@@ -121,10 +113,14 @@ centipede_speed_temp: .res 1
         sta segment_flags, y
     done_turn:
 
-    ; clear collision flag
+    ; clear collision flag unless poisoned
     lda segment_flags, y
-    and #($FF-SEGMENT_FLAG_COLLIDE)
-    sta segment_flags, y
+    and #SEGMENT_FLAG_POISON
+    bne :+
+        lda segment_flags, y
+        and #($FF-SEGMENT_FLAG_COLLIDE)
+        sta segment_flags, y
+    :
 
     ; if not head, move collision status of prev segment to this one
     lda segment_flags, y
@@ -314,15 +310,6 @@ centipede_speed_temp: .res 1
             sta segment_flags, y
         :
         dey
-        ; set the previous segment's tail flag to true
-        dey
-        cpy #$FF ; skip if prev segment is before 0th segment
-        beq :+
-            lda segment_flags, y
-            ora #SEGMENT_FLAG_TAIL
-            sta segment_flags, y
-        :
-        iny
         ; add score to game state
         tya
         pha ; preserve y
@@ -452,8 +439,18 @@ centipede_speed_temp: .res 1
         ; on a tile-aligned spot
         lda segment_flags, y
         and #SEGMENT_FLAG_HEAD
-        beq :+
+        beq :++
             ; do these if head
+            lda segment_flags, y
+            and #SEGMENT_FLAG_POISON
+            beq :+
+                ; always set collision flag if poisoned
+                lda segment_flags, y
+                ora #SEGMENT_FLAG_COLLIDE
+                sta segment_flags, y
+                jmp :++ ; can just skip the rest
+            :
+
             jsr segment_collide_board   ; collide with mushrooms
             jsr segment_collide_walls   ; collide with walls
         :

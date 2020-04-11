@@ -31,7 +31,7 @@ REFACTORING:
         improper allocation is probably causing the particle end of level issue
         ^ dear god no I tried this it's not happening in this game, maybe the next one
     \ track status of all enemies in one spot, to simplify level advancement
-    * move shoot sound to noise? Would fix a lot of stuff
+    x move shoot sound to noise? Would fix a lot of stuff
     * high score
         * show high score while playing
         * show high score list on menu
@@ -72,7 +72,7 @@ DEVELOPMENT:
     \ game over after all lives are expired
         \ return to menu screen, reset score
     \ change centipede speed with levels
-        * move segment faster when only one segment is left
+        \ move segment faster when only one segment is left
     * change centipede waves with levels
         level 1 has 1 centipede of length 8
         level 2 has 1 centipede of length 7 and 1 severed head
@@ -165,7 +165,7 @@ BUGS:
     \ weird things happen to the spider when it collides with player
     \ scorpion doesn't reset on level restart
     \ regenerate mushrooms on game over
-    * centipede goes straight down after hitting the bottom of the screen
+    * centipede goes straight down after wrapping the screen vertically
     * spider sometimes teleports...?
 
 QOL TODO BEFORE NEXT PROJECT:
