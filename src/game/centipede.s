@@ -70,6 +70,12 @@ centipede_segments_alive:   .res 1
 .proc centipede_reset
     lda #0
     sta centipede_segments
+    ldy #0
+    :
+        sta segment_xs, y
+        iny
+        cpy #(CENTIPEDE_LEN*5)
+        bne :-
     lda #CENTIPEDE_LEN
     sta centipede_segments_alive
     jsr segment_init
