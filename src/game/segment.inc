@@ -19,8 +19,12 @@ SEGMENT_FLAG_COLLIDE_PREV   = %10000000
 
 SEGMENT_MASK_ANIM_OFFSET    = %11000000 
 
+DIR_RIGHT =     %00000001 ; left = not right
+DIR_DOWN  =     %00000010 
+DIR_UP    =     %00000100 ; straight = not up or down
+
 .globalzp segment_active
 
-.global segment_init, segment_draw, segment_step
+.global segment_init, segment_draw, segment_step, centipede_speed_temp
 
 .endif

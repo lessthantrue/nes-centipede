@@ -3,6 +3,8 @@ GAME_INC = 1
 
 .include "spider.inc"
 .include "segment.inc"
+.include "head.inc"
+.include "body.inc"
 .include "player.inc"
 .include "arrow.inc"
 .include "centipede.inc"

@@ -29,11 +29,8 @@ centipede_segments_alive:   .res 1
 .segment "CODE"
 
 .proc map_segment
-    ldy #0
+    ldy #CENTIPEDE_LEN-1
     :
-        cpy centipede_segments
-        beq :+
-
         ; call function
         tya
         pha ; both preserve y through function calls AND set it as effective argument 1
@@ -53,7 +50,9 @@ centipede_segments_alive:   .res 1
         pla
         tay
 
-        iny
+        cpy #0
+        beq :+
+        dey
         jmp :-
     :
     rts

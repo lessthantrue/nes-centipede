@@ -18,7 +18,7 @@ version = 0.1
 # (the \ character) at the end of the line and continue on the next.
 objlist = events/events \
 nrom init main collision gamestaterunner ppuclear sound spritegfx random pads \
-game/arrow game/board game/centipede game/segment game/spider game/statusbar game/player game/fullgame game/particles game/scoreparticle game/scorpion game/flea\
+game/arrow game/board game/centipede game/segment game/spider game/statusbar game/player game/fullgame game/particles game/scoreparticle game/scorpion game/flea game/head game/body\
 gamestates/dead gamestates/gameover gamestates/menu gamestates/nextlevel gamestates/redraw_board gamestates/playing gamestates/reset_mushrooms gamestates/paused gamestates/level_reset\
 core/bin2dec core/ntscperiods core/common
 
