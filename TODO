@@ -32,11 +32,6 @@ REFACTORING:
         ^ dear god no I tried this it's not happening in this game, maybe the next one
     \ track status of all enemies in one spot, to simplify level advancement
     x move shoot sound to noise? Would fix a lot of stuff
-    * high score
-        * show high score while playing
-        * show high score list on menu
-        * input high score name
-        * save to cartridge
 
 DEVELOPMENT:
     \ move and properly draw multiple centipede segments
@@ -115,7 +110,12 @@ DEVELOPMENT:
     \ player collision with mushrooms
     \ pause game on start press
     \ move faster with B (to replace track ball)
-    * start centipede moving down in the middle of the screen
+    * start centipede moving down in the middle of the screen    
+    * high score
+        * show high score while playing
+        * show high score list on menu
+        * input high score name
+        * save to cartridge
 
 PROJECT MANAGEMENT:
     \ Update README

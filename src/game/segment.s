@@ -28,6 +28,7 @@ centipede_speed_temp: .res 1
     lda #DIR_RIGHT
     sta segment_dirs, x
     lda #0
+    sta segment_anims, x
 
     ; setting flags is a bit more involved
     lda #SEGMENT_FLAG_ALIVE
@@ -38,15 +39,6 @@ centipede_speed_temp: .res 1
         ora #SEGMENT_FLAG_HEAD
     end_flags:
     sta segment_flags, x
-    ; keep last 3 bits of segment counter for animation offset
-    txa
-    asl
-    asl
-    asl
-    asl
-    asl
-    and #SEGMENT_MASK_ANIM_OFFSET
-    sta segment_anims, X
     inc centipede_segments
     rts
 .endproc
@@ -169,10 +161,15 @@ centipede_speed_temp: .res 1
 
     ; arg 2: sprite tile index
     ; there is a LOT of bit arithmetic about to happen
-    lda segment_flags, y
-    and #SEGMENT_FLAG_HEAD
-    ora segment_anims, y
-    and #(SEGMENT_FLAG_HEAD|SEGMENT_MASK_ANIM_OFFSET)
+    lda segment_anims, y
+    and #SEGMENT_MASK_ANIM_OFFSET
+    ora segment_flags, y
+    and #(SEGMENT_MASK_ANIM_OFFSET|SEGMENT_FLAG_HEAD)
+
+    ; lda segment_flags, y
+    ; and #SEGMENT_FLAG_HEAD
+    ; ora segment_anims, y
+    ; and #(SEGMENT_FLAG_HEAD|SEGMENT_MASK_ANIM_OFFSET)
     lsr
     lsr
     lsr
@@ -229,13 +226,29 @@ centipede_speed_temp: .res 1
     beq :+
     cmp #6
     beq :+
-    jmp :++
+    jmp end_anim
     :
         ; 2 or 6 above a multiple of 8
         lda segment_anims, y
-        add #%00100000
+        and #%00000001 ; reverse bit
+        bne :++
+            lda segment_anims, y
+            add #%00100000
+            cmp #$E0
+            bne :+
+                ora #%00000001
+            :
+            jmp :++
+        :
+            lda segment_anims, y
+            sub #%00100000
+            cmp #01
+            bne :+
+                and #($FF-%00000001)
+            :
+
         sta segment_anims, y
-    :
+    end_anim:
     rts
 .endproc
 
