@@ -179,7 +179,7 @@ QOL TODO BEFORE NEXT PROJECT:
     * Macros for word arithmetic
     x support for local temp variables on stack
         just push something on the stack and call it good
-    * update call_with_args to support nested calls, or abandon it entirely for something else
+    \ update call_with_args to support nested calls, or abandon it entirely for something else
     * some kind of wrapper for instruction-like macros to automatically handle addressing modes
         look into curly bracket semantics?
 
@@ -194,3 +194,4 @@ THINGS I SHOULD HAVE DONE:
     * don't put RTS in the middle of procedures
         Makes reading debugger difficult
     * better split game state, drawing, and controls
+        see 'Generally more robust PPU Management' above

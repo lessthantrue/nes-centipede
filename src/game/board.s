@@ -23,6 +23,11 @@ update_data:    .res MAX_UPDATES_PER_FRAME
 WIDTH = 32
 HEIGHT = 26
 PLAYER_REGION_TOP = 21 ; top of where player can move
+
+; offset from nametable axes
+BOARD_OFFSET_X = 0
+BOARD_OFFSET_Y = 3
+
 board:                      .res (WIDTH * HEIGHT)
 board_count_player_area:    .res 1
 PLAYER_REGION_ADDR_START = board + (PLAYER_REGION_TOP * WIDTH)
@@ -67,6 +72,46 @@ PLAYER_REGION_ADDR_START = board + (PLAYER_REGION_TOP * WIDTH)
     :
     sta ntaddr
     pla
+    rts
+.endproc
+
+; redraws a number of tiles in a row starting at an xy location
+; arg 1: PPU x
+; arg 2: PPU y
+; arg 3: number of tiles to redraw
+.proc board_redraw_count
+    lda STACK_TOP+1, x
+    sub #BOARD_OFFSET_X
+    sta board_arg_x
+    lda STACK_TOP+2, x
+    sub #BOARD_OFFSET_Y
+    sta board_arg_y
+    
+    ; set board and nametable address
+    txa
+    pha
+    jsr board_xy_to_addr
+    jsr board_xy_to_nametable
+    pla
+    tax
+
+    ; set PPU address
+    lda ntaddr+1
+    sta PPUADDR
+    lda ntaddr
+    sta PPUADDR
+
+    ; start drawing
+    ldy #0
+    :   
+        lda (boardaddr), y
+        add #$60
+        sta PPUDATA
+        iny
+        tya
+        cmp STACK_TOP+3, x
+        bne :-
+    
     rts
 .endproc
 

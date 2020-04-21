@@ -119,7 +119,7 @@ extralife_thresh:   .res 3 ; threshold to reach extra life
     lda PPUSTATUS
     lda #$20
     sta PPUADDR
-    lda #$41
+    lda #$21
     sta PPUADDR
     ldy #00
     :
@@ -151,7 +151,7 @@ extralife_thresh:   .res 3 ; threshold to reach extra life
             lda #$E7
             jmp :++
         :
-            lda #$F7
+            lda #$F0
         :
         pha ; arg 1: sprite y
         call_with_args_manual spritegfx_load_oam, 4

@@ -10,7 +10,8 @@
 .segment "BSS"
 
 name:           .res 3
-name_cursor:     .res 1
+name_cursor:    .res 1
+done:           .res 1 ; player is done entering name
 
 .segment "CODE"
 
@@ -28,26 +29,38 @@ MSG2_LEN = 21
     sta name+1
     sta name+2
     sta name_cursor
+    sta done
     rts
 .endproc
 
 .proc bg
-    ; print high score message
-    st_addr (highscore_msg1+1), strptr
-    lda highscore_msg1
-    sta strlen
-    call_with_args print_centered, #12
+    lda done
+    beq :+
+        ; redraw board where we put text
+        call_with_args board_redraw_count, #(16 - 6), #12, #12
+        call_with_args board_redraw_count, #14, #15, #4
 
-    st_addr (highscore_msg2+1), strptr
-    lda highscore_msg2
-    sta strlen
-    call_with_args print_centered, #13
+        ; menu will draw over this row anyways
+        ; call_with_args board_redraw_count, #(16-10), #13, #20
+        jmp :++
+    :
+        ; print high score message
+        st_addr (highscore_msg1+1), strptr
+        lda highscore_msg1
+        sta strlen
+        call_with_args print_centered, #12
 
-    ; print characters input
-    st_addr (name), strptr
-    lda #3
-    sta strlen
-    call_with_args print_centered, #15
+        st_addr (highscore_msg2+1), strptr
+        lda highscore_msg2
+        sta strlen
+        call_with_args print_centered, #13
+
+        ; print characters input
+        st_addr (name), strptr
+        lda #3
+        sta strlen
+        call_with_args print_centered, #15
+    END_BG: 
 
     rts
 .endproc
@@ -110,11 +123,16 @@ MSG2_LEN = 21
 .endproc
 
 .proc transition
+    lda done
+    beq :+
+        swap_state menu
+    :
+
     ; go to menu on start
     lda #KEY_START
     bit cur_keys
     beq :+
-        swap_state menu
+        sta done
     :
 
     ; also save here but we'll deal with that later
