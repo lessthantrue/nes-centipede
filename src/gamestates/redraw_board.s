@@ -44,8 +44,7 @@ phase: .res 1
     lda #0
     sta PPUMASK
 
-    load_palette palette_set_1
-    jsr board_draw
+    jsr game_redraw_bg
     lda #PHASE_PPU_ON
     sta phase
 

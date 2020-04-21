@@ -27,12 +27,15 @@ menu_extralife_msg: pstring "BONUS EVERY 12000"
     sta strlen
     call_with_args print_centered, #14
 
+    ; make sure pallette is reset
+    load_palette palette_set_1
+
     rts
 .endproc
 
 .proc transition
     lda #KEY_START
-    bit cur_keys
+    bit new_keys
     beq :+
         jsr statusbar_init
         jsr game_full_reset

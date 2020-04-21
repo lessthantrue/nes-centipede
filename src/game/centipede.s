@@ -59,10 +59,7 @@ centipede_segments_alive:   .res 1
 .endproc
 
 .proc centipede_init
-    subscribe level_up, level_up_handler-1
     subscribe segment_kill, segment_kill_handler-1
-    lda #1
-    sta centipede_speed
     jsr centipede_reset
     rts
 .endproc
@@ -79,6 +76,11 @@ centipede_segments_alive:   .res 1
     lda #CENTIPEDE_LEN
     sta centipede_segments_alive
     jsr segment_init
+
+    lda statusbar_level
+    and #%00000001
+    add #1
+    sta centipede_speed
     rts
 .endproc
 
@@ -125,11 +127,4 @@ centipede_segments_alive:   .res 1
         sta centipede_speed
     :
     rts
-.endproc
-
-.proc level_up_handler
-    lda statusbar_level
-    and #%00000001
-    add #1
-    sta centipede_speed
 .endproc

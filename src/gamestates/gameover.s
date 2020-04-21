@@ -5,13 +5,13 @@
 .include "../core/macros.inc"
 .include "../core/common.inc"
 .include "../game/statusbar.inc"
+.include "../printer.inc"
 
 .segment "BSS"
 state_gameover_delay:   .res 1
 
 .segment "CODE"
-GAMEOVER_MSG_LEN = 12
-gameover_msg: .byte " GAME  OVER "
+gameover_msg: pstring "GAME OVER"
 
 .proc load
     lda #240
@@ -20,53 +20,10 @@ gameover_msg: .byte " GAME  OVER "
 .endproc
 
 .proc bg
-    ; top border
-    lda #$21
-    sta PPUADDR
-    lda #$EB-33
-    sta PPUADDR
-
-    ldy #0
-    lda #0
-    :
-        cpy #GAMEOVER_MSG_LEN
-        beq :+
-        sta PPUDATA
-        iny
-        jmp :-
-    :
-
-    ; game over message
-    lda #$21
-    sta PPUADDR
-    lda #$EB-1 ; I did the math
-    sta PPUADDR
-    
-    ldy #0
-    :
-        cpy #GAMEOVER_MSG_LEN
-        beq :+
-        lda gameover_msg, y
-        sta PPUDATA
-        iny
-        jmp :-
-    :
-
-    ; bottom border
-    lda #$22
-    sta PPUADDR
-    lda #$0A
-    sta PPUADDR
-
-    ldy #0
-    lda #0
-    :
-        cpy #GAMEOVER_MSG_LEN
-        beq :+
-        sta PPUDATA
-        iny
-        jmp :-
-    :
+    st_addr (gameover_msg+1), strptr
+    lda gameover_msg
+    sta strlen
+    call_with_args print_centered, #13
     rts
 .endproc
 
@@ -74,7 +31,7 @@ gameover_msg: .byte " GAME  OVER "
     dec state_gameover_delay
     bne :+
         jsr statusbar_init
-        swap_state menu
+        swap_state highscore
     :
     rts
 .endproc

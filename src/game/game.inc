@@ -16,7 +16,7 @@ GAME_INC = 1
 .include "flea.inc"
 
 .global game_step, game_init, game_bg, game_level_reset
-.global game_full_reset, menu_step, game_init_bg, game_draw
+.global game_full_reset, menu_step, game_init_bg, game_draw, game_redraw_bg
 .globalzp game_enemy_statuses
 
 FLAG_ENEMY_CENTIPEDE    = %00000001

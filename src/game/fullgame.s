@@ -90,6 +90,12 @@ FLEA_LEVEL_ENABLE = 2
     rts
 .endproc
 
+.proc game_redraw_bg
+    jsr board_draw
+    jsr statusbar_draw_score
+    rts
+.endproc
+
 .proc game_level_reset
     jsr centipede_reset
     jsr spider_init
@@ -103,6 +109,7 @@ FLEA_LEVEL_ENABLE = 2
 .endproc
 
 .proc game_full_reset
+    jsr board_init
     jsr statusbar_init
     jsr player_init
     jsr arrow_init

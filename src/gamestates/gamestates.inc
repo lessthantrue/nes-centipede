@@ -10,6 +10,7 @@ GAMESTATES_INC = 1
 .include "reset_mushrooms.inc"
 .include "paused.inc"
 .include "level_reset.inc"
+.include "highscore.inc"
 
 .include "../gamestaterunner.inc"
 
