@@ -50,7 +50,11 @@ y_pos:      .res 1
     inc tile_index
     lda x_pos
     add #8
-    call_with_args spritegfx_load_oam, y_pos, tile_index, #0, a
+    sta x_pos
+    call_with_args spritegfx_load_oam, y_pos, tile_index, #0, x_pos
+    lda x_pos
+    sub #8
+    sta x_pos
     dec tile_index
     rts
 .endproc

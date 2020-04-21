@@ -263,7 +263,11 @@ SPIDER_SPEED = 1
     :
     lda spider_x
     sub #8
-    call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, a
+    sta spider_x
+    call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, spider_x
+    lda spider_x
+    add #8
+    sta spider_x
     inc spider_anim
     call_with_args spritegfx_load_oam, spider_y, spider_anim, #0, spider_x
     dec spider_anim
@@ -326,7 +330,18 @@ SPIDER_SPEED = 1
         statusbar_add_score SPIDER_FAR_SCORE
         lda #$60
         END_SCORE:
-        call_with_args score_particle_add, spider_x, spider_y, a
+        ; arg 3: score
+        pha
+
+        ; arg 2: spider y
+        lda spider_y
+        pha
+
+        ; arg 3: spider x
+        lda spider_x
+        pha
+
+        call_with_args_manual score_particle_add, 3
         jsr arrow_del
         jsr spider_init
         call_with_args particle_add, spider_x, spider_y

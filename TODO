@@ -181,7 +181,7 @@ QOL TODO BEFORE NEXT PROJECT:
         just push something on the stack and call it good
     * update call_with_args to support nested calls, or abandon it entirely for something else
     * some kind of wrapper for instruction-like macros to automatically handle addressing modes
-        look into curly bracket semantics
+        look into curly bracket semantics?
 
 THINGS I SHOULD HAVE DONE:
     * Write better middle-level abstractions to avoid writing basically the same procedures many times

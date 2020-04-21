@@ -6,6 +6,7 @@
 .include "../core/common.inc"
 .include "../game/game.inc"
 .include "../ppuclear.inc"
+.include "../printer.inc"
 
 .segment "BSS"
 
@@ -13,8 +14,7 @@ pause_buf:  .res 1
 
 .segment "CODE"
 
-PAUSE_MSG_LEN = 8
-pause_msg:  .byte " PAUSED "
+pause_msg: pstring "PAUSED"
 
 .proc load
     lda #1
@@ -35,43 +35,10 @@ pause_msg:  .byte " PAUSED "
 .endproc
 
 .proc bg
-    ; top border
-    call_with_args ppu_set_xy, #(16-PAUSE_MSG_LEN/2), #13
-    lda #0
-    ldy #0
-    :
-        cpy #PAUSE_MSG_LEN
-        beq :+
-        sta PPUDATA
-        iny
-        jmp :-
-    :
-
-    ; message
-    call_with_args ppu_set_xy, #(16-PAUSE_MSG_LEN/2), #14
-    lda #0
-    ldy #0
-    :
-        cpy #PAUSE_MSG_LEN
-        beq :+
-        lda pause_msg, y
-        sta PPUDATA
-        iny
-        jmp :-
-    :
-
-    ; bottom border
-    call_with_args ppu_set_xy, #(16-PAUSE_MSG_LEN/2), #15
-    lda #0
-    ldy #0
-    :
-        cpy #PAUSE_MSG_LEN
-        beq :+
-        sta PPUDATA
-        iny
-        jmp :-
-    :
-
+    st_addr (pause_msg+1), strptr
+    lda pause_msg
+    sta strlen
+    call_with_args print_centered, #13
     rts
 .endproc
 

@@ -187,7 +187,9 @@ SCORP_INIT_X_RIGHT = 239
     :
     lda scorp_xhi
     cmp #8
-    bcc END_COLLISION
+    bcs :+
+        jmp END_COLLISION
+    :
     lda #SCORP_FLAG_LEFT
     
     lda #SCORP_FLAG_LEFT
@@ -245,7 +247,8 @@ SCORP_INIT_X_RIGHT = 239
         ; found a mushroom
         ora #MUSHROOM_POISON_FLAG
         jsr board_xy_to_nametable
-        call_with_args board_set_value, a
+        pha
+        call_with_args_manual board_set_value, 1
     :
     rts
 .endproc

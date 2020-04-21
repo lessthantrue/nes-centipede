@@ -72,7 +72,9 @@ SPEED = 6 ; velocity in px/frame (everything will work as long as this is less t
 .proc arrow_collide
     lda #ARROW_FLAG_ACTIVE
     bit arrow_f
-    beq no_collision
+    bne :+
+        jmp no_collision
+    :
         call_with_args board_convert_sprite_xy, arrow_x, arrow_y
         jsr board_xy_to_addr
         jsr board_xy_to_nametable
@@ -96,8 +98,7 @@ SPEED = 6 ; velocity in px/frame (everything will work as long as this is less t
             pla ; get rid of that extra variable we had
             jmp done_collision
         mushroom_not_destroyed:
-            pla
-            call_with_args board_set_value, a
+            call_with_args_manual board_set_value, 1
         done_collision:
 
         jsr arrow_del

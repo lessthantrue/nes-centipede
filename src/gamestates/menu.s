@@ -10,10 +10,6 @@
 
 .segment "CODE"
 
-.macro pstring str
-    .byte .strlen(str), str
-.endmac
-
 menu_begin_msg: pstring "PRESS START TO PLAY"
 menu_extralife_msg: pstring "BONUS EVERY 12000"
 ; MENU_EXTRALIFE_MSG_LEN = 19
@@ -30,7 +26,7 @@ menu_extralife_msg: pstring "BONUS EVERY 12000"
     lda menu_extralife_msg
     sta strlen
     call_with_args print_centered, #14
-    
+
     rts
 .endproc
 

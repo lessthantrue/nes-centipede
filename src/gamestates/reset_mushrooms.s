@@ -24,7 +24,9 @@ HEIGHT = 26
 .proc logic
     jsr game_draw
     lda reset_mushroom_delay
-    bne END_DONE
+    beq :+
+        jmp END_DONE
+    :
     lda #RESET_MUSHROOM_DELAY
     sta reset_mushroom_delay
 
