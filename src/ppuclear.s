@@ -9,6 +9,8 @@
 ;
 .include "nes.inc"
 .include "ppuclear.inc"
+.include "core/macros.inc"
+.include "core/6502.inc"
 
 ;;
 ; Clears a nametable to a given tile number and attribute value.
@@ -102,5 +104,27 @@ loop2:
     sty PPUDATA
     dex
     bne loop2
+    rts
+.endproc
+
+; arg 1: nametable x
+; arg 2: nametable y
+.proc ppu_set_xy
+    lda STACK_TOP+2, x ; nt y
+    lsr
+    lsr
+    lsr ; cut off last 3 bits
+    add #$20
+    sta PPUADDR ; high byte of address
+
+    lda STACK_TOP+2, x ; nt y 
+    asl
+    asl
+    asl
+    asl
+    asl ; multiply by 32 (screen width)
+    clc
+    adc STACK_TOP+1, x ; add nt x
+    sta PPUADDR ; low byte of address
     rts
 .endproc

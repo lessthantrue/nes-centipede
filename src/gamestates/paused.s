@@ -5,6 +5,7 @@
 .include "../nes.inc"
 .include "../core/common.inc"
 .include "../game/game.inc"
+.include "../ppuclear.inc"
 
 .segment "BSS"
 
@@ -35,10 +36,7 @@ pause_msg:  .byte " PAUSED "
 
 .proc bg
     ; top border
-    lda #$21
-    sta PPUADDR
-    lda #$B0-(PAUSE_MSG_LEN/2)
-    sta PPUADDR
+    call_with_args ppu_set_xy, #(16-PAUSE_MSG_LEN/2), #13
     lda #0
     ldy #0
     :
@@ -50,10 +48,7 @@ pause_msg:  .byte " PAUSED "
     :
 
     ; message
-    lda #$21
-    sta PPUADDR
-    lda #$D0-(PAUSE_MSG_LEN/2)
-    sta PPUADDR
+    call_with_args ppu_set_xy, #(16-PAUSE_MSG_LEN/2), #14
     lda #0
     ldy #0
     :
@@ -66,10 +61,7 @@ pause_msg:  .byte " PAUSED "
     :
 
     ; bottom border
-    lda #$21
-    sta PPUADDR
-    lda #$F0-(PAUSE_MSG_LEN/2)
-    sta PPUADDR
+    call_with_args ppu_set_xy, #(16-PAUSE_MSG_LEN/2), #15
     lda #0
     ldy #0
     :

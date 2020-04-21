@@ -6,79 +6,31 @@
 .include "../core/common.inc"
 .include "../ppuclear.inc"
 .include "../game/game.inc"
+.include "../printer.inc"
 
 .segment "CODE"
 
-MENU_BEGIN_MSG_LEN = 13
-menu_begin_msg: .byte " PRESS START "
+.macro pstring str
+    .byte .strlen(str), str
+.endmac
 
-MENU_EXTRALIFE_MSG_LEN = 19
-menu_extralife_msg: .byte " BONUS EVERY 12000 "
+menu_begin_msg: pstring "PRESS START TO PLAY"
+menu_extralife_msg: pstring "BONUS EVERY 12000"
+; MENU_EXTRALIFE_MSG_LEN = 19
+; menu_extralife_msg: .byte " BONUS EVERY 12000 "
 
 .proc bg
-    ; top border
-    lda #$21
-    sta PPUADDR
-    lda #$EB-$21
-    sta PPUADDR
-    ldy #0
-    lda #0
-    :
-        cpy #MENU_BEGIN_MSG_LEN
-        beq :+
-        sta PPUDATA
-        iny
-        jmp :-
-    :
-
-    ; start message
-    lda #$21
-    sta PPUADDR
-    lda #$EB-$01
-    sta PPUADDR
-    ldy #0
-    :
-        cpy #MENU_BEGIN_MSG_LEN
-        beq :+
-        lda menu_begin_msg, y
-        sta PPUDATA
-        iny
-        jmp :-
-    :
+    st_addr (menu_begin_msg+1), strptr
+    lda menu_begin_msg
+    sta strlen
+    call_with_args print_centered, #13
 
     ; extra life message
-    lda #$22
-    sta PPUADDR
-    lda #$07
-    sta PPUADDR
-    ldy #0
-    :
-        cpy #MENU_EXTRALIFE_MSG_LEN
-        beq :+
-        lda menu_extralife_msg, y
-        sta PPUDATA
-        iny
-        jmp :-
-    :
-
-    ; bottom border
-    lda #$22
-    sta PPUADDR
-    lda #$27
-    sta PPUADDR
-    lda #0
-    ldy #0
-    :
-        cpy #MENU_EXTRALIFE_MSG_LEN
-        beq :+
-        sta PPUDATA
-        iny
-        jmp :-
-    :
-
-    ldy #$00
-    jsr ppu_clear_attr
-
+    st_addr (menu_extralife_msg+1), strptr
+    lda menu_extralife_msg
+    sta strlen
+    call_with_args print_centered, #14
+    
     rts
 .endproc
 

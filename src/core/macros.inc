@@ -128,6 +128,9 @@ MACROS_INC = 1
 .endmacro
 
 .macro call_with_args routine, a1, a2, a3, a4, a5, a6, a7
+    ; preserve X in case of nested calls
+    txa
+    pha
     ; args go on the stack in reverse order
     push a7, a6, a5, a4, a3, a2, a1
     tsx
@@ -137,6 +140,9 @@ MACROS_INC = 1
     add #(.PARAMCOUNT - 1) ; clean up parameters pushed on the stack
     tax
     txs
+    ; restore X
+    pla
+    tax
 .endmacro
 
 ; note: push args in reverse order when calling manually

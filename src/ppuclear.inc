@@ -3,7 +3,7 @@ PPUCLEAR_INC = 1
 
 .include "nes.inc"
 
-.global ppu_clear_nt, ppu_clear_oam, ppu_screen_on, ppu_clear_attr
+.global ppu_clear_nt, ppu_clear_oam, ppu_screen_on, ppu_clear_attr, ppu_set_xy
 
 .macro load_palette palette
     .local copyloop

@@ -169,19 +169,23 @@ BUGS:
     * spider sometimes teleports...?
 
 QOL TODO BEFORE NEXT PROJECT:
-    * Some macro/proc to set the PPU nametable address to a tile x/y on screen
-    * OAM allocation that didn't work the first time
+    \ Some macro/proc to set the PPU nametable address to a tile x/y on screen
+    * OAM allocation thing that didn't work the first time
     * Some proper organization for commonly used code (NES specific, macros, boilerplate)
     * Look at modules again, might be useful
     * Macros to automate game state boilerplate
     * Generally more robust PPU management (see end of https://wiki.nesdev.com/w/index.php/The_frame_and_NMIs#VBlank.2C_Rendering_Time.2C_and_NMIs)
     * Some kind of sound engine
     * Macros for word arithmetic
-    * support for local temp variables on stack
+    x support for local temp variables on stack
+        just push something on the stack and call it good
+    * update call_with_args to support nested calls, or abandon it entirely for something else
+    * some kind of wrapper for instruction-like macros to automatically handle addressing modes
+        look into curly bracket semantics
 
 THINGS I SHOULD HAVE DONE:
     * Write better middle-level abstractions to avoid writing basically the same procedures many times
-        TL; DR sometimes call_with_args doesn't cut it
+      TL; DR sometimes call_with_args doesn't cut it
         Examples: 
         moving, colliding entities in general (player, arrow, centipede, etc)
         drawing dynamic sprites
