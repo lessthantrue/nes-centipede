@@ -4,8 +4,8 @@ STATUSBAR_INC = 1
 .include "../core/macros.inc"
 
 .global statusbar_init, statusbar_addscore, statusbar_dec_lives
-.global statusbar_draw_score, statusbar_draw_lives
-.globalzp statusbar_level
+.global statusbar_draw_score, statusbar_draw_lives, statusbar_draw_highscore
+.globalzp statusbar_level, score
 
 SEGMENT_SCORE = 10
 HEAD_SCORE = 100

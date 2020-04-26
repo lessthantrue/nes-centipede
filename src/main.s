@@ -9,6 +9,7 @@
 .include "sound.inc"
 .include "random.inc"
 .include "game/game.inc"
+.include "highscores.inc"
 
 .segment "ZEROPAGE"
 nmis:                    .res 1
@@ -66,6 +67,7 @@ nmis:                    .res 1
     jsr state_playing_init
 
     ; set up most game logic
+    jsr highscore_hard_reset
     jsr game_init
 
     ; set initial state

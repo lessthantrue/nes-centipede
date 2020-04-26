@@ -6,6 +6,7 @@
 .include "../core/common.inc"
 .include "../game/statusbar.inc"
 .include "../printer.inc"
+.include "../highscores.inc"
 
 .segment "BSS"
 state_gameover_delay:   .res 1
@@ -29,9 +30,14 @@ gameover_msg: pstring "GAME OVER"
 
 .proc transition
     dec state_gameover_delay
-    bne :+
-        jsr statusbar_init
-        swap_state highscore
+    bne :++
+        call_with_args highscore_cmp, score+2, score+1, score, #SCORES_COUNT-1
+        cpy #0
+        beq :+
+            swap_state highscore
+            jmp :++
+        :
+            swap_state menu
     :
     rts
 .endproc

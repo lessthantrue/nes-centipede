@@ -4,9 +4,16 @@
 .include "../core/bin2dec.inc"
 .include "../spritegfx.inc"
 .include "../events/events.inc"
+.include "../highscores.inc"
+
+; high score save format:
+; 3 bytes for initials
+; 3 bytes for score
+; 8 bytes for score in decimal
 
 ; EXTRALIFE_AMT = 100 ; debug
 EXTRALIFE_AMT = 12000
+LIVES_MAX = 8
 
 .segment "ZEROPAGE"
 score:              .res 3 ; 3b encapsulates the highest recorded score on arcade centipede
@@ -14,6 +21,7 @@ lives:              .res 1
 lives_temp:         .res 1 ; needed for draw lives
 statusbar_level:    .res 1 ; technically not status bar, but we keep track of it here
 extralife_thresh:   .res 3 ; threshold to reach extra life
+highscore:          .res 3 ; highest score
 
 .segment "CODE"
 
@@ -132,22 +140,37 @@ extralife_thresh:   .res 3 ; threshold to reach extra life
     rts
 .endproc
 
+.proc statusbar_draw_highscore
+    lda PPUSTATUS
+    lda #$20
+    sta PPUADDR
+    lda #($40-10)
+    sta PPUADDR
+    ldy #00
+    :
+        lda highscores+6, y
+        ora #'0'
+        sta PPUDATA
+        iny
+        cpy #8
+        bne :-
+    rts
+.endproc
+
 .proc statusbar_draw_lives
-    ldx #8
-    stx lives_temp
-    ; TODO: clear out old OAMs for removed lives, or something
-    lda #(112+40)
+    ldx #0
+    ldy #96 ; sprite x
     draw_loop:
-        sub #8
-        tay ; preserve A, we'll need it later
+        txa
+        pha
+        tya
         pha ; arg 4: sprite x
         lda #0
         pha ; arg 3: attributes
         lda #$21
         pha ; arg 2: tile index
-        ldx lives_temp
         cpx lives
-        bcc :+
+        bls :+
             lda #$E7
             jmp :++
         :
@@ -155,8 +178,13 @@ extralife_thresh:   .res 3 ; threshold to reach extra life
         :
         pha ; arg 1: sprite y
         call_with_args_manual spritegfx_load_oam, 4
-        tya
-        dec lives_temp
+        pla
+        tax
+        tya ; restore A
+        add #8
+        tay
+        inx
+        cpx #LIVES_MAX
         bne draw_loop
     rts
 .endproc

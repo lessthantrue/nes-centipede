@@ -114,7 +114,7 @@ DEVELOPMENT:
     * high score
         * show high score while playing
         * show high score list on menu
-        * input high score name
+        \ input high score name
         * save to cartridge
 
 PROJECT MANAGEMENT:
@@ -169,17 +169,20 @@ BUGS:
     * spider sometimes teleports...?
 
 QOL TODO BEFORE NEXT PROJECT:
-    \ Some macro/proc to set the PPU nametable address to a tile x/y on screen
+    * useful macros to automate tedious stuff
+        \ Some macro/proc to set the PPU nametable address to a tile x/y on screen
+        * multiply by constant
+        * word arithmetic
+        * automate game state boilerplate (.inc files, exports)
     * OAM allocation thing that didn't work the first time
     * Some proper organization for commonly used code (NES specific, macros, boilerplate)
     * Look at modules again, might be useful
-    * Macros to automate game state boilerplate
     * Generally more robust PPU management (see end of https://wiki.nesdev.com/w/index.php/The_frame_and_NMIs#VBlank.2C_Rendering_Time.2C_and_NMIs)
     * Some kind of sound engine
-    * Macros for word arithmetic
     x support for local temp variables on stack
         just push something on the stack and call it good
     \ update call_with_args to support nested calls, or abandon it entirely for something else
+        * call_with_args_manual still doesn't do this
     * some kind of wrapper for instruction-like macros to automatically handle addressing modes
         look into curly bracket semantics?
 

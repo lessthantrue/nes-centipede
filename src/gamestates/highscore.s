@@ -6,6 +6,8 @@
 .include "../ppuclear.inc"
 .include "../game/game.inc"
 .include "../printer.inc"
+.include "../highscores.inc"
+.include "../core/bin2dec.inc"
 
 .segment "BSS"
 
@@ -131,11 +133,81 @@ MSG2_LEN = 21
     ; go to menu on start
     lda #KEY_START
     bit cur_keys
-    beq :+
-        sta done
+    bne :+
+        jmp NO_START
     :
+        sta done
+        ; first find where this high score goes
+        lda #SCORES_COUNT-1
+        pha
+        :
+            ; arg 4: high score index to compare
+            pha
 
-    ; also save here but we'll deal with that later
+            ; arg 3: score low byte
+            lda score
+            pha
+
+            ; arg 2: score mid byte
+            lda score+1
+            pha
+
+            ; arg 1: score high byte
+            lda score+2
+            pha
+
+            call_with_args_manual highscore_cmp, 4
+
+            pla
+            sub #1
+            beq :+
+            pha
+
+            cpy #1
+            beq :- ; arg >= score
+        :
+
+        pla
+        add #1
+        pha
+        pha
+        call_with_args highscore_make_space, #1
+
+        pla
+        asl
+        asl
+        asl
+        asl ; jank multiply by 16
+        ; save score to location
+        lda name
+        sta highscores, y
+        lda name+1
+        sta highscores+1, y
+        lda name+2
+        sta highscores+2, y
+        lda score+2
+        sta highscores+3, y
+        lda score+1
+        sta highscores+4, y
+        lda score
+        sta highscores+5, y
+        lda decimal+0
+        sta highscores+6, y
+        lda decimal+1
+        sta highscores+7, y
+        lda decimal+2
+        sta highscores+8, y
+        lda decimal+3
+        sta highscores+9, y
+        lda decimal+4
+        sta highscores+10, y
+        lda decimal+5
+        sta highscores+11, y
+        lda decimal+6
+        sta highscores+12, y
+        lda decimal+7
+        sta highscores+13, y
+    NO_START:
     rts
 .endproc
 

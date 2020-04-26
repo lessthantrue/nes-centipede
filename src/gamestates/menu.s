@@ -16,6 +16,7 @@ menu_extralife_msg: pstring "BONUS EVERY 12000"
 ; menu_extralife_msg: .byte " BONUS EVERY 12000 "
 
 .proc bg
+    ; press start message
     st_addr (menu_begin_msg+1), strptr
     lda menu_begin_msg
     sta strlen
@@ -29,6 +30,9 @@ menu_extralife_msg: pstring "BONUS EVERY 12000"
 
     ; make sure pallette is reset
     load_palette palette_set_1
+
+    ; high score
+    jsr statusbar_draw_highscore
 
     rts
 .endproc
