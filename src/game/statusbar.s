@@ -13,7 +13,7 @@
 
 ; EXTRALIFE_AMT = 100 ; debug
 EXTRALIFE_AMT = 12000
-LIVES_MAX = 8
+LIVES_MAX = 6
 
 .segment "ZEROPAGE"
 score:              .res 3 ; 3b encapsulates the highest recorded score on arcade centipede

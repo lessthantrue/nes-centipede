@@ -11,6 +11,7 @@ GAMESTATES_INC = 1
 .include "paused.inc"
 .include "level_reset.inc"
 .include "highscore.inc"
+.include "draw_menu.inc"
 
 .include "../gamestaterunner.inc"
 

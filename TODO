@@ -180,6 +180,7 @@ QOL TODO BEFORE NEXT PROJECT:
     * Some proper organization for commonly used code (NES specific, macros, boilerplate)
     * Look at modules again, might be useful
     * Generally more robust PPU management (see end of https://wiki.nesdev.com/w/index.php/The_frame_and_NMIs#VBlank.2C_Rendering_Time.2C_and_NMIs)
+        * better set up game state stuff for one big background redraw during transition
     * Some kind of sound engine
     x support for local temp variables on stack
         just push something on the stack and call it good

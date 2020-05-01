@@ -72,7 +72,7 @@ nmis:                    .res 1
     jsr game_init
 
     ; set initial state
-    swap_state menu
+    swap_state draw_menu
 
     ; turn on vblank NMIs
     lda #VBLANK_NMI|OBJ_1000|BG_0000

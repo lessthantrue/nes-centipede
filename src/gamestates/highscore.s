@@ -149,11 +149,11 @@ MSG2_LEN = 21
         sta highscores+2, y
 
         ; score
-        lda score+2
+        lda score
         sta highscores+3, y
         lda score+1
         sta highscores+4, y
-        lda score
+        lda score+2
         sta highscores+5, y
 
         ; score in decimal
