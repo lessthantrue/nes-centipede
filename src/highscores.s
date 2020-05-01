@@ -13,14 +13,14 @@ highscores: .res (SCORE_SIZE * SCORES_COUNT)
 .segment "RODATA"
 
 ; default high scores
-def_scores: .byte "NIK", $00, $01, $00, 0, 0, 0, 0, 0, 2, 5, 6, 0, $FF
-            .byte "AAA", $09, $00, $00, 0, 0, 0, 0, 0, 0, 0, 9, 0, $FF
-            .byte "AAA", $08, $00, $00, 0, 0, 0, 0, 0, 0, 0, 8, 0, $FF
-            .byte "AAA", $06, $00, $00, 0, 0, 0, 0, 0, 0, 0, 6, 0, $FF
-            .byte "AAA", $03, $00, $00, 0, 0, 0, 0, 0, 0, 0, 3, 0, $FF
-            .byte "AAA", $04, $00, $00, 0, 0, 0, 0, 0, 0, 0, 5, 0, $FF
-            .byte "AAA", $05, $00, $00, 0, 0, 0, 0, 0, 0, 0, 4, 0, $FF
-            .byte "AAA", $07, $00, $00, 0, 0, 0, 0, 0, 0, 0, 7, 0, $FF
+def_scores: .byte "EJD", $9F, $40, $00, 0, 0, 0, 1, 6, 5, 4, 3, 0, $FF
+            .byte "DFT", $48, $3C, $00, 0, 0, 0, 1, 5, 4, 3, 2, 0, $FF
+            .byte "CAD", $F0, $37, $00, 0, 0, 0, 1, 4, 3, 2, 0, 0, $FF
+            .byte "DCB", $9A, $33, $00, 0, 0, 0, 1, 3, 2, 1, 0, 0, $FF
+            .byte "ED ", $D2, $32, $00, 0, 0, 0, 1, 3, 0, 1, 0, 0, $FF
+            .byte "DEW", $05, $32, $00, 0, 0, 0, 1, 2, 8, 0, 5, 0, $FF
+            .byte "DFW", $A9, $2F, $00, 0, 0, 0, 1, 2, 2, 0, 1, 0, $FF
+            .byte "GJR", $46, $2F, $00, 0, 0, 0, 1, 2, 1, 0, 2, 0, $FF
 DEF_SCORES_LEN = SCORE_SIZE * SCORES_COUNT
 
 .segment "CODE"
@@ -42,12 +42,11 @@ DEF_SCORES_LEN = SCORE_SIZE * SCORES_COUNT
 .proc highscores_sort
     jsr scores_sort_reset
 
-
-    ; selection sort: find the largest element remaining, put it at the start
+    ; selection sort: find the largest element remaining, put it at the start, repeat
     lda #0
     pha ; outer loop counter
     S_SORT:
-        lda #SCORES_COUNT
+        lda #SCORES_COUNT-1
         pha ; loop counter
 
         ldy #0 ; greatest score offset

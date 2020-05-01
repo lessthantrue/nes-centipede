@@ -49,7 +49,7 @@ gameover_msg: pstring "GAME OVER"
             swap_state highscore
             jmp :++
         :
-            swap_state menu
+            swap_state draw_menu
     :
     rts
 .endproc

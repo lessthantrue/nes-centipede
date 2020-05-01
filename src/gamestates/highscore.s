@@ -127,7 +127,8 @@ MSG2_LEN = 21
 .proc transition
     lda done
     beq :+
-        swap_state menu
+        swap_state draw_menu
+        rts
     :
 
     ; go to menu on start
@@ -136,6 +137,7 @@ MSG2_LEN = 21
     bne :+
         jmp NO_START
     :
+        lda #1
         sta done
         ; save this high score over the current lowest
         ldy highscores_sorted+(SCORES_COUNT-1)
