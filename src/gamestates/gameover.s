@@ -31,9 +31,21 @@ gameover_msg: pstring "GAME OVER"
 .proc transition
     dec state_gameover_delay
     bne :++
-        call_with_args highscore_cmp, score+2, score+1, score, #SCORES_COUNT-1
-        cpy #0
-        beq :+
+        ; compare this score to lowest score
+        ldy highscores_sorted+(SCORES_COUNT-1)
+        lda score+2
+        cmp highscores+5, y
+        bls :+
+        bne NEW_SCORE
+        lda score+1
+        cmp highscores+4, y
+        bls :+
+        bne NEW_SCORE
+        lda score
+        cmp highscores+3, y
+        bls :+
+        NEW_SCORE:
+            ; current score >= lowest high score
             swap_state highscore
             jmp :++
         :

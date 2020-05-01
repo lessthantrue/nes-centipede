@@ -146,13 +146,15 @@ highscore:          .res 3 ; highest score
     sta PPUADDR
     lda #($40-10)
     sta PPUADDR
-    ldy #00
+    ldy highscores_sorted
+    ldx #0
     :
         lda highscores+6, y
         ora #'0'
         sta PPUDATA
         iny
-        cpy #8
+        inx
+        cpx #8
         bne :-
     rts
 .endproc

@@ -68,6 +68,7 @@ nmis:                    .res 1
 
     ; set up most game logic
     jsr highscore_hard_reset
+    jsr highscores_sort
     jsr game_init
 
     ; set initial state

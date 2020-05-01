@@ -165,8 +165,9 @@ BUGS:
     \ weird things happen to the spider when it collides with player
     \ scorpion doesn't reset on level restart
     \ regenerate mushrooms on game over
-    * centipede goes straight down after wrapping the screen vertically
+    * centipede goes straight down after wrapping the screen vertically, as if it was poisoned
     * spider sometimes teleports...?
+    * score does weird stuff when it gets too high
 
 QOL TODO BEFORE NEXT PROJECT:
     * useful macros to automate tedious stuff
@@ -174,6 +175,7 @@ QOL TODO BEFORE NEXT PROJECT:
         * multiply by constant
         * word arithmetic
         * automate game state boilerplate (.inc files, exports)
+        * bgr, ble pseudo-instructions
     * OAM allocation thing that didn't work the first time
     * Some proper organization for commonly used code (NES specific, macros, boilerplate)
     * Look at modules again, might be useful
@@ -198,3 +200,4 @@ THINGS I SHOULD HAVE DONE:
         Makes reading debugger difficult
     * better split game state, drawing, and controls
         see 'Generally more robust PPU Management' above
+    * decided on little or big endian early and stuck with it

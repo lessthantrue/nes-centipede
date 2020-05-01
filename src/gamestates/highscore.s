@@ -115,7 +115,7 @@ MSG2_LEN = 21
         bne :+
             lda #'Z'
             sta name, y
-            jmp NO_UP
+            jmp NO_DOWN
         :
         sub #1
         sta name, y
@@ -137,61 +137,27 @@ MSG2_LEN = 21
         jmp NO_START
     :
         sta done
-        ; first find where this high score goes
-        lda #SCORES_COUNT-1
-        pha
-        :
-            ; arg 4: high score index to compare
-            pha
+        ; save this high score over the current lowest
+        ldy highscores_sorted+(SCORES_COUNT-1)
 
-            ; arg 3: score low byte
-            lda score
-            pha
-
-            ; arg 2: score mid byte
-            lda score+1
-            pha
-
-            ; arg 1: score high byte
-            lda score+2
-            pha
-
-            call_with_args_manual highscore_cmp, 4
-
-            pla
-            sub #1
-            beq :+
-            pha
-
-            cpy #1
-            beq :- ; arg >= score
-        :
-
-        pla
-        add #1
-        pha
-        pha
-        call_with_args highscore_make_space, #1
-
-        pla
-        asl
-        asl
-        asl
-        asl ; jank multiply by 16
-        ; save score to location
+        ; name
         lda name
         sta highscores, y
         lda name+1
         sta highscores+1, y
         lda name+2
         sta highscores+2, y
+
+        ; score
         lda score+2
         sta highscores+3, y
         lda score+1
         sta highscores+4, y
         lda score
         sta highscores+5, y
-        lda decimal+0
+
+        ; score in decimal
+        lda decimal
         sta highscores+6, y
         lda decimal+1
         sta highscores+7, y
@@ -207,11 +173,15 @@ MSG2_LEN = 21
         sta highscores+12, y
         lda decimal+7
         sta highscores+13, y
+
+        ; sort the new score in
+        jsr highscores_sort
+
     NO_START:
     rts
 .endproc
 
 .export state_highscore_logic := logic-1
 .export state_highscore_bg := bg-1
-.export state_highscore_load := load-1
+.export state_highscore_load := load
 .export state_highscore_transition := transition-1

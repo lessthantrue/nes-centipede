@@ -2,6 +2,10 @@
 .include "core/macros.inc"
 .include "core/6502.inc"
 
+.segment "BSS"
+
+highscores_sorted:   .res SCORES_COUNT ; offsets to scores in sorted order
+
 .segment "SAVE"
 
 highscores: .res (SCORE_SIZE * SCORES_COUNT)
@@ -9,50 +13,101 @@ highscores: .res (SCORE_SIZE * SCORES_COUNT)
 .segment "RODATA"
 
 ; default high scores
-def_scores: .byte "NIK", $00, $3E, $80, 0, 0, 0, 1, 6, 0, 0, 0, $FF, $FF
-            .byte "AAA", $00, $00, $00, 0, 0, 0, 0, 0, 0, 0, 0, $FF, $FF
-            .byte "AAA", $00, $00, $00, 0, 0, 0, 0, 0, 0, 0, 0, $FF, $FF
-            .byte "AAA", $00, $00, $00, 0, 0, 0, 0, 0, 0, 0, 0, $FF, $FF
-            .byte "AAA", $00, $00, $00, 0, 0, 0, 0, 0, 0, 0, 0, $FF, $FF
-            .byte "AAA", $00, $00, $00, 0, 0, 0, 0, 0, 0, 0, 0, $FF, $FF
-            .byte "AAA", $00, $00, $00, 0, 0, 0, 0, 0, 0, 0, 0, $FF, $FF
-            .byte "AAA", $00, $00, $00, 0, 0, 0, 0, 0, 0, 0, 0, $FF, $FF
+def_scores: .byte "NIK", $00, $01, $00, 0, 0, 0, 0, 0, 2, 5, 6, 0, $FF
+            .byte "AAA", $09, $00, $00, 0, 0, 0, 0, 0, 0, 0, 9, 0, $FF
+            .byte "AAA", $08, $00, $00, 0, 0, 0, 0, 0, 0, 0, 8, 0, $FF
+            .byte "AAA", $06, $00, $00, 0, 0, 0, 0, 0, 0, 0, 6, 0, $FF
+            .byte "AAA", $03, $00, $00, 0, 0, 0, 0, 0, 0, 0, 3, 0, $FF
+            .byte "AAA", $04, $00, $00, 0, 0, 0, 0, 0, 0, 0, 5, 0, $FF
+            .byte "AAA", $05, $00, $00, 0, 0, 0, 0, 0, 0, 0, 4, 0, $FF
+            .byte "AAA", $07, $00, $00, 0, 0, 0, 0, 0, 0, 0, 7, 0, $FF
 DEF_SCORES_LEN = SCORE_SIZE * SCORES_COUNT
 
 .segment "CODE"
 
-; compares a high score with the current score
-; arg 1: current score high byte
-; arg 2: current score mid byte
-; arg 3: current score low byte
-; arg 4: high score to compare
-; returns: y = 1 if arg >= score
-.proc highscore_cmp
-    lda STACK_TOP+4, x
-    asl
-    asl
-    asl
-    asl ; jank multiply by 16
-    tay
-    
-    ; start comparing
-    lda STACK_TOP+1, x
-    cmp highscores+3, y
-    bne :+
-    lda STACK_TOP+2, x
-    cmp highscores+4, y
-    bne :+
-    lda STACK_TOP+3, x
-    cmp highscores+5, y
+; resets all the sorted flags in the scores list
+.proc scores_sort_reset
+    ldy #((SCORES_COUNT-1) * SCORE_SIZE)
     :
+        lda #0
+        sta highscores+14, y
+        tya
+        sub #SCORE_SIZE
+        tay
+        bpl :-
+    rts
+.endproc
 
-    bge :+
-        ldy #0
-        jmp :++
-    :
-        ldy #1
-    :
-    ; just leave the compare status for the caller to deal with
+; fills highscores_sorted with offsets to scores in descending order
+.proc highscores_sort
+    jsr scores_sort_reset
+
+
+    ; selection sort: find the largest element remaining, put it at the start
+    lda #0
+    pha ; outer loop counter
+    S_SORT:
+        lda #SCORES_COUNT
+        pha ; loop counter
+
+        ldy #0 ; greatest score offset
+        ldx #SCORE_SIZE ; current score offset
+        S_FIND:
+            ; skip if sorted score[x]
+            lda highscores+14, x
+            bne E_FIND
+
+            ; always take if sorted score[y]
+            lda highscores+14, y
+            bne X_GR
+
+            ; test score[y] < score[x]
+            lda highscores+5, y
+            cmp highscores+5, x
+            bls X_GR
+            bne E_FIND
+            lda highscores+4, y
+            cmp highscores+4, x
+            bls X_GR
+            bne E_FIND
+            lda highscores+3, y
+            cmp highscores+3, x
+            bls X_GR
+
+            ; score[x] < score[y], jump to end of loop
+            jmp E_FIND
+
+            X_GR:
+            ; score[x] >= score[y], y <- x
+            txa
+            tay
+
+            E_FIND:
+            ; increase x
+            txa
+            add #SCORE_SIZE
+            tax
+            ; increment loop counter
+            pla
+            sub #1
+            pha
+            bne S_FIND ; while stack[top] != 0
+        pla ; clean up loop counter on stack top from inner loop
+        ; largest unsorted element index in y
+
+        lda #1
+        sta highscores+14, y ; set sorted bit for that element
+
+        pla
+        tax ; next available score index in X
+        tya
+        sta highscores_sorted, x ; put Y there
+        txa
+        add #1 ; increment loop counter / sorted scores array offset
+        pha
+        cmp #SCORES_COUNT
+        bne S_SORT ; while stack[top] != SCORE_COUNT
+    pla ; clean up last loop counter
     rts
 .endproc
 
@@ -66,27 +121,3 @@ DEF_SCORES_LEN = SCORE_SIZE * SCORES_COUNT
         bne :-
     rts
 .endproc
-
-; shifts every score past a point down one, deletes the lowest score
-; arg 1: index and above to shift downwards
-.proc highscore_make_space
-    ; count of scores to shift = total scores - index to start at - 1
-    lda #SCORES_COUNT
-    sec
-    sbc STACK_TOP+1, x
-    sub #1
-    sta STACK_TOP+1, x
-    ldy #(SCORE_SIZE * (SCORES_COUNT - 1))
-    :
-        dey
-        lda highscores+SCORE_SIZE, y
-        sta highscores, y
-        tya
-        and #(255-15)
-        bne :-
-        ; finished copying one
-        dec STACK_TOP+1, x
-        bne :-
-    :
-    rts
-.endproc        
