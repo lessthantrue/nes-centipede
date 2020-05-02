@@ -111,11 +111,11 @@ DEVELOPMENT:
     \ pause game on start press
     \ move faster with B (to replace track ball)
     * start centipede moving down in the middle of the screen    
-    * high score
-        * show high score while playing
-        * show high score list on menu
+    \ high score
+        \ show high score while playing
+        \ show high score list on menu
         \ input high score name
-        * save to cartridge
+        \ save to cartridge
 
 PROJECT MANAGEMENT:
     \ Update README
@@ -167,7 +167,7 @@ BUGS:
     \ regenerate mushrooms on game over
     * centipede goes straight down after wrapping the screen vertically, as if it was poisoned
     * spider sometimes teleports...?
-    * score does weird stuff when it gets too high
+    * score appears to wrap back down to zero when it gets too high
 
 QOL TODO BEFORE NEXT PROJECT:
     * useful macros to automate tedious stuff

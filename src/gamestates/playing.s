@@ -30,11 +30,12 @@ pause_buf: .res 1
     jsr game_step
 
     lda #KEY_START
-    bit cur_keys
-    bne :+
-        lda #0
-        sta pause_buf
+    bit new_keys+1
+    beq :+
+        ; debug
+        ; statusbar_add_score 10000
     :
+
     rts
 .endproc
 
@@ -46,10 +47,8 @@ pause_buf: .res 1
         swap_state dead
     : ; player not dead
 
-    lda pause_buf
-    bne :+
     lda #KEY_START
-    bit cur_keys
+    bit new_keys
     beq :+
         swap_state paused
     :

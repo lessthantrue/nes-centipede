@@ -18,6 +18,10 @@
 cur_keys:            .res 2
 new_keys:            .res 2
 
+thisRead:            .res 2
+firstRead:           .res 2
+lastFrameKeys:       .res 2
+
 JOY1            = $4016
 JOY2            = $4017
 
@@ -33,9 +37,9 @@ DAS_SPEED = 3
 
 .segment "CODE"
 .proc read_pads
-thisRead = 0
-firstRead = 2
-lastFrameKeys = 4
+; thisRead = 0
+; firstRead = 2
+; lastFrameKeys = 4
 
     ; store the current keypress state to detect key-down later
     lda cur_keys

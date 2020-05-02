@@ -80,7 +80,7 @@ highscore:          .res 3 ; highest score
     NO_EXTRA:
 
     jsr clear_output
-    jsr bin2dec_16bit
+    jsr bin2dec_24bit
     rts
 .endproc
 

@@ -7,6 +7,7 @@
 .include "../ppuclear.inc"
 .include "../game/game.inc"
 .include "../printer.inc"
+.include "../highscores.inc"
 
 .segment "CODE"
 
@@ -37,6 +38,19 @@ menu_extralife_msg: pstring "BONUS EVERY 12000"
     rts
 .endproc
 
+.proc logic
+    jsr menu_step
+
+    ; reset the high scores by holding start + select on controller 2 at the same time
+    lda #KEY_START|KEY_SELECT
+    and cur_keys+1
+    cmp #KEY_START|KEY_SELECT
+    bne :+
+        jsr highscore_hard_reset
+    :
+    rts
+.endproc
+
 .proc transition
     lda #KEY_START
     bit new_keys
@@ -48,7 +62,7 @@ menu_extralife_msg: pstring "BONUS EVERY 12000"
     rts
 .endproc
 
-.export state_menu_logic := menu_step-1
+.export state_menu_logic := logic-1
 .export state_menu_bg := bg-1
 .export state_menu_load := empty
 .export state_menu_transition := transition-1

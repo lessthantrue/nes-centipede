@@ -2,6 +2,6 @@
 BIN2DEC_INC = 1
 
 .globalzp binary, decimal
-.global bin2dec_16bit
+.global bin2dec_16bit, bin2dec_24bit
 
 .endif
