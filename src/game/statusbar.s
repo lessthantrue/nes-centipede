@@ -35,8 +35,17 @@ score_str:          .res SCORE_LEN
     sta score
     sta score+1
     sta score+2
+    sta binary
+    sta binary+1
+    sta binary+2
     sta extralife_thresh+2
+
+    .repeat 8, I
+    sta decimal+I
+    .endrep
+
     sta statusbar_level
+    jsr bin2dec_24bit
     lda #3
     sta lives
     lda #.lobyte(EXTRALIFE_AMT)
@@ -194,6 +203,7 @@ score_str:          .res SCORE_LEN
         pha ; arg 3: attributes
         lda #$21
         pha ; arg 2: tile index
+        inx
         cpx lives
         bls :+
             lda #$E7

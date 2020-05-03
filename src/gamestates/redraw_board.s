@@ -48,6 +48,13 @@ phase: .res 1
     lda #PHASE_PPU_ON
     sta phase
 
+    ; reset attributes
+    ldy #0
+    jsr ppu_clear_attr
+
+    ; this should be somewhere better but I'm putting it here
+    jsr statusbar_draw_score
+
     e:
     rts
 .endproc
