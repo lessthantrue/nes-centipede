@@ -14,9 +14,9 @@ PHASE_END = 0
 phase:  .res 1
 
 ; string to write
-name:   .res 3
-space:  .res 1
 score:  .res 8
+space:  .res 1
+name:   .res 3
 SCORE_LEN = 3 + 3 + 8
 
 .segment "RODATA"
@@ -61,16 +61,32 @@ hs_msg: pstring "HIGH SCORES"
         pha 
         tax
         ldy highscores_sorted, x
+
+        ; write name
         .repeat 3, I
         lda highscores+I, y
         sta name+I
         .endrep
 
-        .repeat 8, I
-        lda highscores+I+6, y
-        add #'0'
-        sta score+I
-        .endrep
+        ; write scores
+        ; .repeat 8, I
+        ; lda highscores+I+6, y
+        ; add #'0'
+        ; sta score+I
+        ; .endrep
+        st_addr score, strptr
+        lda #8
+        sta strlen
+        tya ; get pointer to start of this high score
+        add #.lobyte(highscores+6)
+        tax
+        lda #0
+        adc #.hibyte(highscores+6)
+
+        pha
+        txa
+        pha
+        call_with_args_manual dtos, 2
 
         ; rewrite the space part
         lda #' '
@@ -80,12 +96,14 @@ hs_msg: pstring "HIGH SCORES"
         pla
         pha
         add #4
-        pha
+        pha ; y cord
+        lda #(16-(SCORE_LEN/2)-1)
+        pha ; x cord
 
-        st_addr name, strptr
+        st_addr score, strptr
         lda #SCORE_LEN
         sta strlen
-        call_with_args_manual print_centered, 1
+        call_with_args_manual print, 2
 
         pla
         add #1

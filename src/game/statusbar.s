@@ -142,29 +142,42 @@ score_str:          .res SCORE_LEN
     ldy #00
     :
         lda score_str, y
-        ; ora #'0' ; number tiles start at 30
         sta PPUDATA
         iny
-        cpy #8
+        cpy #SCORE_LEN
         bne :-
     rts
 .endproc
 
 .proc statusbar_draw_highscore
+    st_addr score_str, strptr
+    lda #SCORE_LEN
+    sta strlen
+    
+    ; find the pointer to the decimal portion of the highest high score
+    lda highscores_sorted
+    add #.lobyte(highscores+6)
+    tay
+    lda #0
+    adc #.hibyte(highscores+6)
+
+    ; push high, then low
+    pha
+    tya
+    pha
+    call_with_args_manual dtos, 2
+
     lda PPUSTATUS
     lda #$20
     sta PPUADDR
     lda #($40-10)
     sta PPUADDR
-    ldy highscores_sorted
-    ldx #0
+    ldy #0
     :
-        lda highscores+6, y
-        ora #'0'
+        lda score_str, y
         sta PPUDATA
         iny
-        inx
-        cpx #8
+        cpy #SCORE_LEN
         bne :-
     rts
 .endproc

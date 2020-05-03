@@ -49,6 +49,7 @@ strlen:     .res 1
     lda STACK_TOP+2, x
     pha
     lda STACK_TOP+1, x
+    pha
     call_with_args_manual ppu_set_xy, 2
 
     ; write
@@ -99,11 +100,19 @@ strlen:     .res 1
         WRITE_DEC:
             add #'0' ; convert to character
         WRITE_EMPTY:
-            
+
         sta (strptr), y
         iny
         cpy strlen
         bne L_START
+
+    ; if we didn't write anything, put a zero there anyways
+    lda FOUND_START
+    bne :+
+        dey
+        lda #'0'
+        sta (strptr), y
+    :
 
     rts
 .endproc
