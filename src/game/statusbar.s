@@ -5,6 +5,7 @@
 .include "../spritegfx.inc"
 .include "../events/events.inc"
 .include "../highscores.inc"
+.include "../printer.inc"
 
 ; high score save format:
 ; 3 bytes for initials
@@ -22,6 +23,10 @@ lives_temp:         .res 1 ; needed for draw lives
 statusbar_level:    .res 1 ; technically not status bar, but we keep track of it here
 extralife_thresh:   .res 3 ; threshold to reach extra life
 highscore:          .res 3 ; highest score
+
+.segment "BSS"
+SCORE_LEN = 8
+score_str:          .res SCORE_LEN
 
 .segment "CODE"
 
@@ -117,13 +122,18 @@ highscore:          .res 3 ; highest score
     adc #0
     sta extralife_thresh+2
 
-    ; start extra life jingle or something
+    ; let everyone know
     notify extra_life
 
     rts
 .endproc
 
 .proc statusbar_draw_score
+    st_addr score_str, strptr
+    lda #SCORE_LEN
+    sta strlen
+    call_with_args dtos, #<decimal, #>decimal
+
     lda PPUSTATUS
     lda #$20
     sta PPUADDR
@@ -131,8 +141,8 @@ highscore:          .res 3 ; highest score
     sta PPUADDR
     ldy #00
     :
-        lda decimal, y
-        ora #'0' ; number tiles start at 30
+        lda score_str, y
+        ; ora #'0' ; number tiles start at 30
         sta PPUDATA
         iny
         cpy #8

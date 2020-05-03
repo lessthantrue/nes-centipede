@@ -182,8 +182,10 @@ QOL TODO BEFORE NEXT PROJECT:
     * Generally more robust PPU management (see end of https://wiki.nesdev.com/w/index.php/The_frame_and_NMIs#VBlank.2C_Rendering_Time.2C_and_NMIs)
         * better set up game state stuff for one big background redraw during transition
     * Some kind of sound engine
-    x support for local temp variables on stack
-        just push something on the stack and call it good
+    * support for local temp variables on stack
+        different idea: first 10 or so bytes of ZP are space for locals. 
+        Push to stack on inner function call, pop afterwards.
+        Might require an entire new code block definition macro type thing
     \ update call_with_args to support nested calls, or abandon it entirely for something else
         * call_with_args_manual still doesn't do this
     * some kind of wrapper for instruction-like macros to automatically handle addressing modes
