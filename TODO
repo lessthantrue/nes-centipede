@@ -167,7 +167,7 @@ BUGS:
     \ regenerate mushrooms on game over
     * centipede goes straight down after wrapping the screen vertically, as if it was poisoned
     * spider sometimes teleports...?
-    * score appears to wrap back down to zero when it gets too high
+    \ score appears to wrap back down to zero when it gets too high
 
 QOL TODO BEFORE NEXT PROJECT:
     * useful macros to automate tedious stuff
