@@ -4,7 +4,7 @@
 
 ; just move to where the next segment was in the previous time step
 .proc body_step_tile
-    ; get segment at y-1 (closer to head) x and y in x and a registers
+    ; get segment at y-1 (closer to head) direction
     dey
     lda segment_dirs, y
 
@@ -34,6 +34,7 @@
         add centipede_speed_temp
         sta segment_ys, y
     :
+
     lda segment_dirs, y
     and #DIR_RIGHT
     php ; because lda changes zero flag

@@ -150,13 +150,27 @@ centipede_speed_temp: .res 1
 
     ; arg 3: sprite flags
     lda segment_dirs, y
-    and #%00000001
-    asl a
-    asl a
-    asl a
-    asl a
-    asl a
-    asl a ; shift dir bits left 6 times, lines up perfectly with sprite mirroring
+    and #DIR_RIGHT|DIR_UP
+    cmp #DIR_RIGHT|DIR_UP
+    beq H_AND_V
+    cmp #DIR_RIGHT
+    beq H
+    cmp #DIR_UP
+    beq V
+    jmp E
+    H_AND_V:
+        lda #0
+        ora #%11000000
+        jmp E
+    H:
+        lda #0
+        ora #%01000000
+        jmp E
+    V:
+        lda #0
+        ora #%10000000
+        jmp E
+    E:
     pha
 
     ; arg 2: sprite tile index
@@ -165,11 +179,6 @@ centipede_speed_temp: .res 1
     and #SEGMENT_MASK_ANIM_OFFSET
     ora segment_flags, y
     and #(SEGMENT_MASK_ANIM_OFFSET|SEGMENT_FLAG_HEAD)
-
-    ; lda segment_flags, y
-    ; and #SEGMENT_FLAG_HEAD
-    ; ora segment_anims, y
-    ; and #(SEGMENT_FLAG_HEAD|SEGMENT_MASK_ANIM_OFFSET)
     lsr
     lsr
     lsr
@@ -177,9 +186,9 @@ centipede_speed_temp: .res 1
     add #$10
     pha
     lda segment_dirs, y
-    and #DIR_DOWN
+    and #DIR_DOWN|DIR_UP
     beq :+
-        ; dir down set
+        ; down/up set
         pla
         add #DIR_DOWN
         pha
@@ -252,6 +261,51 @@ centipede_speed_temp: .res 1
     rts
 .endproc
 
+.proc segment_move
+    lda segment_dirs, y
+    and #DIR_DOWN|DIR_UP
+    beq END_VERT
+        ; turn back to finish diagonal movement if y value is 4 more than a multiple of 8
+        lda segment_ys, y
+        and #$07
+        cmp #4
+        bne :+
+            ; change directions
+            lda segment_dirs, y
+            eor #%00000001 ; swap last bit
+            sta segment_dirs, y
+        :
+
+        ; finish moving vertically
+        lda segment_dirs, y
+        and #DIR_UP
+        beq :+
+            ; move up
+            lda segment_ys, y
+            sub centipede_speed_temp
+            jmp :++
+        :
+            lda segment_ys, y
+            add centipede_speed_temp
+        :
+        sta segment_ys, y
+    END_VERT:
+    lda segment_dirs, y
+    and #DIR_RIGHT
+    bne :+
+    ; move left
+        lda segment_xs, y
+        sub centipede_speed_temp
+        jmp :++
+    :
+        ; move right
+        lda segment_xs, y
+        add centipede_speed_temp
+    :
+    sta segment_xs, y
+    rts
+.endproc
+
 .proc segment_step
     ; skip everything if it isn't alive
     lda #SEGMENT_FLAG_ALIVE
@@ -268,7 +322,7 @@ centipede_speed_temp: .res 1
         jmp :++
     :
         ; if not head
-        jsr body_step
+        jsr segment_move
     :
     
     ; only do some things once per tile length (8 pixels)

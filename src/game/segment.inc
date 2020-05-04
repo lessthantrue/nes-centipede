@@ -25,6 +25,6 @@ DIR_UP    =     %00000100 ; straight = not up or down
 
 .globalzp segment_active
 
-.global segment_init, segment_draw, segment_step, centipede_speed_temp
+.global segment_init, segment_draw, segment_step, centipede_speed_temp, segment_move
 
 .endif

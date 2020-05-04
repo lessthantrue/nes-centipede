@@ -104,7 +104,7 @@ FLEA_LEVEL_ENABLE = 2
     lda #FLAG_ENEMY_CENTIPEDE
     ora #FLAG_PLAYER
     sta game_enemy_statuses
-
+    
     rts
 .endproc
 

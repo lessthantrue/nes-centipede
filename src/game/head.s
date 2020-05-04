@@ -26,21 +26,51 @@
 .endproc
 
 .proc head_turn
-    ; first special logic for the moving-down turnaround
+    ; first special logic for the vertical turnaround
     lda segment_dirs, y
-    and #DIR_DOWN
+    and #DIR_DOWN|DIR_UP
     beq :+
         lda segment_dirs, y
-        and #($FF-DIR_DOWN) ; switch down bit off
+        and #<~(DIR_DOWN|DIR_UP) ; switch down/up bit off
         sta segment_dirs, y
-        ; jmp done_turn
     :
 
     lda segment_flags, y
     and #SEGMENT_FLAG_COLLIDE ; collision flag set
     beq no_collide
-        lda segment_dirs, y
-        ora #DIR_DOWN
+        ; check for turn back upwards
+        lda segment_ys, y
+        cmp #200
+        bls :+
+            lda segment_flags, y
+            ora #SEGMENT_FLAG_UP
+            and #<~(SEGMENT_FLAG_POISON)
+            sta segment_flags, y
+        :
+
+        ; check for turn back downwards
+        lda segment_flags, y
+        and #SEGMENT_FLAG_UP
+        beq :+
+        lda segment_ys, y
+        cmp #160
+        bge :+
+            lda segment_flags, y
+            and #<~(SEGMENT_FLAG_UP|SEGMENT_FLAG_POISON)
+            sta segment_flags, y
+        :
+
+        ; set appropriate up/down direction
+        lda segment_flags
+        and #SEGMENT_FLAG_UP
+        bne :+
+            lda segment_dirs, y
+            ora #DIR_DOWN
+            jmp :++
+        :
+            lda segment_dirs, y
+            ora #DIR_UP
+        :        
         sta segment_dirs, y
         ; set prev collision flag
         lda segment_flags, y
@@ -64,26 +94,26 @@
     :
 
     ; if not head, move collision status of prev segment to this one
-    lda segment_flags, y
-    and #SEGMENT_FLAG_HEAD
-    bne :+
-        ; first one is always head, so don't need to check for y=0
-        dey
-        lda segment_flags, y
-        and #SEGMENT_FLAG_COLLIDE_PREV
-        lsr a
-        iny
-        ora segment_flags, y
-        sta segment_flags, y
+    ; lda segment_flags, y
+    ; and #SEGMENT_FLAG_HEAD
+    ; bne :+
+    ;     ; first one is always head, so don't need to check for y=0
+    ;     dey
+    ;     lda segment_flags, y
+    ;     and #SEGMENT_FLAG_COLLIDE_PREV
+    ;     lsr a
+    ;     iny
+    ;     ora segment_flags, y
+    ;     sta segment_flags, y
 
-        ; also copy poison flag
-        dey
-        lda segment_flags, y
-        and #SEGMENT_FLAG_POISON
-        iny
-        ora segment_flags, y
-        sta segment_flags, y
-    :
+    ;     ; also copy poison flag
+    ;     dey
+    ;     lda segment_flags, y
+    ;     and #SEGMENT_FLAG_POISON
+    ;     iny
+    ;     ora segment_flags, y
+    ;     sta segment_flags, y
+    ; :
     rts
 .endproc
 
@@ -138,39 +168,7 @@
         lda #1
         sta centipede_speed_temp
     :
-
-    lda segment_dirs, y
-    and #DIR_DOWN
-    beq :++
-        ; turn back to finish diagonal movement if y value is 4 more than a multiple of 8
-        lda segment_ys, y
-        and #$07
-        cmp #4
-        bne :+
-            ; change directions
-            lda segment_dirs, y
-            eor #%00000001 ; swap last bit
-            sta segment_dirs, y
-        :
-
-        ; finish moving down
-        lda segment_ys, y
-        add centipede_speed_temp
-        sta segment_ys, y
-    :
-    lda segment_dirs, y
-    and #DIR_RIGHT
-    php ; because lda changes zero flag
-    lda segment_xs, y
-    plp
-    bne :+
-    ; move left
-        sub centipede_speed_temp
-        sub centipede_speed_temp
-    :
-        ; move right
-        add centipede_speed_temp
-    sta segment_xs, y
+    jsr segment_move
     rts
 .endproc
 

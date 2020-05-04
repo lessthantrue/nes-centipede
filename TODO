@@ -74,7 +74,7 @@ DEVELOPMENT:
         level 3 has 1 centipede of length 6 and 2 severed heads
         and so on
     \ make centipede move diagonally, not just down on collision
-    * make centipede move back upwards once reaching the bottom
+    \ make centipede move back upwards once reaching the bottom
     \ repair damaged mushrooms when death occurs
         \ 5 points for each regenerated mushroom?
         \ sound
