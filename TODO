@@ -165,9 +165,11 @@ BUGS:
     \ weird things happen to the spider when it collides with player
     \ scorpion doesn't reset on level restart
     \ regenerate mushrooms on game over
-    * centipede goes straight down after wrapping the screen vertically, as if it was poisoned
+    \ centipede goes straight down after wrapping the screen vertically, as if it was poisoned
     * spider sometimes teleports...?
     \ score appears to wrap back down to zero when it gets too high
+    * Mushroom collision points sometimes persist after being destroyed
+    \ centipede doesn't always move back upwards / downwards on player screen limit areas
 
 QOL TODO BEFORE NEXT PROJECT:
     * useful macros to automate tedious stuff
@@ -188,8 +190,10 @@ QOL TODO BEFORE NEXT PROJECT:
         Might require an entire new code block definition macro type thing
     \ update call_with_args to support nested calls, or abandon it entirely for something else
         * call_with_args_manual still doesn't do this
+        * maybe replace with something else entirely?
     * some kind of wrapper for instruction-like macros to automatically handle addressing modes
         look into curly bracket semantics?
+    * better makefile that I don't have to modify with each new file
 
 THINGS I SHOULD HAVE DONE:
     * Write better middle-level abstractions to avoid writing basically the same procedures many times

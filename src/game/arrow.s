@@ -57,15 +57,22 @@ SPEED = 6 ; velocity in px/frame (everything will work as long as this is less t
 .proc arrow_move
     lda #ARROW_FLAG_ACTIVE
     bit arrow_f
-    beq :+
+    beq ARROW_OFF
         ; arrow active
         lda arrow_y
         clc
         sbc #SPEED
         sta arrow_y
-        bcs :+
+        bcs END
             jsr arrow_del
-    :
+    ARROW_OFF:
+        lda player_xhi
+        add #3
+        sta arrow_x
+        lda player_yhi
+        sub #1
+        sta arrow_y
+    END:
     rts
 .endproc
 
@@ -107,15 +114,15 @@ SPEED = 6 ; velocity in px/frame (everything will work as long as this is less t
 .endproc
 
 .proc arrow_draw
-    lda #ARROW_FLAG_ACTIVE
-    bit arrow_f
-    bne :+
+    ; lda #ARROW_FLAG_ACTIVE
+    ; bit arrow_f
+    ; bne :+
         ; arrow inactive
-        call_with_args spritegfx_load_oam, #OFFSCREEN, #$20, #0, #0
-        jmp :++
-    :
+        ; call_with_args spritegfx_load_oam, #OFFSCREEN, #$20, #0, #0
+        ; jmp :++
+    ; :
         ; arrow active
         call_with_args spritegfx_load_oam, arrow_y, #$20, #0, arrow_x
-    :
+    ; :
     rts
 .endproc

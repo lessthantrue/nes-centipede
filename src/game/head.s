@@ -25,8 +25,60 @@
     rts
 .endproc
 
+.proc head_collide_segments
+    lda segment_dirs, y
+    and #DIR_RIGHT
+    bne right_collision
+        ; check for left collision
+        ldx #CENTIPEDE_LEN
+        :
+            dex
+            lda segment_ys, y
+            cmp segment_ys, x
+            bne :+ ; skip if not on same y level
+            lda segment_xs, y
+            sub {segment_xs, x}
+            cmp #8
+            beq lr_collision
+            cmp #9
+            beq lr_collision
+            cmp #7
+            beq lr_collision
+            :
+            cpx #0
+            beq no_collision
+            jmp :--
+    right_collision:
+        ; check for right collision
+        ldx #CENTIPEDE_LEN
+        :
+            dex
+            lda segment_ys, y
+            cmp segment_ys, x
+            bne :+ ; skip if not on same y level
+            lda segment_xs, x
+            sub {segment_xs, y}
+            cmp #8
+            beq lr_collision
+            cmp #9
+            beq lr_collision
+            cmp #7
+            beq lr_collision
+            :
+            cpx #0
+            beq no_collision
+            jmp :--
+    
+    lr_collision:
+        lda segment_flags, y
+        ora #SEGMENT_FLAG_COLLIDE
+        sta segment_flags, y
+    no_collision:
+    rts
+.endproc
+
 .proc head_turn
-    ; first special logic for the vertical turnaround
+    ; first, special logic for the vertical turnaround
     lda segment_dirs, y
     and #DIR_DOWN|DIR_UP
     beq :+
@@ -39,6 +91,9 @@
     and #SEGMENT_FLAG_COLLIDE ; collision flag set
     beq no_collide
         ; check for turn back upwards
+        lda segment_flags, y
+        and #SEGMENT_FLAG_UP
+        bne :+
         lda segment_ys, y
         cmp #200
         bls :+
@@ -53,7 +108,7 @@
         and #SEGMENT_FLAG_UP
         beq :+
         lda segment_ys, y
-        cmp #160
+        cmp #176
         bge :+
             lda segment_flags, y
             and #<~(SEGMENT_FLAG_UP|SEGMENT_FLAG_POISON)
@@ -92,28 +147,6 @@
         and #($FF-SEGMENT_FLAG_COLLIDE)
         sta segment_flags, y
     :
-
-    ; if not head, move collision status of prev segment to this one
-    ; lda segment_flags, y
-    ; and #SEGMENT_FLAG_HEAD
-    ; bne :+
-    ;     ; first one is always head, so don't need to check for y=0
-    ;     dey
-    ;     lda segment_flags, y
-    ;     and #SEGMENT_FLAG_COLLIDE_PREV
-    ;     lsr a
-    ;     iny
-    ;     ora segment_flags, y
-    ;     sta segment_flags, y
-
-    ;     ; also copy poison flag
-    ;     dey
-    ;     lda segment_flags, y
-    ;     and #SEGMENT_FLAG_POISON
-    ;     iny
-    ;     ora segment_flags, y
-    ;     sta segment_flags, y
-    ; :
     rts
 .endproc
 
@@ -176,6 +209,7 @@
     jsr head_collide_walls
     jsr head_collide_board
     jsr head_turn
+    jsr head_collide_segments
     rts
 .endproc
 
