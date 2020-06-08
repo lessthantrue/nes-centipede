@@ -45,6 +45,7 @@ hs_msg: pstring "HIGH SCORES"
         jmp BG_END
     :
 
+    ; PHASE_DRAW
     lda PPUSTATUS
     lda #0
     sta PPUMASK
@@ -69,11 +70,6 @@ hs_msg: pstring "HIGH SCORES"
         .endrep
 
         ; write scores
-        ; .repeat 8, I
-        ; lda highscores+I+6, y
-        ; add #'0'
-        ; sta score+I
-        ; .endrep
         st_addr score, strptr
         lda #8
         sta strlen

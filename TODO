@@ -171,7 +171,7 @@ BUGS:
     * Mushroom collision points sometimes persist after being destroyed
     \ centipede doesn't always move back upwards / downwards on player screen limit areas
 
-QOL TODO BEFORE NEXT PROJECT:
+QOL TODO BEFORE NEXT PROJECT (OR IN THIS ONE IF IT'S REALLY THAT HELPFUL):
     * useful macros to automate tedious stuff
         \ Some macro/proc to set the PPU nametable address to a tile x/y on screen
         * multiply by constant
@@ -194,6 +194,7 @@ QOL TODO BEFORE NEXT PROJECT:
     * some kind of wrapper for instruction-like macros to automatically handle addressing modes
         look into curly bracket semantics?
     * better makefile that I don't have to modify with each new file
+    * shared memory management for more efficiency
 
 THINGS I SHOULD HAVE DONE:
     * Write better middle-level abstractions to avoid writing basically the same procedures many times
