@@ -91,9 +91,9 @@
     and #SEGMENT_FLAG_COLLIDE ; collision flag set
     beq no_collide
         ; check for turn back upwards
-        lda segment_flags, y
-        and #SEGMENT_FLAG_UP
-        bne :+
+        ; lda segment_flags, y
+        ; and #SEGMENT_FLAG_UP
+        ; bne :+
         lda segment_ys, y
         cmp #200
         bls :+
@@ -104,14 +104,16 @@
         :
 
         ; check for turn back downwards
-        lda segment_flags, y
-        and #SEGMENT_FLAG_UP
-        beq :+
+        ; lda segment_flags, y
+        ; and #SEGMENT_FLAG_UP
+        ; beq :+
         lda segment_ys, y
         cmp #176
         bge :+
-            lda segment_flags, y
-            and #<~(SEGMENT_FLAG_UP|SEGMENT_FLAG_POISON)
+            lda #SEGMENT_FLAG_UP|SEGMENT_FLAG_POISON
+            not
+            and segment_flags, y
+            ; and #<~(SEGMENT_FLAG_UP|SEGMENT_FLAG_POISON)
             sta segment_flags, y
         :
 
@@ -208,8 +210,8 @@
 .proc head_step_tile
     jsr head_collide_walls
     jsr head_collide_board
-    jsr head_turn
     jsr head_collide_segments
+    jsr head_turn
     rts
 .endproc
 

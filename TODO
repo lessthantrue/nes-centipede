@@ -181,7 +181,8 @@ QOL TODO BEFORE NEXT PROJECT (OR IN THIS ONE IF IT'S REALLY THAT HELPFUL):
     * OAM allocation thing that didn't work the first time
     * Some proper organization for commonly used code (NES specific, macros, boilerplate)
     * Look at modules again, might be useful
-    * Generally more robust PPU management (see end of https://wiki.nesdev.com/w/index.php/The_frame_and_NMIs#VBlank.2C_Rendering_Time.2C_and_NMIs)
+        * .scope?
+    * Generally more robust PPU/VBLANK management (see end of https://wiki.nesdev.com/w/index.php/The_frame_and_NMIs#VBlank.2C_Rendering_Time.2C_and_NMIs)
         * better set up game state stuff for one big background redraw during transition
     * Some kind of sound engine
     * support for local temp variables on stack

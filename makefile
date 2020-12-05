@@ -102,11 +102,3 @@ map.txt $(title).nes: nrom128.cfg $(objlistntsc)
 $(objdir)/%.o: $(srcdir)/%.s | $(objdir)
 	mkdir -p $(@D)
 	$(AS65) $(CFLAGS65) $< -o $@
-
-##### I'll get around to this when I add sounds / music
-# This is an example of how to call a lookup table generator at
-# build time.  mktables.py itself is not included because the demo
-# has no music engine, but it's available online at
-# http://wiki.nesdev.com/w/index.php/APU_period_table
-$(objdir)/ntscPeriods.s: tools/mktables.py
-	$< period $@
