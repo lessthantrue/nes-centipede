@@ -91,9 +91,6 @@
     and #SEGMENT_FLAG_COLLIDE ; collision flag set
     beq no_collide
         ; check for turn back upwards
-        ; lda segment_flags, y
-        ; and #SEGMENT_FLAG_UP
-        ; bne :+
         lda segment_ys, y
         cmp #200
         bls :+
@@ -104,9 +101,6 @@
         :
 
         ; check for turn back downwards
-        ; lda segment_flags, y
-        ; and #SEGMENT_FLAG_UP
-        ; beq :+
         lda segment_ys, y
         cmp #176
         bge :+
