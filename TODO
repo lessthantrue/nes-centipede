@@ -72,7 +72,7 @@ DEVELOPMENT:
         level 1 has 1 centipede of length 8
         level 2 has 1 centipede of length 7 and 1 severed head
         level 3 has 1 centipede of length 6 and 2 severed heads
-        and so on
+        and so on, until it starts over
     \ make centipede move diagonally, not just down on collision
     \ make centipede move back upwards once reaching the bottom
     \ repair damaged mushrooms when death occurs
@@ -168,8 +168,12 @@ BUGS:
     \ centipede goes straight down after wrapping the screen vertically, as if it was poisoned
     * spider sometimes teleports...?
     \ score appears to wrap back down to zero when it gets too high
-    * Mushroom collision points sometimes persist after being destroyed
+    * Mushroom collision box sometimes persists after being destroyed
+        * Only for centipede?
     \ centipede doesn't always move back upwards / downwards on player screen limit areas
+    * High scores are broken on new save
+    \ Poison mushrooms don't work anymore
+    * Stupid broken mushroom in the very top left
 
 QOL TODO BEFORE NEXT PROJECT (OR IN THIS ONE IF IT'S REALLY THAT HELPFUL):
     * useful macros to automate tedious stuff
@@ -205,6 +209,7 @@ THINGS I SHOULD HAVE DONE:
         drawing dynamic sprites
         collisions with the board
         particles
+        events?
     * don't put RTS in the middle of procedures
         Makes reading debugger difficult
     * better split game state, drawing, and controls

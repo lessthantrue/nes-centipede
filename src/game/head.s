@@ -104,10 +104,12 @@
         lda segment_ys, y
         cmp #176
         bge :+
+        lda segment_flags, y
+        and #SEGMENT_FLAG_UP
+        beq :+
             lda #SEGMENT_FLAG_UP|SEGMENT_FLAG_POISON
             not
             and segment_flags, y
-            ; and #<~(SEGMENT_FLAG_UP|SEGMENT_FLAG_POISON)
             sta segment_flags, y
         :
 
@@ -140,7 +142,7 @@
     and #SEGMENT_FLAG_POISON
     bne :+
         lda segment_flags, y
-        and #($FF-SEGMENT_FLAG_COLLIDE)
+        and #<~SEGMENT_FLAG_COLLIDE
         sta segment_flags, y
     :
     rts
