@@ -112,7 +112,7 @@
         :
 
         ; set appropriate up/down direction
-        lda segment_flags
+        lda segment_flags, y
         and #SEGMENT_FLAG_UP
         bne :+
             lda segment_dirs, y
