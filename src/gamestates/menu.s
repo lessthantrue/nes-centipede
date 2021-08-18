@@ -46,7 +46,7 @@ menu_extralife_msg: pstring "BONUS EVERY 12000"
     and cur_keys+1
     cmp #KEY_START|KEY_SELECT
     bne :+
-        jsr highscore_hard_reset
+        jsr highscores_hard_reset
     :
     rts
 .endproc
@@ -55,7 +55,6 @@ menu_extralife_msg: pstring "BONUS EVERY 12000"
     lda #KEY_START
     bit new_keys
     beq :+
-        ; jsr statusbar_init
         jsr game_full_reset
         swap_state redraw_board
     :

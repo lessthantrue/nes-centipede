@@ -21,7 +21,7 @@ def_scores: .byte "EJD", $9F, $40, $00, 0, 0, 0, 1, 6, 5, 4, 3, 0, $FF
             .byte "DEW", $05, $32, $00, 0, 0, 0, 1, 2, 8, 0, 5, 0, $FF
             .byte "DFW", $A9, $2F, $00, 0, 0, 0, 1, 2, 2, 0, 1, 0, $FF
             .byte "GJR", $46, $2F, $00, 0, 0, 0, 1, 2, 1, 0, 2, 0, $FF
-DEF_SCORES_LEN = SCORE_SIZE * SCORES_COUNT
+SCORES_LEN = SCORE_SIZE * SCORES_COUNT
 
 .segment "CODE"
 
@@ -35,6 +35,50 @@ DEF_SCORES_LEN = SCORE_SIZE * SCORES_COUNT
         sub #SCORE_SIZE
         tay
         bpl :-
+    rts
+.endproc
+
+; calculates and stores the checksum of all high scores
+.proc calc_checksum
+    ldx #0
+    :
+        ldy #0
+        lda #0
+        :
+            add {highscores, x}
+            inx
+            iny
+            cpy #14 ; end before flags byte
+            bne :-
+        inx
+        not
+        add #1 ; negate a so sum of this row + checksum = 0
+        sta highscores, x ; put checksum where it belongs
+        inx ; move to the start of the next one
+        cpx #SCORES_LEN
+        bne :-- ; unless we're done
+    rts
+.endproc
+
+; if high scores are valid, a == 0
+; if high scores are not valid, a != 0
+.proc highscores_verify
+    ldx #0
+    :
+        ldy #0
+        lda #0
+        :
+            add {highscores, x}
+            inx
+            iny
+            cpy #14
+            bne :-
+        inx
+        add {highscores, x}
+        bne :+
+        cpx #SCORES_LEN
+        bne :--
+    :
     rts
 .endproc
 
@@ -107,16 +151,18 @@ DEF_SCORES_LEN = SCORE_SIZE * SCORES_COUNT
         cmp #SCORES_COUNT
         bne S_SORT ; while stack[top] != SCORE_COUNT
     pla ; clean up last loop counter
+    jsr calc_checksum ; do this while we're here
     rts
 .endproc
 
-.proc highscore_hard_reset
+.proc highscores_hard_reset
     ldy #0
     :
         lda def_scores, y
         sta highscores, y
         iny
-        cpy #DEF_SCORES_LEN
+        cpy #SCORES_LEN
         bne :-
+    jsr calc_checksum
     rts
 .endproc

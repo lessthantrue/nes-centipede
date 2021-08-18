@@ -17,7 +17,7 @@ phase:  .res 1
 score:  .res 8
 space:  .res 1
 name:   .res 3
-SCORE_LEN = 3 + 3 + 8
+SCORE_LEN = 3 + 1 + 8
 
 .segment "RODATA"
 hs_msg: pstring "HIGH SCORES"
@@ -93,7 +93,7 @@ hs_msg: pstring "HIGH SCORES"
         pha
         add #4
         pha ; y cord
-        lda #(16-(SCORE_LEN/2)-1)
+        lda #(16-(SCORE_LEN/2)-2)
         pha ; x cord
 
         st_addr score, strptr

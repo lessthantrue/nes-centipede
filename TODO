@@ -171,7 +171,8 @@ BUGS:
     * Mushroom collision box sometimes persists after being destroyed
         * Only for centipede?
     \ centipede doesn't always move back upwards / downwards on player screen limit areas
-    * High scores are broken on new save
+    \ High scores are broken on new save
+        Checksum? Might work.
     \ Poison mushrooms don't work anymore
     * Stupid broken mushroom in the very top left
 
