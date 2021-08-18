@@ -3,6 +3,7 @@
 .include "player.inc"
 .include "../events/events.inc"
 .include "../spritegfx.inc"
+.include "board.inc"
 .include "../collision.inc"
 .include "game.inc"
 .include "../events/events.inc"
@@ -44,6 +45,12 @@ TOP_WALL = 168 ; top player limit in px, header-adjusted (lower bound)
     lda #192
     sta player_yhi
     set game_enemy_statuses, #FLAG_PLAYER
+
+    ; if there is a mushroom where the player is, remove it
+    call_with_args board_convert_sprite_xy, player_xhi, player_yhi
+    jsr board_xy_to_addr
+    call_with_args board_set_value, #0
+
     rts
 .endproc
 
